@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 02 - Online Hotel Room Booking Website</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>🏨 Grand Vista Hotel & Suites</span>
+      <span class="brand-badge">Exp 02</span>
+    </div>
+    <div class="role-switcher">
+      <label for="hotelRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="hotelRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="user">Guest / User View</option>
+        <option value="admin">Administrator View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- GUEST / USER VIEW -->
+    <div id="hotelUserSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="roomSearchTab">Search & Availability</button>
+        <button class="tab-btn" data-tab="bookingHistoryTab">My Bookings & History</button>
+        <button class="tab-btn" data-tab="guestProfileTab">Profile</button>
+        <button class="tab-btn" data-tab="staticInfoTab">Hotel Info & Guides</button>
+      </div>
+
+      <!-- Tab: Search & Availability -->
+      <div id="roomSearchTab" class="tab-pane active">
+        <div class="card">
+          <h2 class="card-title">Check Room Availability & Book</h2>
+          <form id="searchRoomsForm" class="grid grid-cols-4" style="gap: 1rem; align-items: flex-end;">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label">Check-In Date</label>
+              <input type="date" id="searchCheckIn" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label">Check-Out Date</label>
+              <input type="date" id="searchCheckOut" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label">Guests</label>
+              <select id="searchGuests" class="form-select">
+                <option value="1">1 Adult</option>
+                <option value="2" selected>2 Adults</option>
+                <option value="3">3 Adults</option>
+                <option value="4">4+ Adults / Family</option>
+              </select>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Check Availability</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Room Types Grid (Standard, Deluxe, Executive Suite, Presidential Suite) -->
+        <div class="grid grid-cols-2" id="availableRoomsGrid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Tab: Booking History (with 3-day rule for cancellation & modification) -->
+      <div id="bookingHistoryTab" class="tab-pane">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 class="card-title" style="margin: 0;">My Reservations</h2>
+            <span class="badge badge-warning">Cancellation Policy: Allowed 3+ Days Before Arrival</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Room Type</th>
+                  <th>Check-In</th>
+                  <th>Check-Out</th>
+                  <th>Total Cost</th>
+                  <th>Status</th>
+                  <th>Actions (3-Day Rule)</th>
+                </tr>
+              </thead>
+              <tbody id="userBookingsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Guest Profile -->
+      <div id="guestProfileTab" class="tab-pane">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <h2 class="card-title">Guest Profile Management</h2>
+          <form id="guestProfileForm">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="guestName" class="form-control" value="Alex Morgan">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="guestEmail" class="form-control" value="alex.morgan@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" id="guestPhone" class="form-control" value="+91 9876543210">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Profile Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Static Pages & Hotel Guides -->
+      <div id="staticInfoTab" class="tab-pane">
+        <div class="card">
+          <div class="nav-tabs" style="border: none; margin-bottom: 1rem;">
+            <button class="sub-tab-btn active" data-content="aboutContent">About Us</button>
+            <button class="sub-tab-btn" data-content="roomInfoContent">Room Information</button>
+            <button class="sub-tab-btn" data-content="contactContent">Contact Us</button>
+            <button class="sub-tab-btn" data-content="qaContent">Customer Service Q&A</button>
+            <button class="sub-tab-btn" data-content="travelContent">Local Travel Guide</button>
+            <button class="sub-tab-btn" data-content="privacyContent">Privacy Policy</button>
+          </div>
+          <div id="staticDisplayArea" style="line-height: 1.8; color: var(--text-main);">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMINISTRATOR VIEW -->
+    <div id="hotelAdminSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="adminRoomsTab">Room Inventory & Rates (4 Types)</button>
+        <button class="tab-btn" data-tab="adminBookingsTab">All Customer Bookings</button>
+        <button class="tab-btn" data-tab="adminStaticTab">CMS / Static Pages Editor</button>
+      </div>
+
+      <!-- Admin Tab: Room Inventory & Rates -->
+      <div id="adminRoomsTab" class="tab-pane active">
+        <div class="card">
+          <h2 class="card-title">Manage 4 Room Categories (Quantity & Price)</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Room Type</th>
+                  <th>Current Price (₹/Night)</th>
+                  <th>Total Quantity</th>
+                  <th>Amenities</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody id="adminRoomsTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: All Bookings -->
+      <div id="adminBookingsTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Master Booking Management (Modify / Cancel)</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Guest</th>
+                  <th>Room</th>
+                  <th>Dates</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Admin Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminBookingsTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: CMS / Static Pages Editor -->
+      <div id="adminStaticTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Edit Static Website Content</h2>
+          <div class="form-group">
+            <label class="form-label">Select Page to Edit</label>
+            <select id="cmsPageSelect" class="form-select">
+              <option value="aboutUs">About Us</option>
+              <option value="roomInfo">Room Information</option>
+              <option value="contactUs">Contact Us</option>
+              <option value="qaDetails">Customer Service Q&A Details</option>
+              <option value="travelGuide">Local Travel & Shipping Guide</option>
+              <option value="privacyPolicy">Privacy Policy</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Page Content (HTML/Markdown)</label>
+            <textarea id="cmsContentText" class="form-control" rows="8"></textarea>
+          </div>
+          <button id="saveCmsBtn" class="btn btn-primary">Publish Updates</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Modal Dialog -->
+  <div id="bookingModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h3 id="modalRoomTitle">Confirm Booking</h3>
+      <div id="modalSummary" style="margin: 1rem 0; font-size: 0.95rem;"></div>
+      <form id="confirmBookingForm">
+        <div class="form-group">
+          <label class="form-label">Payment Gateway Mode</label>
+          <select id="paymentMode" class="form-select">
+            <option value="credit">Credit / Debit Card</option>
+            <option value="upi">UPI / Net Banking</option>
+            <option value="pay_at_hotel">Pay at Check-In</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+          <button type="button" class="btn btn-secondary" onclick="closeBookingModal()">Cancel</button>
+          <button type="submit" class="btn btn-success">Pay & Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

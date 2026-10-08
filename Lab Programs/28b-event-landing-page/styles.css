@@ -1,0 +1,272 @@
+/* NexusTech 2026 Event Landing Page Scoped Styles */
+
+.event-hero-chunk {
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.25), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.event-badge-label {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  padding: 0.35rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.event-hero-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  max-width: 900px;
+  margin: 0 auto 1.25rem;
+  line-height: 1.2;
+  background: linear-gradient(135deg, #ffffff, #c7d2fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.event-hero-subtitle {
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  max-width: 750px;
+  margin: 0 auto 2rem;
+  line-height: 1.6;
+}
+
+.event-meta-strip {
+  display: flex;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.meta-icon {
+  font-size: 2rem;
+}
+
+.event-hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Chunks */
+.event-chunk-card {
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+}
+
+.chunk-pill {
+  color: #818cf8;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.chunk-header {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 2rem;
+}
+
+.audience-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.audience-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Speakers */
+.speakers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.speaker-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.speaker-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.speaker-avatar-box {
+  font-size: 3.5rem;
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.speaker-role {
+  color: #818cf8;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.speaker-talk {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.speaker-link {
+  color: #a5b4fc;
+  font-size: 0.85rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.speaker-link:hover {
+  text-decoration: underline;
+}
+
+/* Schedule Timeline */
+.schedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.schedule-item {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-left: 4px solid #6366f1;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.schedule-item.keynote-highlight {
+  border-left: 4px solid #f59e0b;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.time-stamp {
+  font-weight: 700;
+  color: #818cf8;
+  min-width: 140px;
+}
+
+.venue-info-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+}
+
+.venue-map-card {
+  background: #090d16;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 2.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cta-banner-card {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(15, 23, 42, 0.9));
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+/* Printable Badge */
+.badge-card-printable {
+  background: #090d16;
+  border: 3px solid #6366f1;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  text-align: center;
+}
+
+.badge-header {
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.badge-qr-box {
+  background: white;
+  color: black;
+  width: 120px;
+  height: 120px;
+  margin: 1rem auto;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.font-mono { font-family: monospace; }
+.font-bold { font-weight: 700; }
+.max-w-700 { max-width: 700px; }
+.btn-lg { padding: 0.85rem 1.75rem; font-size: 1.05rem; }
+
+@media print {
+  body * { visibility: hidden; }
+  #badgeModal, #badgeModal * { visibility: visible; }
+  #badgeModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+    color: black;
+  }
+  .modal-actions, .modal-close { display: none; }
+}

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplainEase - Public Grievance Redressal & Resolution Platform</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">📢</span>
+      <div class="brand-text">
+        <span class="brand-title">ComplainEase</span>
+        <span class="brand-sub">Civic Grievance Redressal & Field Officer Dispatch</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">Portal View:</span>
+      <button class="role-pill active" data-role="user" onclick="switchRole('user')">👤 Citizen / User</button>
+      <button class="role-pill" data-role="officer" onclick="switchRole('officer')">👮 Field Officer</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Department Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- CITIZEN / USER VIEW -->
+    <section id="userSection" class="role-view">
+      <div class="dashboard-header-card">
+        <div class="user-profile-badge">
+          <div class="avatar">🙋</div>
+          <div>
+            <h3>Welcome, Priya Sundaram</h3>
+            <p class="muted">Citizen ID: CIT-88219 | Ward 14 (Chennai South) | Verified Citizen</p>
+          </div>
+        </div>
+        <div class="header-action-group">
+          <button class="btn btn-secondary btn-sm" onclick="openAdminContactModal()">📞 Admin Emergency Contact</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchUserTab('lodge')">📝 Lodge New Complaint</button>
+        <button class="tab-btn" onclick="switchUserTab('track')">🔍 My Complaints & Live Status</button>
+        <button class="tab-btn" onclick="switchUserTab('faq')">💡 Common Issues & Solutions (FAQ)</button>
+        <button class="tab-btn" onclick="switchUserTab('feedback')">⭐ Resolution Feedback</button>
+      </div>
+
+      <!-- Tab: Lodge Complaint -->
+      <div id="userTabLodge" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card">
+            <h3>File a Civic Grievance</h3>
+            <p class="muted">Provide incident details, department category, and upload supporting photos.</p>
+            <form id="complaintForm" onsubmit="handleLodgeComplaint(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Department / Category</label>
+                  <select id="compCategory" class="input" required>
+                    <option value="Roads & Potholes">Roads & Potholes (Highways/Corporation)</option>
+                    <option value="Water Supply & Drainage">Water Supply & Sewage Pipeline</option>
+                    <option value="Street Lighting & Electrical">Street Lighting & Broken Cables</option>
+                    <option value="Garbage & Sanitation">Solid Waste & Overflowing Dustbins</option>
+                    <option value="Public Health & Vector Control">Mosquito Fogging / Health Hazard</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Urgency Level</label>
+                  <select id="compUrgency" class="input">
+                    <option value="Normal">Normal (Standard 48-72h SLA)</option>
+                    <option value="Urgent">Urgent (24h SLA)</option>
+                    <option value="Critical">Critical Emergency Hazard (Immediate)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Complaint Subject / Title</label>
+                <input type="text" id="compTitle" class="input" placeholder="e.g. Broken drainage cover causing road blockage" required>
+              </div>
+
+              <div class="form-group">
+                <label>Detailed Incident Description</label>
+                <textarea id="compDescription" class="input" rows="3" placeholder="Describe the severity, duration, and safety hazard..." required></textarea>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Supporting Evidence (Photo/Doc URL)</label>
+                  <input type="text" id="compPhoto" class="input" placeholder="e.g. https://images.unsplash.com/... or evidence-pothole.jpg" value="https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=500">
+                </div>
+                <div class="form-group">
+                  <label>Citizen Contact Number (SMS updates)</label>
+                  <input type="tel" id="compPhone" class="input" value="+91 94440 88219" required>
+                </div>
+              </div>
+
+              <!-- Interactive Location Pinning -->
+              <div class="form-group">
+                <label>Pin Location on Interactive Map</label>
+                <div class="interactive-map-picker" id="mapPickerBox">
+                  <div class="map-grid-bg">
+                    <div class="map-street-line h-1"></div>
+                    <div class="map-street-line h-2"></div>
+                    <div class="map-street-line v-1"></div>
+                    <div class="map-street-line v-2"></div>
+                    <div class="map-landmark l-1">🏫 Anna Univ</div>
+                    <div class="map-landmark l-2">🏥 City Hospital</div>
+                    <div class="map-landmark l-3">🏢 Tech Park</div>
+                    <div class="map-pin" id="draggablePin">📍</div>
+                  </div>
+                  <div class="map-caption">Click anywhere on the map grid to adjust geolocation pin</div>
+                </div>
+                <div class="form-row mt-2">
+                  <input type="text" id="compCoordinates" class="input font-mono text-sm" value="13.0827° N, 80.2707° E" readonly>
+                  <input type="text" id="compAddress" class="input text-sm" value="Gandhi Road, Near City Hospital Junction, Ward 14" required>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block mt-3">🚀 Submit Complaint & Generate Tracking Token</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Grievance Preview & Instant Token</h3>
+            <div id="latestComplaintCard" class="complaint-preview-container">
+              <div class="empty-state-box">
+                <span class="empty-icon">📋</span>
+                <p class="muted">No complaint filed in this session yet. Submit on the left to receive your official registration ticket and tracking code.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Track Status -->
+      <div id="userTabTrack" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>My Grievances & Resolution Progress</h3>
+              <p class="muted">Real-time status updates with field officer proof-of-work inspection.</p>
+            </div>
+            <div class="filter-controls">
+              <input type="text" id="searchMyComp" class="input input-sm" placeholder="Search by Ticket ID..." oninput="renderUserComplaints()">
+            </div>
+          </div>
+          <div id="userComplaintsList" class="complaints-timeline-container mt-3">
+            <!-- Dynamic list of user complaints -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: FAQ -->
+      <div id="userTabFaq" class="tab-pane">
+        <div class="card">
+          <h3>Knowledgebase & Common Solutions</h3>
+          <p class="muted">Browse quick self-help guides and common civic department SLAs.</p>
+          <div class="faq-accordion mt-3" id="faqAccordion">
+            <!-- FAQ items populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Feedback -->
+      <div id="userTabFeedback" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Citizen Resolution Feedback & Ratings</h3>
+          <p class="muted">Rate how promptly and satisfactorily your resolved grievances were addressed.</p>
+          <form id="feedbackForm" onsubmit="handleCitizenFeedback(event)">
+            <div class="form-group">
+              <label>Select Resolved Complaint</label>
+              <select id="feedbackCompSelect" class="input" required>
+                <!-- Populated dynamically with resolved tickets -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Satisfaction Rating</label>
+              <div class="star-rating-picker" id="starRatingContainer">
+                <span class="star selected" data-val="1">★</span>
+                <span class="star selected" data-val="2">★</span>
+                <span class="star selected" data-val="3">★</span>
+                <span class="star selected" data-val="4">★</span>
+                <span class="star selected" data-val="5">★</span>
+              </div>
+              <input type="hidden" id="selectedStarValue" value="5">
+            </div>
+            <div class="form-group">
+              <label>Citizen Comments / Field Officer Review</label>
+              <textarea id="feedbackComment" class="input" rows="3" placeholder="Work was completed quickly, cleaned up nicely..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Submit Feedback</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FIELD OFFICER VIEW -->
+    <section id="officerSection" class="role-view hidden">
+      <div class="dashboard-header-card officer-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👮</div>
+          <div>
+            <h3>Officer Suresh Babu (Badge #OFF-402)</h3>
+            <p class="muted">Divisional Field Investigation Officer | Ward 14 & 15 Jurisdiction</p>
+          </div>
+        </div>
+        <div class="officer-summary-chips">
+          <span class="badge badge-warning" id="officerPendingCount">1 Assigned Action Required</span>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <div class="card-header-flex">
+          <div>
+            <h3>Assigned Grievance Investigation Queue</h3>
+            <p class="muted">Inspect field reports, update work stages, and upload completion proof.</p>
+          </div>
+          <div class="filter-controls">
+            <select id="officerFilterStatus" class="input input-sm" onchange="renderOfficerTasks()">
+              <option value="all">All Assigned Tasks</option>
+              <option value="Pending">Pending Assignment</option>
+              <option value="Under Investigation">Under Investigation</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="officerTaskList" class="officer-tasks-grid mt-3">
+          <!-- Dynamic officer task cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPARTMENT ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div>
+            <div class="metric-value" id="adminTotalComplaints">24</div>
+            <div class="metric-label">Total Registered Grievances</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">⏳</span>
+          <div>
+            <div class="metric-value" id="adminPendingCount">5</div>
+            <div class="metric-label">Open / In-Progress Cases</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">✅</span>
+          <div>
+            <div class="metric-value" id="adminResolvedCount">19</div>
+            <div class="metric-label">Successfully Resolved Cases</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('cases')">📂 Grievance Master Ledger</button>
+        <button class="tab-btn" onclick="switchAdminTab('officers')">👮 Officer Accounts & Credentials</button>
+        <button class="tab-btn" onclick="switchAdminTab('controls')">⚙️ Portal Permissions & OES Settings</button>
+      </div>
+
+      <!-- Tab: Master Cases -->
+      <div id="adminTabCases" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-flex">
+            <h3>Central Complaint Registry & Triage</h3>
+            <button class="btn btn-secondary btn-sm" onclick="exportComplaintReport()">📥 Export CSV Report</button>
+          </div>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Ticket ID</th>
+                  <th>Date</th>
+                  <th>Citizen</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                  <th>Assigned Officer</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminComplaintsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Officer Credentials -->
+      <div id="adminTabOfficers" class="tab-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Active Field Officers</h3>
+            <div class="table-responsive mt-2">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Officer ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Jurisdiction</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminOfficersTable">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Generate Officer ID & Access Credentials</h3>
+            <form id="createOfficerForm" onsubmit="handleCreateOfficer(event)">
+              <div class="form-group">
+                <label>Officer Full Name</label>
+                <input type="text" id="newOfficerName" class="input" placeholder="e.g. Arumugam K" required>
+              </div>
+              <div class="form-group">
+                <label>Department</label>
+                <select id="newOfficerDept" class="input">
+                  <option value="Roads & Infrastructure">Roads & Infrastructure</option>
+                  <option value="Water & Sanitation">Water & Sanitation</option>
+                  <option value="Electrical & Power">Electrical & Power</option>
+                  <option value="Health & Environment">Health & Environment</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Jurisdiction / Ward</label>
+                  <input type="text" id="newOfficerWard" class="input" value="Ward 14 & 15" required>
+                </div>
+                <div class="form-group">
+                  <label>Mobile Number</label>
+                  <input type="tel" id="newOfficerMobile" class="input" value="+91 94441 90283" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>System Generated Password</label>
+                <input type="text" id="newOfficerPass" class="input font-mono" value="Grievance@2026" readonly>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Provision Officer Account</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Controls -->
+      <div id="adminTabControls" class="tab-pane">
+        <div class="card">
+          <h3>Administrative Feature Toggles & OES System Controls</h3>
+          <p class="muted">Control public visibility of sensitive features as authorized in course specification.</p>
+          <div class="control-toggle-list mt-3">
+            <div class="control-toggle-item">
+              <div>
+                <strong>Allow Anonymous Complaint Submission</strong>
+                <p class="muted text-xs">Allow users to log civic hazards without verifying Citizen ID</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleAnonymous" onchange="saveSystemSettings()">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="control-toggle-item">
+              <div>
+                <strong>Interactive Map Geolocation Pinning</strong>
+                <p class="muted text-xs">Require spatial GPS coordinates for civic complaints</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleMap" checked onchange="saveSystemSettings()">
+                <span class="slider round"></span>
+              </label>
+            </div>
+
+            <div class="control-toggle-item">
+              <div>
+                <strong>Public Feedback & Review Module</strong>
+                <p class="muted text-xs">Permit citizens to rate field officers publicly upon case resolution</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleFeedback" checked onchange="saveSystemSettings()">
+                <span class="slider round"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Officer Resolution Proof Modal -->
+  <div id="officerProofModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Update Work Status & Upload Proof of Work</h3>
+        <button class="modal-close" onclick="closeProofModal()">&times;</button>
+      </div>
+      <form onsubmit="handleOfficerSubmitProof(event)">
+        <input type="hidden" id="proofTaskId">
+        <div class="form-group">
+          <label>Ticket ID</label>
+          <input type="text" id="proofTaskTicketDisplay" class="input font-mono" readonly>
+        </div>
+        <div class="form-group">
+          <label>Resolution Status</label>
+          <select id="proofStatusSelect" class="input">
+            <option value="Under Investigation">Under Investigation (Inspection Underway)</option>
+            <option value="In Progress">In Progress (Work Crew Deployed)</option>
+            <option value="Resolved">Resolved (Work Completed)</option>
+            <option value="Rejected">Rejected (Out of Municipal Jurisdiction)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Proof of Work Evidence (Photo URL / Report)</label>
+          <input type="text" id="proofPhotoInput" class="input" placeholder="e.g. https://images.unsplash.com/... or fix-evidence.jpg" value="https://images.unsplash.com/photo-1541888946425-d0fbb1861593?w=500">
+        </div>
+        <div class="form-group">
+          <label>Official Resolution Notes / Remarks</label>
+          <textarea id="proofNotesInput" class="input" rows="3" placeholder="Pothole filled with asphalt layer and compacted. Drain cleared." required></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeProofModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Dispatch SMS Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Emergency Contact Modal -->
+  <div id="adminContactModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Civic Redressal Emergency Helpline & Admin Contacts</h3>
+        <button class="modal-close" onclick="closeAdminContactModal()">&times;</button>
+      </div>
+      <div class="contact-details-grid my-3">
+        <div class="contact-item">
+          <strong>🏢 Municipal Corporation Headquarters:</strong>
+          <p class="muted">Ripon Building, Periamet, Chennai - 600003</p>
+        </div>
+        <div class="contact-item">
+          <strong>📞 Toll-Free Public Grievance Helpline:</strong>
+          <p class="font-bold font-mono" style="color: #3b82f6;">1913 / 044-2538 4520</p>
+        </div>
+        <div class="contact-item">
+          <strong>✉️ Central Redressal Officer Email:</strong>
+          <p class="font-mono text-sm">grievance.commissioner@chennaicorporation.gov.in</p>
+        </div>
+        <div class="contact-item">
+          <strong>🕒 Working Hours:</strong>
+          <p class="muted">24x7 Emergency Call Center | Office: Mon - Sat 9:00 AM - 5:30 PM</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-primary btn-block" onclick="closeAdminContactModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 16: ComplainEase Public Grievance Redressal Portal | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

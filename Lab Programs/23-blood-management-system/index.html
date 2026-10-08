@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RaktSeva - National Blood Bank Management & Donor Information System</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🩸</span>
+      <div class="brand-text">
+        <span class="brand-title">RaktSeva</span>
+        <span class="brand-sub">Centralized Blood Bank Inventory & Verified Donor Network</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="donor" onclick="switchRole('donor')">🙋 Voluntary Donor / User</button>
+      <button class="role-pill" data-role="hospital" onclick="switchRole('hospital')">🏥 Hospital Blood Bank</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- DONOR / PUBLIC USER VIEW -->
+    <section id="donorSection" class="role-view">
+      <div class="dashboard-header-card donor-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">❤️</div>
+          <div>
+            <h3>Kishore Kumar (Blood Group: O- Negative - Universal Donor)</h3>
+            <p class="muted">Donor ID: DNR-4029 | Location: Chennai Central | Eligible to Donate: <span class="badge badge-success">YES</span></p>
+          </div>
+        </div>
+        <div class="donor-stats-badge">
+          <span class="muted text-xs">Donation Milestone:</span>
+          <strong>6 Voluntary Donations</strong>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchDonorTab('searchDonors')">🔍 Search Donors</button>
+        <button class="tab-btn" onclick="switchDonorTab('searchBanks')">🏥 Hospital Blood Banks & Stock</button>
+        <button class="tab-btn" onclick="switchDonorTab('postDonor')">➕ Register / Update My Donor Info</button>
+        <button class="tab-btn" onclick="switchDonorTab('myInfo')">📋 My Donor Card & History</button>
+      </div>
+
+      <!-- Tab: Search Donors -->
+      <div id="donorTabSearchDonors" class="tab-pane active">
+        <!-- Search Filters -->
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Select Required Blood Group</label>
+              <select id="searchBloodGroup" class="input" onchange="filterDonors()">
+                <option value="All">All Blood Groups</option>
+                <option value="O-">O Negative (Universal Donor)</option>
+                <option value="O+">O Positive</option>
+                <option value="A+">A Positive</option>
+                <option value="A-">A Negative</option>
+                <option value="B+">B Positive</option>
+                <option value="B-">B Negative</option>
+                <option value="AB+">AB Positive (Universal Recipient)</option>
+                <option value="AB-">AB Negative</option>
+              </select>
+            </div>
+            <div class="form-group flex-2">
+              <label>District / City Search</label>
+              <input type="text" id="searchDistrict" class="input" placeholder="e.g. Chennai, Kanchipuram, Coimbatore..." oninput="filterDonors()">
+            </div>
+          </div>
+        </div>
+
+        <div id="donorsGrid" class="donors-cards-grid">
+          <!-- Dynamically populated donor cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Hospital Blood Banks -->
+      <div id="donorTabSearchBanks" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Verified Hospital Blood Bank Stock Matrix</h3>
+              <p class="muted">Live component reserves across licensed medical transfusion centers.</p>
+            </div>
+            <input type="text" id="bankSearchInput" class="input input-sm" placeholder="Filter hospital name..." oninput="renderBloodBanks()">
+          </div>
+          <div id="bloodBanksList" class="blood-banks-grid mt-4">
+            <!-- Dynamically populated blood banks with inventory chips -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Post Donor Info -->
+      <div id="donorTabPostDonor" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Volunteer as a Certified Blood Donor</h3>
+          <p class="muted">Your voluntary pledge saves trauma victims, surgical patients, and thalassemia warriors.</p>
+          <form onsubmit="handleSaveDonorProfile(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="regDonorName" class="input" value="Kishore Kumar" required>
+              </div>
+              <div class="form-group">
+                <label>Blood Group</label>
+                <select id="regDonorGroup" class="input" required>
+                  <option value="O-">O Negative (O-)</option>
+                  <option value="O+">O Positive (O+)</option>
+                  <option value="A+">A Positive (A+)</option>
+                  <option value="A-">A Negative (A-)</option>
+                  <option value="B+">B Positive (B+)</option>
+                  <option value="B-">B Negative (B-)</option>
+                  <option value="AB+">AB Positive (AB+)</option>
+                  <option value="AB-">AB Negative (AB-)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Age (18 - 65 yrs)</label>
+                <input type="number" id="regDonorAge" class="input" value="26" min="18" max="65" required>
+              </div>
+              <div class="form-group">
+                <label>Body Weight (Min 50 kg)</label>
+                <input type="number" id="regDonorWeight" class="input" value="68" min="50" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Contact Phone (Emergency Line)</label>
+                <input type="tel" id="regDonorPhone" class="input" value="+91 98401 55921" required>
+              </div>
+              <div class="form-group">
+                <label>City / District</label>
+                <input type="text" id="regDonorCity" class="input" value="Chennai Central, TN" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Last Donation Date</label>
+              <input type="date" id="regDonorLastDate" class="input" value="2026-06-15">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Update Registered Donor Profile</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: My Info -->
+      <div id="donorTabMyInfo" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Official Digital Voluntary Donor Card</h3>
+          <div id="myDonorCardDisplay" class="digital-donor-card mt-3">
+            <!-- Dynamically populated donor card -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOSPITAL BLOOD BANK VIEW -->
+    <section id="hospitalSection" class="role-view hidden">
+      <div class="dashboard-header-card hospital-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🏥</div>
+          <div>
+            <h3>SIMATS Medical College & Hospital Blood Centre</h3>
+            <p class="muted">License: NABH-BLD-0921 | 24x7 Transfusion Services | Saveetha Nagar, Thandalam</p>
+          </div>
+        </div>
+        <div class="hospital-stats-badge">
+          <span class="muted text-xs">Total Units In Reserve:</span>
+          <strong id="hospitalTotalUnitsText" style="font-size: 1.5rem; color: #ef4444;">148 Units</strong>
+        </div>
+      </div>
+
+      <!-- Hospital Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchHospitalTab('inventory')">🩸 Real-Time Blood Stock Matrix</button>
+        <button class="tab-btn" onclick="switchHospitalTab('bloodCenterInfo')">🏢 Manage Center Information</button>
+      </div>
+
+      <!-- Hospital Tab: Inventory -->
+      <div id="hospTabInventory" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Real-Time Component Inventory Matrix</h3>
+              <p class="muted">Directly increment or deduct stock units based on emergency blood requisitions.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="seedHospitalStock()">Restock Reserve</button>
+          </div>
+
+          <div id="hospitalStockMatrixGrid" class="stock-matrix-grid mt-4">
+            <!-- Dynamically populated blood group cards with + / - buttons -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Hospital Tab: Blood Center Info -->
+      <div id="hospTabInfo" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Blood Bank Facility Credentials</h3>
+          <form onsubmit="handleSaveHospitalInfo(event)" class="mt-3">
+            <div class="form-group">
+              <label>Hospital / Blood Bank Facility Name</label>
+              <input type="text" id="hospFacilityName" class="input" value="SIMATS Medical College & Hospital Blood Centre" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Emergency Blood Helpline</label>
+                <input type="tel" id="hospEmergencyHelpline" class="input font-mono font-bold" value="044-2680 1050" required>
+              </div>
+              <div class="form-group">
+                <label>Drug Controller License No</label>
+                <input type="text" id="hospLicenseNo" class="input font-mono" value="28B/TN/10492" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Location & Campus Address</label>
+              <input type="text" id="hospLocationAddress" class="input" value="Saveetha Nagar, Poonamallee Bypass, Thandalam, Chennai - 602105" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Facility Profile</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Experiment 23: Blood Bank Information System | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

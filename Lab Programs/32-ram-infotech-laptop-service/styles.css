@@ -1,0 +1,230 @@
+/* Ram Infotech Laptop Sales & Repair Scoped Styles */
+
+.tech-theme {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(15, 23, 42, 0.95));
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+.tech-workbench-theme {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(15, 23, 42, 0.95));
+  border-color: rgba(249, 115, 22, 0.35);
+}
+
+.dashboard-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile-badge .avatar {
+  font-size: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+}
+
+.cart-summary-badge {
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  padding: 0.6rem 1.25rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.65rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  color: #06b6d4;
+  border-bottom: 2px solid #06b6d4;
+  font-weight: 600;
+  background: rgba(6, 182, 212, 0.08);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Laptops Grid */
+.laptops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.laptop-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.laptop-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.5);
+}
+
+.laptop-banner-thumb {
+  font-size: 3rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-md);
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.specs-badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+}
+
+.spec-chip {
+  background: rgba(255, 255, 255, 0.05);
+  color: #a5f3fc;
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+}
+
+/* Ticket Tracker Card */
+.ticket-tracker-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.milestones-stepper {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin: 2rem 0 1rem;
+}
+
+.stepper-step {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.stepper-step.completed {
+  color: #10b981;
+  font-weight: 700;
+}
+
+/* Legal Contract Paper */
+.contract-paper-box {
+  background: #090d16;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.contract-header-seal {
+  text-align: center;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.2);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fee-breakdown-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.fee-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.95rem;
+}
+
+.fee-total {
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.search-flex-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.flex-2 { flex: 2; }
+.max-w-700 { max-width: 700px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.font-mono { font-family: monospace; }
+.font-bold { font-weight: 700; }
+.uppercase { text-transform: uppercase; }
+.my-3 { margin-top: 0.75rem; margin-bottom: 0.75rem; }
+
+@media print {
+  body * { visibility: hidden; }
+  #contractModal, #contractModal * { visibility: visible; }
+  #contractModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+    color: black;
+  }
+  .modal-actions, .modal-close { display: none; }
+}

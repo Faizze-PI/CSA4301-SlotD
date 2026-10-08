@@ -1,0 +1,21 @@
+{
+  "name": "csa4301-internet-programming-lab",
+  "version": "1.0.0",
+  "description": "Comprehensive Internet Programming Lab Suite (CSA4301 - SIMATS)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test_suite.js",
+    "audit": "node test_suite.js"
+  },
+  "keywords": [
+    "internet-programming",
+    "web-technology",
+    "csa4301",
+    "simats",
+    "lab-experiments"
+  ],
+  "author": "SIMATS Student",
+  "license": "MIT"
+}

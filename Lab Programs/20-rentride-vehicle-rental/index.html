@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RentRide - Modern Vehicle Rental & Fleet Reservation Platform</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🚗</span>
+      <div class="brand-text">
+        <span class="brand-title">RentRide</span>
+        <span class="brand-sub">Express Self-Drive Cars, SUVs & Commercial Fleet Rentals</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="customer" onclick="switchRole('customer')">👤 Customer / Hirer</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏢 Fleet Fleet Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- CUSTOMER VIEW -->
+    <section id="customerSection" class="role-view">
+      <div class="dashboard-header-card">
+        <div class="user-profile-badge">
+          <div class="avatar">🚘</div>
+          <div>
+            <h3>Welcome, Deepak Narayanan</h3>
+            <p class="muted">Customer ID: RR-CUST-8491 | Driving License: DL-042018009214 | Gold Hirer</p>
+          </div>
+        </div>
+        <div class="header-action-group">
+          <span class="badge badge-success">Verified KYC License</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchCustomerTab('browse')">🔍 Search & Book Fleet</button>
+        <button class="tab-btn" onclick="switchCustomerTab('bookings')">📅 My Bookings & Approvals</button>
+        <button class="tab-btn" onclick="switchCustomerTab('checkin')">📋 Digital Check-In & Handover</button>
+        <button class="tab-btn" onclick="switchCustomerTab('reviews')">⭐ Vehicle Reviews & Ratings</button>
+      </div>
+
+      <!-- Tab: Browse Fleet -->
+      <div id="custTabBrowse" class="tab-pane active">
+        <!-- Search and Filter Bar -->
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Pickup & Return Hub</label>
+              <select id="searchLocation" class="input" onchange="filterFleet()">
+                <option value="All">All Hubs (Chennai & Suburbs)</option>
+                <option value="Chennai Airport Hub (MAA)">Chennai Airport Hub (MAA T2)</option>
+                <option value="OMR - IT Expressway Hub">OMR - IT Expressway Hub (Thoraipakkam)</option>
+                <option value="Koyambedu Central Hub">Koyambedu Central Hub (Metro Station)</option>
+                <option value="Tambaram Bypass Hub">Tambaram Bypass Hub</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Pickup Date</label>
+              <input type="date" id="searchPickupDate" class="input" onchange="filterFleet()">
+            </div>
+            <div class="form-group">
+              <label>Return Date</label>
+              <input type="date" id="searchReturnDate" class="input" onchange="filterFleet()">
+            </div>
+          </div>
+
+          <div class="category-pills mt-2">
+            <button class="cat-pill active" onclick="selectFleetCategory('All', this)">All Fleet</button>
+            <button class="cat-pill" onclick="selectFleetCategory('Sedan', this)">🚗 Luxury Sedans</button>
+            <button class="cat-pill" onclick="selectFleetCategory('SUV', this)">🚙 7-Seater SUVs</button>
+            <button class="cat-pill" onclick="selectFleetCategory('Hatchback', this)">⚡ City Hatchbacks</button>
+            <button class="cat-pill" onclick="selectFleetCategory('Truck', this)">🚚 Commercial Pickups & Trucks</button>
+          </div>
+        </div>
+
+        <div id="fleetCardsGrid" class="fleet-cards-grid">
+          <!-- Dynamically populated vehicle cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Bookings & Approvals -->
+      <div id="custTabBookings" class="tab-pane">
+        <div class="card">
+          <h3>My Reservations & Booking Status</h3>
+          <p class="muted">Track administrative approval, deposit status, and pickup schedules.</p>
+          <div id="customerBookingsList" class="bookings-list-container mt-3">
+            <!-- Dynamically populated booking cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Digital Check-In -->
+      <div id="custTabCheckin" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Digital Pre-Departure Check-In Form</h3>
+          <p class="muted">Complete digital verification prior to vehicle key handover at the pickup hub.</p>
+          <form id="checkInForm" onsubmit="handleCustomerCheckIn(event)" class="mt-3">
+            <div class="form-group">
+              <label>Select Confirmed Reservation</label>
+              <select id="checkInBookingSelect" class="input" required>
+                <!-- Dynamically populated with approved bookings -->
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Primary Hirer Name</label>
+                <input type="text" id="checkInName" class="input" value="Deepak Narayanan" required>
+              </div>
+              <div class="form-group">
+                <label>Contact Mobile Number</label>
+                <input type="tel" id="checkInPhone" class="input" value="+91 98409 33210" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Valid Driving License Number</label>
+                <input type="text" id="checkInDl" class="input font-mono uppercase" value="DL-042018009214" required>
+              </div>
+              <div class="form-group">
+                <label>ID Proof (Aadhaar / Passport)</label>
+                <input type="text" id="checkInIdProof" class="input font-mono uppercase" value="AADHAAR-8910-2391" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Pre-Departure Inspection Checklist</label>
+              <div class="checklist-grid">
+                <label class="checkbox-label"><input type="checkbox" checked required> Existing scratches and exterior inspected</label>
+                <label class="checkbox-label"><input type="checkbox" checked required> Fuel level reading verified (100% full tank)</label>
+                <label class="checkbox-label"><input type="checkbox" checked required> Spare tyre, jack, and emergency triangle present</label>
+                <label class="checkbox-label"><input type="checkbox" checked required> Fastag balance verified for highway expressways</label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-3">Submit Digital Check-In & Unlock Key Code</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Reviews -->
+      <div id="custTabReviews" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Hirer Feedback & Vehicle Review</h3>
+          <p class="muted">Share your driving experience to help fellow community drivers.</p>
+          <form onsubmit="handleCustomerSubmitReview(event)" class="mt-3">
+            <div class="form-group">
+              <label>Select Vehicle Model</label>
+              <select id="reviewVehicleSelect" class="input" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Star Rating</label>
+              <select id="reviewRatingSelect" class="input">
+                <option value="5">★★★★★ - Excellent (Smooth, Pristine Cleanliness)</option>
+                <option value="4">★★★★☆ - Very Good (Minor cosmetic wear)</option>
+                <option value="3">★★★☆☆ - Average</option>
+                <option value="2">★★☆☆☆ - Poor AC / Fuel Efficiency</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Detailed Experience Review</label>
+              <textarea id="reviewCommentInput" class="input" rows="3" placeholder="Great highway mileage on Bangalore trip, responsive brakes, courteous hub staff..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Publish Vehicle Review</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FLEET ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🚘</span>
+          <div>
+            <div class="metric-value" id="adminTotalVehicles">6</div>
+            <div class="metric-label">Total Fleet Vehicles</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div>
+            <div class="metric-value" id="adminActiveBookings">3</div>
+            <div class="metric-label">Active Bookings & Rentals</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <div>
+            <div class="metric-value" id="adminRentalRevenue">₹42,800</div>
+            <div class="metric-label">Rental Revenue Realized</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('reservations')">📅 Manage & Approve Bookings</button>
+        <button class="tab-btn" onclick="switchAdminTab('fleet')">🚗 Fleet Inventory & Rates</button>
+        <button class="tab-btn" onclick="switchAdminTab('addVehicle')">➕ Add New Fleet Vehicle</button>
+      </div>
+
+      <!-- Admin Tab: Reservations -->
+      <div id="adminTabReservations" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Customer Reservation Queue</h3>
+              <p class="muted">Review hirer driver credentials, verify dates, and approve bookings.</p>
+            </div>
+          </div>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Customer</th>
+                  <th>Vehicle</th>
+                  <th>Rental Duration</th>
+                  <th>Total Fare</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminBookingsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Fleet Inventory -->
+      <div id="adminTabFleet" class="tab-pane">
+        <div class="card">
+          <h3>Fleet Status & Daily Tariff Chart</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Vehicle Model</th>
+                  <th>Reg No</th>
+                  <th>Category</th>
+                  <th>Daily Rate</th>
+                  <th>Transmission & Fuel</th>
+                  <th>Availability</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminFleetTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Add Vehicle -->
+      <div id="adminTabAddVehicle" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Register New Fleet Vehicle</h3>
+          <p class="muted">Add cars, SUVs, or commercial transport vehicles into the rental registry.</p>
+          <form id="addVehicleForm" onsubmit="handleAdminAddVehicle(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Vehicle Make & Model</label>
+                <input type="text" id="newVehModel" class="input" placeholder="e.g. Mahindra XUV700 AX7" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="newVehCategory" class="input">
+                  <option value="SUV">SUV (7-Seater)</option>
+                  <option value="Sedan">Sedan (Luxury)</option>
+                  <option value="Hatchback">Hatchback (Compact)</option>
+                  <option value="Truck">Commercial Pickup / Truck</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Registration Number</label>
+                <input type="text" id="newVehReg" class="input uppercase font-mono" placeholder="TN 09 BX 9102" required>
+              </div>
+              <div class="form-group">
+                <label>Daily Rental Rate (₹/day)</label>
+                <input type="number" id="newVehPrice" class="input" min="500" value="3200" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fuel Type</label>
+                <select id="newVehFuel" class="input">
+                  <option value="Diesel">Diesel</option>
+                  <option value="Petrol">Petrol</option>
+                  <option value="Electric (EV)">Electric (EV)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Transmission</label>
+                <select id="newVehTransmission" class="input">
+                  <option value="Automatic">Automatic</option>
+                  <option value="Manual">Manual</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Location Hub</label>
+              <select id="newVehLocation" class="input">
+                <option value="Chennai Airport Hub (MAA)">Chennai Airport Hub (MAA T2)</option>
+                <option value="OMR - IT Expressway Hub">OMR - IT Expressway Hub</option>
+                <option value="Koyambedu Central Hub">Koyambedu Central Hub</option>
+                <option value="Tambaram Bypass Hub">Tambaram Bypass Hub</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Vehicle Photo URL</label>
+              <input type="text" id="newVehPhoto" class="input" placeholder="https://images.unsplash.com/... or car.jpg" value="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=500" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Add Vehicle to Fleet</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Booking Modal -->
+  <div id="bookingModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Reserve Self-Drive Vehicle</h3>
+        <button class="modal-close" onclick="closeBookingModal()">&times;</button>
+      </div>
+      <form onsubmit="handleConfirmBooking(event)">
+        <input type="hidden" id="bookVehId">
+        <div class="form-group">
+          <label>Selected Vehicle</label>
+          <input type="text" id="bookVehNameDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pickup Date</label>
+            <input type="date" id="bookStartDate" class="input" onchange="calculateRentalFare()" required>
+          </div>
+          <div class="form-group">
+            <label>Return Date</label>
+            <input type="date" id="bookEndDate" class="input" onchange="calculateRentalFare()" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Hirer Full Name</label>
+            <input type="text" id="bookCustName" class="input" value="Deepak Narayanan" required>
+          </div>
+          <div class="form-group">
+            <label>Customer Mobile No</label>
+            <input type="tel" id="bookCustPhone" class="input" value="+91 98409 33210" required>
+          </div>
+        </div>
+
+        <div class="fare-preview-box my-3">
+          <div class="fare-row">
+            <span>Rental Duration:</span>
+            <span id="bookDaysText">2 Days</span>
+          </div>
+          <div class="fare-row">
+            <span>Daily Rate:</span>
+            <span id="bookDailyRateText">₹2,800.00</span>
+          </div>
+          <div class="fare-row">
+            <span>Security Deposit (Refundable):</span>
+            <span>₹3,000.00</span>
+          </div>
+          <div class="fare-row total">
+            <span>Total Payable:</span>
+            <span id="bookTotalFareText">₹8,600.00</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeBookingModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Reservation Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 20: RentRide Vehicle Rental & Fleet Reservation System | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

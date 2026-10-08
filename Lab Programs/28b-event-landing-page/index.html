@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusTech 2026 - Global AI & Cloud Summit | Official Event Portal</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">⚡</span>
+      <div class="brand-text">
+        <span class="brand-title">NexusTech 2026</span>
+        <span class="brand-sub">Annual Global Summit on Artificial Intelligence & Cloud Computing</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="attendee" onclick="switchRole('attendee')">🎟️ Summit Attendee / Guest</button>
+      <button class="role-pill" data-role="organizer" onclick="switchRole('organizer')">📊 Event Organizer / Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- ATTENDEE / PUBLIC EVENT LANDING PAGE -->
+    <section id="attendeeSection" class="role-view">
+      <!-- Hero Banner with Venue, Date & Registration CTA -->
+      <div class="event-hero-chunk">
+        <div class="event-badge-label">✨ Annual Tech Flagship Gathering • November 14-15, 2026</div>
+        <h1 class="event-hero-title">Pioneering the Next Horizon of Autonomous AI & Cloud</h1>
+        <p class="event-hero-subtitle">
+          Join 2,500+ world-class software engineers, AI researchers, cloud architects, and tech founders for 2 intensive days of visionary keynotes, hands-on masterclasses, and executive networking.
+        </p>
+
+        <div class="event-meta-strip">
+          <div class="meta-item">
+            <span class="meta-icon">📅</span>
+            <div>
+              <strong>November 14-15, 2026</strong><br>
+              <span class="muted text-xs">Saturday & Sunday • 09:00 AM IST</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">📍</span>
+            <div>
+              <strong>SIMATS Grand Auditorium & Convention Center</strong><br>
+              <span class="muted text-xs">Poonamallee High Road, Chennai, India</span>
+            </div>
+          </div>
+          <div class="meta-item">
+            <span class="meta-icon">⏳</span>
+            <div>
+              <strong id="eventCountdownDays">38 Days Left</strong><br>
+              <span class="muted text-xs">Early Bird Passes Filling Rapidly</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="event-hero-buttons">
+          <button class="btn btn-primary btn-lg" onclick="openRegisterModal()">🎟️ Register for Conference Now</button>
+          <button class="btn btn-outline btn-lg" onclick="scrollToSection('speakers')">Meet Keynote Speakers</button>
+        </div>
+      </div>
+
+      <!-- Chunk 1: Purpose & Target Audience -->
+      <div class="event-chunk-card purpose-chunk mt-4">
+        <div class="chunk-header">
+          <span class="chunk-pill">Summit Mission</span>
+          <h2>Why NexusTech 2026?</h2>
+          <p class="muted">A purpose-built conference curated to bridge theoretical AI advancements with enterprise-grade cloud resilience.</p>
+        </div>
+
+        <div class="grid-3 mt-3">
+          <div class="audience-box">
+            <div class="audience-icon">🤖</div>
+            <h4>AI Researchers & ML Engineers</h4>
+            <p class="text-sm muted">Deep dives into multimodal foundation models, agentic orchestration architectures, and low-latency inference pipelines.</p>
+          </div>
+          <div class="audience-box">
+            <div class="audience-icon">☁️</div>
+            <h4>Cloud Architects & DevOps</h4>
+            <p class="text-sm muted">Scaling distributed Kubernetes clusters, zero-trust cloud security, serverless runtimes, and multi-region failover.</p>
+          </div>
+          <div class="audience-box">
+            <div class="audience-icon">🚀</div>
+            <h4>Founders & Tech Leaders</h4>
+            <p class="text-sm muted">Executive panels on monetization strategies, enterprise AI ethics, talent recruitment, and cross-border innovation.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chunk 2: Keynote Speakers Lineup -->
+      <div id="speakers" class="event-chunk-card mt-4">
+        <div class="chunk-header">
+          <span class="chunk-pill">Distinguished Faculty</span>
+          <h2>World-Renowned Keynote Speakers</h2>
+          <p class="muted">Learn directly from global technology luminaries driving breakthrough innovations.</p>
+        </div>
+
+        <div class="speakers-grid mt-3">
+          <!-- Speaker 1 -->
+          <div class="speaker-card">
+            <div class="speaker-avatar-box">👨‍💼</div>
+            <h4>Dr. Rajesh Venkataraman</h4>
+            <p class="speaker-role">VP of Autonomous Intelligence, DeepCompute Labs</p>
+            <p class="speaker-talk text-xs">Topic: <em>"Self-Healing Agent Swarms in Production"</em></p>
+            <a href="#" class="speaker-link" onclick="showAlert('Viewing Dr. Rajesh profile: Former Principal Scientist at Google DeepMind with 18 patents.', 'info'); return false;">View Full Biography &rarr;</a>
+          </div>
+
+          <!-- Speaker 2 -->
+          <div class="speaker-card">
+            <div class="speaker-avatar-box">👩‍💻</div>
+            <h4>Dr. Sophia Sterling</h4>
+            <p class="speaker-role">Head of Cloud Resilience, GlobalStack Systems</p>
+            <p class="speaker-talk text-xs">Topic: <em>"Zero-Downtime Multi-Cloud Kubernetes Fabrics"</em></p>
+            <a href="#" class="speaker-link" onclick="showAlert('Viewing Sophia Sterling profile: Author of Enterprise Cloud Native Architecture (O\'Reilly).', 'info'); return false;">View Full Biography &rarr;</a>
+          </div>
+
+          <!-- Speaker 3 -->
+          <div class="speaker-card">
+            <div class="speaker-avatar-box">👨‍🔬</div>
+            <h4>Prof. K. Sundara Murthy</h4>
+            <p class="speaker-role">Dean of Computer Science, SIMATS Institute</p>
+            <p class="speaker-talk text-xs">Topic: <em>"Ethical Guardrails in Large Language Systems"</em></p>
+            <a href="#" class="speaker-link" onclick="showAlert('Viewing Prof. Sundara Murthy: IEEE Fellow and national advisor on academic AI curricula.', 'info'); return false;">View Full Biography &rarr;</a>
+          </div>
+
+          <!-- Speaker 4 -->
+          <div class="speaker-card">
+            <div class="speaker-avatar-box">👩‍💼</div>
+            <h4>Maya Lin</h4>
+            <p class="speaker-role">Chief Product Officer, NextGen Quantum Inc</p>
+            <p class="speaker-talk text-xs">Topic: <em>"Quantum Accelerated Optimization Algorithms"</em></p>
+            <a href="#" class="speaker-link" onclick="showAlert('Viewing Maya Lin: Pioneer in hybrid classical-quantum cloud platforms.', 'info'); return false;">View Full Biography &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chunk 3: Detailed Schedule Timetable -->
+      <div id="schedule" class="event-chunk-card mt-4">
+        <div class="chunk-header">
+          <span class="chunk-pill">Agenda</span>
+          <h2>Summit Schedule & Timetable</h2>
+          <p class="muted">A meticulously structured 2-day itinerary designed for maximum knowledge transfer.</p>
+        </div>
+
+        <div class="schedule-timeline mt-3">
+          <div class="schedule-item">
+            <span class="time-stamp font-mono">08:30 - 09:30 AM</span>
+            <div class="schedule-content">
+              <h4>Delegate Badge Registration & Welcome Networking Breakfast</h4>
+              <p class="muted text-xs">Convention Lobby • Badging Terminal, Gift Hampers & Coffee</p>
+            </div>
+          </div>
+          <div class="schedule-item keynote-highlight">
+            <span class="time-stamp font-mono">09:30 - 10:45 AM</span>
+            <div class="schedule-content">
+              <h4>🌟 Opening Keynote: The Dawn of Cognitive Cloud Fabrics</h4>
+              <p class="muted text-xs">Grand Auditorium • Delivered by Dr. Rajesh Venkataraman (DeepCompute)</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <span class="time-stamp font-mono">11:00 - 12:45 PM</span>
+            <div class="schedule-content">
+              <h4>Parallel Technical Tracks & Hands-On Workshops</h4>
+              <p class="muted text-xs">Hall A: LLM Fine-Tuning | Hall B: Rust-Powered High Performance Microservices</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <span class="time-stamp font-mono">01:00 - 02:00 PM</span>
+            <div class="schedule-content">
+              <h4>Gourmet Networking Luncheon</h4>
+              <p class="muted text-xs">Lawn Pavilions • Chef-curated global dining and investor meetups</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <span class="time-stamp font-mono">02:15 - 04:30 PM</span>
+            <div class="schedule-content">
+              <h4>Executive Panel: Security in the Post-Quantum Era</h4>
+              <p class="muted text-xs">Grand Auditorium • Featuring Sophia Sterling & Maya Lin</p>
+            </div>
+          </div>
+          <div class="schedule-item">
+            <span class="time-stamp font-mono">04:30 - 05:30 PM</span>
+            <div class="schedule-content">
+              <h4>Startup Innovation Pitch Showcase & Awards Gala</h4>
+              <p class="muted text-xs">Convention Centre • Top 10 Indian deep-tech startup demos</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chunk 4: Venue & Travel -->
+      <div class="event-chunk-card mt-4">
+        <div class="grid-2">
+          <div>
+            <span class="chunk-pill">Location</span>
+            <h2>Venue & Logistics</h2>
+            <p class="muted">Located at Chennai’s premier academic and technological convention complex.</p>
+            <div class="venue-info-box mt-3">
+              <h4>🏛️ SIMATS Grand Auditorium & Tech Centre</h4>
+              <p class="text-sm">Saveetha Institute of Medical and Technical Sciences<br>Poonamallee High Road, Velappanchavadi, Chennai - 600077</p>
+              <p class="text-xs muted mt-2"><strong>Air Transit:</strong> 35 minutes from Chennai International Airport (MAA).<br>
+              <strong>Metro Rail:</strong> Accessible via Poonamallee Bypass Metro Corridor.<br>
+              <strong>Parking:</strong> Free multi-level valet parking available for 1,200 vehicles.</p>
+            </div>
+          </div>
+          <div class="venue-map-card">
+            <span style="font-size: 3rem;">🗺️</span>
+            <h4>Interactive Venue Map & Nav Coordinates</h4>
+            <p class="muted text-xs font-mono">13.0560° N, 80.0890° E</p>
+            <button class="btn btn-outline btn-xs mt-2" onclick="showAlert('Google Maps coordinates launched: SIMATS Grand Auditorium.', 'info')">Open in Google Maps &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Banner Bottom -->
+      <div class="cta-banner-card mt-4">
+        <div>
+          <h2>Secure Your Seat at NexusTech 2026</h2>
+          <p class="muted">Limited capacity auditorium passes. Register early to guarantee participation in hands-on workshops.</p>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="openRegisterModal()">🎟️ Instant Delegate Registration</button>
+      </div>
+    </section>
+
+    <!-- ORGANIZER / ADMIN VIEW -->
+    <section id="organizerSection" class="role-view hidden">
+      <div class="dashboard-header-card admin-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">📊</div>
+          <div>
+            <h3>NexusTech Summit Operations Dashboard</h3>
+            <p class="muted">Monitor registrations, badge issuance, and delegate attendance statistics.</p>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-sm" onclick="exportAttendeesSimulated()">📥 Export Delegate List (CSV)</button>
+        </div>
+      </div>
+
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">👥</span>
+          <div>
+            <div class="metric-value" id="adminTotalAttendees">0</div>
+            <div class="metric-label">Confirmed Delegates</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🎓</span>
+          <div>
+            <div class="metric-value text-success" id="adminStudentTickets">0</div>
+            <div class="metric-label">Student Concessions</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💎</span>
+          <div>
+            <div class="metric-value text-primary" id="adminVipTickets">0</div>
+            <div class="metric-label">VIP Executive Passes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Registered Delegate Directory & Check-In Log</h3>
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Registration ID</th>
+                <th>Delegate Name</th>
+                <th>Organization / College</th>
+                <th>Pass Tier</th>
+                <th>Workshop Track</th>
+                <th>Registered Date</th>
+                <th>Check-In Status</th>
+              </tr>
+            </thead>
+            <tbody id="adminAttendeesTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Attendee Registration Modal -->
+  <div id="registerModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>NexusTech 2026 Delegate Registration</h3>
+        <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
+      </div>
+      <form onsubmit="handleRegisterSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="regFullName" class="input" placeholder="e.g. Abishek Ramanathan" required>
+          </div>
+          <div class="form-group">
+            <label>Work Email Address</label>
+            <input type="email" id="regEmail" class="input" placeholder="e.g. abishek@techfirm.com" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Organization / University</label>
+            <input type="text" id="regOrg" class="input" placeholder="e.g. SIMATS University / Infosys" required>
+          </div>
+          <div class="form-group">
+            <label>Designation / Role</label>
+            <input type="text" id="regDesignation" class="input" placeholder="e.g. Senior ML Engineer" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Select Pass Tier</label>
+            <select id="regPassTier" class="input" onchange="updatePassTierTariff()">
+              <option value="Student Pass" data-price="499">Student Delegate Pass (₹499)</option>
+              <option value="General Professional" data-price="1999" selected>General Professional Pass (₹1,999)</option>
+              <option value="VIP Executive" data-price="4999">VIP Executive All-Access Pass (₹4,999)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Preferred Workshop Track</label>
+            <select id="regWorkshopTrack" class="input">
+              <option value="Agentic AI & LLMs">Track 1: Agentic AI & LLMs Orchestration</option>
+              <option value="Cloud Kubernetes">Track 2: Distributed Cloud Native & Kubernetes</option>
+              <option value="Post-Quantum Security">Track 3: Post-Quantum Security & Cryptography</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fare-preview-box my-3">
+          <div class="fare-row">
+            <span>Pass Amount:</span>
+            <span id="regTariffDisplay" class="font-bold text-success">₹1,999.00</span>
+          </div>
+          <div class="fare-row">
+            <span>Access Includes:</span>
+            <span class="text-xs muted" id="regIncludesText">All keynote sessions, buffet luncheon, and technical workshops</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeRegisterModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm & Issue Conference Badge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Digital Badge Pass Modal -->
+  <div id="badgeModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Official NexusTech 2026 Delegate Badge</h3>
+        <button class="modal-close" onclick="closeBadgeModal()">&times;</button>
+      </div>
+      <div id="badgeContainer" class="badge-card-printable">
+        <!-- Dynamically populated badge -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeBadgeModal()">Close</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Delegate Badge</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 28b: Single Event Landing Page & Registration Portal | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

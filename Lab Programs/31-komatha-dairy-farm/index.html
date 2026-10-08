@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ko-Matha Smart Dairy Farm - Pure Indian A1 Cow Milk & Artisanal Dairy</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🐄</span>
+      <div class="brand-text">
+        <span class="brand-title">Ko-Matha Smart Dairy</span>
+        <span class="brand-sub">Pure Indigenous Indian Cow Milk, Artisanal Dairy & IoT Livestock Logistics</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="customer" onclick="switchRole('customer')">🥛 Customer / Consumer</button>
+      <button class="role-pill" data-role="vendor" onclick="switchRole('vendor')">🌾 Milk Vendor / Farmer</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Farm Administrator</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- CUSTOMER VIEW -->
+    <section id="customerSection" class="role-view">
+      <div class="dashboard-header-card farm-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🥛</div>
+          <div>
+            <h3>Welcome to Ko-Matha Smart Dairy Portal</h3>
+            <p class="muted">Fresh farm-to-doorstep delivery of pure native Indian cow milk, churned butter, and traditional sweets.</p>
+          </div>
+        </div>
+        <div class="cart-summary-badge" onclick="openCartModal()">
+          🛒 Cart (<span id="cartCountBadge">0</span>) - <strong class="text-success" id="cartTotalBadge">₹0</strong>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchCustomerTab('products')">🧀 Dairy Products & Sweets</button>
+        <button class="tab-btn" onclick="switchCustomerTab('farmPractices')">🌱 Native A1 Cow Heritage</button>
+        <button class="tab-btn" onclick="switchCustomerTab('myOrders')">📦 My Order History</button>
+      </div>
+
+      <!-- Tab: Products -->
+      <div id="custTabProducts" class="tab-pane active">
+        <div class="products-grid" id="productsGrid">
+          <!-- Dynamically populated dairy products -->
+        </div>
+      </div>
+
+      <!-- Tab: Farm Practices -->
+      <div id="custTabFarm" class="tab-pane">
+        <div class="card max-w-800 mx-auto">
+          <h3>The Ko-Matha Difference: Indigenous Cow Breeds & Smart Dairy</h3>
+          <p class="muted">Why native Indian cows produce superior, easier-to-digest nutrition with unmatched purity.</p>
+          
+          <div class="grid-2 my-4">
+            <div class="feature-box">
+              <span style="font-size: 2.5rem;">🧬</span>
+              <h4>Pure Indian A1/A2 Beta-Casein</h4>
+              <p class="text-sm muted">Our certified Gir, Sahiwal, and Red Sindhi cows graze on organic pastures, yielding milk rich in natural enzymes without synthetic hormones.</p>
+            </div>
+            <div class="feature-box">
+              <span style="font-size: 2.5rem;">🧪</span>
+              <h4>Automated Quality Screening</h4>
+              <p class="text-sm muted">Every batch of milk undergoes automated ultrasonic Fat% and SNF (Solids Not Fat) telemetry testing before cold-chain dispatch.</p>
+            </div>
+          </div>
+
+          <h4>Traditional Wooden Churning</h4>
+          <p class="text-sm">Our Ghee and Butter are hand-churned in traditional clay pots using the ancient Bilona method, preserving essential fat-soluble vitamins (A, D, E, K) and rich nutty aroma.</p>
+        </div>
+      </div>
+
+      <!-- Tab: My Orders -->
+      <div id="custTabOrders" class="tab-pane">
+        <div class="card">
+          <h3>Customer Purchase Invoices & Delivery Slots</h3>
+          <div id="customerOrdersList" class="orders-list mt-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MILK VENDOR VIEW -->
+    <section id="vendorSection" class="role-view hidden">
+      <div class="dashboard-header-card vendor-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍🌾</div>
+          <div>
+            <h3>Vendor: Murugan Dairy Cooperative (Vendor #VND-204)</h3>
+            <p class="muted">Associated Dairy Herd: 12 Gir & Kangeyam Cows | Primary Hub: Tiruvallur Pastures</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Daily Milk Entry Form -->
+        <div class="card">
+          <h3>Log Daily Milk Collection Entry</h3>
+          <p class="muted">Enter session yield, fat percentage, and SNF for automatic quality-adjusted payout calculation.</p>
+
+          <form onsubmit="handleVendorLogMilk(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Collection Session</label>
+                <select id="logSession" class="input">
+                  <option value="Morning">🌅 Morning Milking (05:30 AM)</option>
+                  <option value="Evening">🌇 Evening Milking (05:00 PM)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Milk Quantity (Liters)</label>
+                <input type="number" id="logQuantity" class="input font-mono font-bold" min="5" max="500" value="45" onchange="calculateVendorPayoutPreview()" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fat Content Percentage (%)</label>
+                <input type="number" step="0.1" id="logFat" class="input font-mono" min="3.0" max="8.0" value="4.8" onchange="calculateVendorPayoutPreview()" required>
+              </div>
+              <div class="form-group">
+                <label>SNF Percentage (%)</label>
+                <input type="number" step="0.1" id="logSnf" class="input font-mono" min="8.0" max="10.5" value="8.9" onchange="calculateVendorPayoutPreview()" required>
+              </div>
+            </div>
+
+            <div class="fee-breakdown-card my-3">
+              <div class="fee-row">
+                <span>Calculated Rate per Liter:</span>
+                <span id="vendorRatePerLiter" class="font-bold text-success">₹42.80 / L</span>
+              </div>
+              <div class="fee-row fee-total">
+                <span>Total Session Payout:</span>
+                <span id="vendorSessionPayout" class="font-bold text-success font-mono" style="font-size: 1.25rem;">₹1,926.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Log Milk Entry to Farm Ledger</button>
+          </form>
+        </div>
+
+        <!-- Vendor Herd Registry -->
+        <div class="card">
+          <h3>Registered Cattle Herd Maintenance</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Cattle Tag</th>
+                  <th>Breed</th>
+                  <th>Daily Avg Yield</th>
+                  <th>Health Status</th>
+                </tr>
+              </thead>
+              <tbody id="vendorCowsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FARM ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🥛</span>
+          <div>
+            <div class="metric-value" id="adminTotalMilkStock">0 L</div>
+            <div class="metric-label">Current Milk Stock</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <div>
+            <div class="metric-value text-success" id="adminSalesRevenue">₹0</div>
+            <div class="metric-label">Total Customer Sales</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">👨‍🌾</span>
+          <div>
+            <div class="metric-value text-primary" id="adminVendorDisbursal">₹0</div>
+            <div class="metric-label">Farmer Payouts Disbursed</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Stock Reports -->
+      <div class="card mb-4">
+        <div class="card-header-flex">
+          <h3>Stock Movement & Periodic Yield Reports</h3>
+          <div class="filter-pills-row">
+            <button class="pill active" onclick="switchReportPeriod('Daily', this)">Daily Report</button>
+            <button class="pill" onclick="switchReportPeriod('Monthly', this)">Monthly Report</button>
+            <button class="pill" onclick="switchReportPeriod('Yearly', this)">Yearly Report</button>
+          </div>
+        </div>
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date / Period</th>
+                <th>Milk Inflow (L)</th>
+                <th>Milk Dispatched (L)</th>
+                <th>Closing Balance (L)</th>
+                <th>Average Fat %</th>
+                <th>Turnover Value</th>
+              </tr>
+            </thead>
+            <tbody id="adminReportsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Customer Orders Ledger -->
+      <div class="card">
+        <h3>Customer Online Purchase Orders</h3>
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Order Ref</th>
+                <th>Customer</th>
+                <th>Items Ordered</th>
+                <th>Delivery Slot</th>
+                <th>Total Fare</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="adminOrdersTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart & Checkout Modal -->
+  <div id="cartModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Schedule Dairy Delivery & Order Summary</h3>
+        <button class="modal-close" onclick="closeCartModal()">&times;</button>
+      </div>
+      <form onsubmit="handleCustomerCheckoutSubmit(event)">
+        <div id="cartItemsContainer" class="my-3">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div class="form-row mt-3">
+          <div class="form-group">
+            <label>Customer Name</label>
+            <input type="text" id="custOrderName" class="input" value="S. Ramachandran" required>
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="tel" id="custOrderPhone" class="input font-mono" value="+91 94440 18291" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Delivery Address</label>
+            <input type="text" id="custOrderAddress" class="input" value="Plot 14, Anna Nagar West, Chennai" required>
+          </div>
+          <div class="form-group">
+            <label>Preferred Delivery Slot</label>
+            <select id="custOrderSlot" class="input">
+              <option value="Morning (06:00 AM - 07:30 AM)">🌅 Early Morning (06:00 AM - 07:30 AM)</option>
+              <option value="Evening (05:00 PM - 06:30 PM)">🌇 Evening (05:00 PM - 06:30 PM)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fee-row fee-total my-3">
+          <strong>Grand Total:</strong>
+          <strong id="cartModalTotal" class="text-success font-mono" style="font-size: 1.3rem;">₹0</strong>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeCartModal()">Cancel</button>
+          <button type="submit" class="btn btn-success">✅ Confirm Farm Delivery</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 31: Ko-Matha Smart Dairy Farm Management Portal | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

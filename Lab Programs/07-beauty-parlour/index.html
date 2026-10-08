@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 07 - Beauty Parlour Appointment Booking System</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>💄 GlamourLuxe Salon & Spa</span>
+      <span class="brand-badge">Exp 07</span>
+    </div>
+    <div class="role-switcher">
+      <label for="parlourRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="parlourRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="customer">Customer View</option>
+        <option value="manager">Salon Manager & Staff View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- CUSTOMER VIEW -->
+    <div id="parlourCustomerSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="servicesTab">Browse Services & Stylists</button>
+        <button class="tab-btn" data-tab="bookingCalendarTab">Book Slot & Calendar</button>
+        <button class="tab-btn" data-tab="myAppointmentsTab">My Appointments (<span id="custUpcomingCount">0</span>)</button>
+        <button class="tab-btn" data-tab="custReviewsTab">Customer Reviews</button>
+      </div>
+
+      <!-- Tab 1: Services & Stylists -->
+      <div id="servicesTab" class="tab-pane active">
+        <h2 class="card-title">Available Salon Services</h2>
+        <div class="grid grid-cols-3" id="servicesGrid">
+          <!-- Populated dynamically -->
+        </div>
+
+        <h2 class="card-title" style="margin-top: 2rem;">Featured Senior Stylists</h2>
+        <div class="grid grid-cols-3" id="stylistsGrid">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Booking Calendar -->
+      <div id="bookingCalendarTab" class="tab-pane">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h2 class="card-title">Schedule Appointment</h2>
+            <form id="parlourBookingForm">
+              <div class="form-group">
+                <label class="form-label">Select Service</label>
+                <select id="bookServiceSelect" class="form-select" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Select Stylist</label>
+                <select id="bookStylistSelect" class="form-select" required></select>
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Date</label>
+                  <input type="date" id="bookDateInput" class="form-control" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Time Slot</label>
+                  <select id="bookTimeSlot" class="form-select" required>
+                    <option value="10:00 AM">10:00 AM - 11:00 AM</option>
+                    <option value="11:30 AM">11:30 AM - 12:30 PM</option>
+                    <option value="02:00 PM">02:00 PM - 03:00 PM</option>
+                    <option value="03:30 PM">03:30 PM - 04:30 PM</option>
+                    <option value="05:00 PM">05:00 PM - 06:00 PM</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Payment Option (Stripe / PayPal Gateway)</label>
+                <div style="display: flex; gap: 1rem; margin-top: 0.25rem;">
+                  <label><input type="radio" name="payDepositOption" value="full" checked> Full Payment (<span id="payFullLabel">₹1,200</span>)</label>
+                  <label><input type="radio" name="payDepositOption" value="deposit"> Partial 30% Deposit (<span id="payDepositLabel">₹360</span>)</label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Payment Gateway</label>
+                <select id="paymentGatewaySelect" class="form-select">
+                  <option value="Stripe">Stripe (Cards & Apple Pay)</option>
+                  <option value="PayPal">PayPal Express Checkout</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Confirm & Book Slot</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h2 class="card-title">Daily Slots Availability & Lockouts</h2>
+            <div id="calendarLockoutDisplay" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: My Appointments -->
+      <div id="myAppointmentsTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">My Bookings History</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Service</th>
+                  <th>Stylist</th>
+                  <th>Date & Time</th>
+                  <th>Paid Status</th>
+                  <th>State</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="userAppointmentsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Reviews -->
+      <div id="custReviewsTab" class="tab-pane">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title">Leave Your Salon Feedback</h3>
+            <form id="parlourReviewForm">
+              <div class="form-group">
+                <label class="form-label">Your Name</label>
+                <input type="text" id="revName" class="form-control" value="Faizze A." required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Rating</label>
+                <select id="revStars" class="form-select">
+                  <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                  <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                  <option value="3">⭐⭐⭐ 3 Stars</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Feedback</label>
+                <textarea id="revComment" class="form-control" rows="3" required placeholder="Describe your styling experience..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Client Testimonials</h3>
+            <div id="parlourReviewsList" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SALON MANAGER & STAFF VIEW -->
+    <div id="parlourManagerSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="managerReservationsTab">Master Reservations Calendar</button>
+        <button class="tab-btn" data-tab="managerLockoutTab">Lockout Unavailable Hours</button>
+        <button class="tab-btn" data-tab="managerServicesTab">Manage Services & Rates</button>
+      </div>
+
+      <!-- Tab: Master Reservations -->
+      <div id="managerReservationsTab" class="tab-pane active">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 class="card-title" style="margin: 0;">Staff Reservations Management</h2>
+            <button class="btn btn-secondary btn-sm" onclick="cancelUnpaidReservations()">Run Auto-Cancel for Unpaid</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>Service</th>
+                  <th>Stylist</th>
+                  <th>Schedule</th>
+                  <th>Payment Mode</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="managerReservationsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Lockout Hours -->
+      <div id="managerLockoutTab" class="tab-pane">
+        <div class="card" style="max-width: 600px;">
+          <h2 class="card-title">Lockout Unavailable Hours / Stylist Leave</h2>
+          <form id="lockoutForm">
+            <div class="form-group">
+              <label class="form-label">Stylist</label>
+              <select id="lockoutStylist" class="form-select"></select>
+            </div>
+            <div class="grid grid-cols-2" style="gap: 0.5rem;">
+              <div class="form-group">
+                <label class="form-label">Date</label>
+                <input type="date" id="lockoutDate" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Hour Slot to Lock</label>
+                <select id="lockoutSlot" class="form-select">
+                  <option value="10:00 AM">10:00 AM - 11:00 AM</option>
+                  <option value="11:30 AM">11:30 AM - 12:30 PM</option>
+                  <option value="02:00 PM">02:00 PM - 03:00 PM</option>
+                  <option value="03:30 PM">03:30 PM - 04:30 PM</option>
+                  <option value="05:00 PM">05:00 PM - 06:00 PM</option>
+                  <option value="ALL">Full Day Lockout</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-danger">Apply Lockout</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Manage Services -->
+      <div id="managerServicesTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Salon Service Offerings</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Service Name</th>
+                  <th>Duration</th>
+                  <th>Price (₹)</th>
+                  <th>30% Deposit (₹)</th>
+                </tr>
+              </thead>
+              <tbody id="managerServicesTableBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

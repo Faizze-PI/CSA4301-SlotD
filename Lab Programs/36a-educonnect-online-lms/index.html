@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduConnect - Online Teaching & Learning Platform</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div>
+                    <h1>EduConnect</h1>
+                    <p class="subtitle">Online Teaching & Learning Management System</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-user-shield"></i> Role:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="student">Student (Alex Kumar)</option>
+                        <option value="teacher">Instructor (Dr. Priya Nair)</option>
+                        <option value="admin">Administrator (Academic Office)</option>
+                    </select>
+                </div>
+                <div class="user-pill" id="userPill">
+                    <i class="fas fa-user-circle"></i> <span id="currentUserName">Alex Kumar (Student)</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="catalog" onclick="showTab('catalog')"><i class="fas fa-book-open"></i> Course Catalog</button>
+            <button class="nav-tab" data-tab="classroom" onclick="showTab('classroom')"><i class="fas fa-video"></i> Live Classroom</button>
+            <button class="nav-tab" data-tab="notes" onclick="showTab('notes')"><i class="fas fa-file-pdf"></i> Study Notes</button>
+            <button class="nav-tab" data-tab="quiz" onclick="showTab('quiz')"><i class="fas fa-tasks"></i> Interactive Quiz</button>
+            <button class="nav-tab" data-tab="timetable" onclick="showTab('timetable')"><i class="fas fa-calendar-alt"></i> Timetable</button>
+            <button class="nav-tab" data-tab="mylearning" id="tabMyLearning" onclick="showTab('mylearning')"><i class="fas fa-chart-line"></i> My Learning</button>
+            <button class="nav-tab" data-tab="instructor" id="tabInstructor" onclick="showTab('instructor')"><i class="fas fa-chalkboard-teacher"></i> Instructor Studio</button>
+            <button class="nav-tab" data-tab="support" onclick="showTab('support')"><i class="fas fa-headset"></i> Support Desk</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: COURSE CATALOG -->
+        <section id="tab-catalog" class="content-tab active">
+            <div class="section-hero">
+                <div class="hero-text">
+                    <h2>Explore Verified Academic & Professional Courses</h2>
+                    <p>Enroll in peer-reviewed courses taught by distinguished university faculty.</p>
+                </div>
+                <div class="catalog-filters">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="catalogSearch" placeholder="Search by subject, code, or professor..." onkeyup="filterCourses()">
+                    </div>
+                    <select id="categoryFilter" onchange="filterCourses()">
+                        <option value="All">All Categories</option>
+                        <option value="Computer Science">Computer Science</option>
+                        <option value="Artificial Intelligence">Artificial Intelligence</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Management">Management</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="courses-grid" id="coursesGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 2: LIVE CLASSROOM & VIDEO PLAYER -->
+        <section id="tab-classroom" class="content-tab">
+            <div class="classroom-layout">
+                <div class="video-deck">
+                    <div class="video-container">
+                        <div class="video-stream-simulator" id="videoStream">
+                            <div class="stream-overlay">
+                                <span class="badge live-badge"><i class="fas fa-circle live-dot"></i> LIVE INTERACTIVE</span>
+                                <span class="stream-timer" id="streamTimer">00:42:15</span>
+                            </div>
+                            <div class="speaker-spotlight">
+                                <i class="fas fa-user-tie fa-4x avatar-icon"></i>
+                                <h3 id="currentLecturerName">Dr. Priya Nair</h3>
+                                <p id="currentLectureTitle">CS401: Distributed Systems & Microservices Architecture</p>
+                                <div class="wave-visualizer">
+                                    <span></span><span></span><span></span><span></span><span></span>
+                                </div>
+                            </div>
+                            <div class="video-controls">
+                                <button class="btn-ctrl" onclick="toggleMute()"><i class="fas fa-microphone" id="micIcon"></i></button>
+                                <button class="btn-ctrl" onclick="toggleCam()"><i class="fas fa-video" id="camIcon"></i></button>
+                                <button class="btn-ctrl" onclick="raiseHand()"><i class="fas fa-hand-paper"></i> Raise Hand</button>
+                                <button class="btn-ctrl" onclick="toggleWhiteboard()"><i class="fas fa-chalkboard"></i> Whiteboard</button>
+                                <button class="btn-ctrl danger" onclick="leaveSession()"><i class="fas fa-phone-slash"></i> Leave</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lecture-details-card">
+                        <div class="details-header">
+                            <div>
+                                <h3 id="activeClassTitle">Live Lecture: Distributed Consensus Algorithms</h3>
+                                <p class="text-muted"><i class="fas fa-book"></i> Course: Web & Cloud Architecture | Faculty: Dr. Priya Nair</p>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadLectureDeck()"><i class="fas fa-download"></i> Presentation Deck (.PDF)</button>
+                        </div>
+                        <div class="recording-selector">
+                            <h4>Switch to Pre-recorded Lectures:</h4>
+                            <div class="recording-chips">
+                                <button class="chip active" onclick="switchLecture(1)">Lec 01: Foundations</button>
+                                <button class="chip" onclick="switchLecture(2)">Lec 02: REST & GraphQL</button>
+                                <button class="chip" onclick="switchLecture(3)">Lec 03: Distributed DBs</button>
+                                <button class="chip" onclick="switchLecture(4)">Lec 04: Raft & Paxos</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="classroom-sidebar">
+                    <div class="sidebar-tabs">
+                        <button class="side-tab active" onclick="switchSideTab('chat')"><i class="fas fa-comments"></i> Class Chat</button>
+                        <button class="side-tab" onclick="switchSideTab('attendees')"><i class="fas fa-users"></i> Attendees (28)</button>
+                    </div>
+                    <div id="sideContentChat" class="sidebar-pane active">
+                        <div class="chat-messages" id="chatBox">
+                            <div class="chat-msg system">
+                                <small>10:00 AM</small>
+                                <p>Welcome to CS401 Live Session. Please keep your microphones muted unless invited to speak.</p>
+                            </div>
+                            <div class="chat-msg">
+                                <span class="chat-sender">Karthik R:</span>
+                                <p>Professor, does Raft require an odd number of nodes to avoid split brain?</p>
+                            </div>
+                            <div class="chat-msg teacher">
+                                <span class="chat-sender">Dr. Priya Nair:</span>
+                                <p>Yes Karthik, typically 2F+1 nodes tolerate F failures!</p>
+                            </div>
+                        </div>
+                        <div class="chat-input-bar">
+                            <input type="text" id="chatInput" placeholder="Ask a question..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+                            <button class="btn btn-primary" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                    <div id="sideContentAttendees" class="sidebar-pane">
+                        <ul class="attendee-list" id="attendeeList">
+                            <!-- Populated in JS -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: STUDY NOTES & RESOURCES -->
+        <section id="tab-notes" class="content-tab">
+            <div class="content-header">
+                <h2>Downloadable Subject Materials & Notes</h2>
+                <p>Access syllabus-aligned lecture PDFs, reference codes, and lab exercise manuals.</p>
+            </div>
+            <div class="notes-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Unit #</th>
+                            <th>Topic / Module Name</th>
+                            <th>Associated Course</th>
+                            <th>Uploaded Date</th>
+                            <th>File Size</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notesTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 4: INTERACTIVE QUIZZES -->
+        <section id="tab-quiz" class="content-tab">
+            <div class="quiz-container">
+                <div class="quiz-header">
+                    <div>
+                        <h2>Module Assessment & Knowledge Check</h2>
+                        <p>Timed multiple-choice evaluation with automated real-time grading.</p>
+                    </div>
+                    <div class="quiz-status-card">
+                        <span><i class="fas fa-stopwatch"></i> Time Remaining: <strong id="quizTimer">10:00</strong></span>
+                        <span class="quiz-progress-text" id="quizCounter">Question 1 of 5</span>
+                    </div>
+                </div>
+
+                <div class="quiz-card" id="quizCard">
+                    <h3 class="quiz-question" id="quizQuestionText">Loading quiz question...</h3>
+                    <div class="quiz-options" id="quizOptionsContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    <div class="quiz-footer">
+                        <button class="btn btn-secondary" id="btnPrevQuiz" onclick="prevQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
+                        <button class="btn btn-primary" id="btnNextQuiz" onclick="nextQuestion()">Next <i class="fas fa-arrow-right"></i></button>
+                        <button class="btn btn-success" id="btnSubmitQuiz" style="display:none;" onclick="submitQuiz()"><i class="fas fa-check-double"></i> Submit Assessment</button>
+                    </div>
+                </div>
+
+                <div class="quiz-result-modal" id="quizResultModal" style="display:none;">
+                    <div class="result-box">
+                        <div class="result-badge"><i class="fas fa-trophy"></i></div>
+                        <h3>Assessment Completed!</h3>
+                        <p id="quizScoreSummary">You scored 5 out of 5 (100%)</p>
+                        <div class="score-breakdown" id="quizScoreBreakdown"></div>
+                        <div class="modal-actions">
+                            <button class="btn btn-primary" onclick="restartQuiz()"><i class="fas fa-redo"></i> Retake Quiz</button>
+                            <button class="btn btn-secondary" onclick="showTab('mylearning')"><i class="fas fa-award"></i> View in My Learning</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: TIMETABLE & TIME MANAGEMENT -->
+        <section id="tab-timetable" class="content-tab">
+            <div class="content-header">
+                <h2>Weekly Academic Timetable & Time Management</h2>
+                <p>Synchronized scheduling for live lectures, doubt sessions, and lab submissions.</p>
+            </div>
+            <div class="timetable-grid" id="timetableGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 6: MY LEARNING (STUDENT DASHBOARD) -->
+        <section id="tab-mylearning" class="content-tab">
+            <div class="content-header">
+                <h2>Student Academic Progress & Certifications</h2>
+                <p>Track your registered subjects, completion rates, and test credentials.</p>
+            </div>
+            <div class="metrics-row">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-book"></i></div>
+                    <div class="metric-info">
+                        <h3 id="statEnrolledCount">3</h3>
+                        <p>Enrolled Courses</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-certificate"></i></div>
+                    <div class="metric-info">
+                        <h3 id="statCompletedCount">1</h3>
+                        <p>Completed Courses</p>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-star"></i></div>
+                    <div class="metric-info">
+                        <h3 id="statAvgScore">92%</h3>
+                        <p>Average Quiz Score</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="enrolled-courses-list" id="enrolledCoursesList">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 7: INSTRUCTOR STUDIO -->
+        <section id="tab-instructor" class="content-tab">
+            <div class="content-header">
+                <h2>Instructor Studio & Course Management</h2>
+                <p>Add new lecture modules, manage allocations, and review registered student rosters.</p>
+            </div>
+            <div class="instructor-dashboard-layout">
+                <div class="form-card">
+                    <h3><i class="fas fa-plus-circle"></i> Create New Course / Subject Allocation</h3>
+                    <form id="createCourseForm" onsubmit="handleCreateCourse(event)">
+                        <div class="form-group">
+                            <label>Course Title:</label>
+                            <input type="text" id="newCourseTitle" required placeholder="e.g. Machine Learning Fundamentals">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Course Code:</label>
+                                <input type="text" id="newCourseCode" required placeholder="e.g. CS502">
+                            </div>
+                            <div class="form-group">
+                                <label>Category:</label>
+                                <select id="newCourseCategory">
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Artificial Intelligence">Artificial Intelligence</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Management">Management</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Duration (Weeks):</label>
+                                <input type="number" id="newCourseDuration" value="8" min="1" max="52">
+                            </div>
+                            <div class="form-group">
+                                <label>Fee (₹, 0 for Free):</label>
+                                <input type="number" id="newCourseFee" value="0" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Syllabus Overview:</label>
+                            <textarea id="newCourseDesc" rows="3" required placeholder="Describe course outcomes and key modules..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Publish Course</button>
+                    </form>
+                </div>
+
+                <div class="form-card">
+                    <h3><i class="fas fa-upload"></i> Upload Lecture Notes / Reading Material</h3>
+                    <form id="uploadNotesForm" onsubmit="handleUploadNotes(event)">
+                        <div class="form-group">
+                            <label>Course:</label>
+                            <select id="notesCourseSelect">
+                                <!-- Populated in JS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Topic / Document Title:</label>
+                            <input type="text" id="notesTitle" required placeholder="e.g. Unit 3: Neural Network Architectures">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Unit Number:</label>
+                                <input type="number" id="notesUnit" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Simulated Size (MB):</label>
+                                <input type="text" id="notesSize" value="3.4 MB">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-secondary"><i class="fas fa-cloud-upload-alt"></i> Upload Material</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 8: SUPPORT DESK -->
+        <section id="tab-support" class="content-tab">
+            <div class="content-header">
+                <h2>Technical & Academic Support Helpdesk</h2>
+                <p>Have an inquiry about enrollments, exam dates, or video connectivity? Submit a ticket.</p>
+            </div>
+            <div class="support-grid">
+                <div class="form-card">
+                    <h3><i class="fas fa-ticket-alt"></i> Raise Support Ticket</h3>
+                    <form id="supportForm" onsubmit="handleCreateTicket(event)">
+                        <div class="form-group">
+                            <label>Subject / Topic:</label>
+                            <input type="text" id="ticketSubject" required placeholder="e.g. Cannot access Lab 4 Quiz">
+                        </div>
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <select id="ticketCategory">
+                                <option value="Academic Inquiry">Academic Inquiry</option>
+                                <option value="Technical Issue">Technical / Video Issue</option>
+                                <option value="Payment / Fee">Payment / Fee Issue</option>
+                                <option value="Exam / Timetable">Exam / Timetable</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Details:</label>
+                            <textarea id="ticketBody" rows="4" required placeholder="Describe the problem in detail..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Ticket</button>
+                    </form>
+                </div>
+
+                <div class="tickets-list-card">
+                    <h3><i class="fas fa-history"></i> Recent Support Requests</h3>
+                    <div id="ticketsListContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 EduConnect Teaching Platform | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

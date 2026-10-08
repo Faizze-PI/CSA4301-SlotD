@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResQDrive - On-Road Breakdown Assistance & Licensed Mechanic Dispatch</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🔧</span>
+      <div class="brand-text">
+        <span class="brand-title">ResQDrive</span>
+        <span class="brand-sub">24x7 Highway Breakdown Assistance & Certified Mechanics</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="user" onclick="switchRole('user')">🚗 Stranded Motorist (User)</button>
+      <button class="role-pill" data-role="mechanic" onclick="switchRole('mechanic')">🛠️ Mobile Mechanic</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Licensing Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- STRANDED MOTORIST / USER VIEW -->
+    <section id="userSection" class="role-view">
+      <div class="dashboard-header-card user-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🆘</div>
+          <div>
+            <h3>Motorist: Arvind Sethuraman</h3>
+            <p class="muted">Vehicle: Hyundai Creta (TN 09 CA 8812) | Location: GST Road, Near Tambaram Flyover</p>
+          </div>
+        </div>
+        <div class="header-action-group">
+          <button class="btn btn-danger btn-sm" onclick="triggerSosDispatch()">🚨 1-Click Highway SOS Alert</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchUserTab('searchMechanics')">🔍 Search Nearby Mechanics</button>
+        <button class="tab-btn" onclick="switchUserTab('activeDispatch')">📍 Live Rescue Tracker</button>
+        <button class="tab-btn" onclick="switchUserTab('userFeedback')">⭐ Post Service Review</button>
+      </div>
+
+      <!-- Tab: Search Mechanics -->
+      <div id="userTabSearch" class="tab-pane active">
+        <!-- Search and Filters -->
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Breakdown Problem Type</label>
+              <select id="breakdownIssueSelect" class="input" onchange="filterMechanics()">
+                <option value="All">All Roadside Assistance Services</option>
+                <option value="Flat Tyre">Flat Tyre / Wheel Puncture Repair</option>
+                <option value="Battery Jumpstart">Battery Dead / Jumpstart Required</option>
+                <option value="Engine Overheating">Engine Smoke / Radiator Overheating</option>
+                <option value="Flatbed Towing">Hydraulic Flatbed Towing Required</option>
+                <option value="Emergency Fuel">Emergency Petrol / Diesel Delivery</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Corridor / Sector</label>
+              <select id="breakdownLocationSelect" class="input" onchange="filterMechanics()">
+                <option value="All">All Highway Corridors</option>
+                <option value="Tambaram / GST Road">Tambaram / GST Road (NH-45)</option>
+                <option value="OMR / IT Corridor">OMR / IT Corridor</option>
+                <option value="Sriperumbudur / NH-48">Sriperumbudur / NH-48</option>
+                <option value="Guindy / Kathipara">Guindy / Kathipara Junction</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="mechanicsListGrid" class="mechanics-cards-grid">
+          <!-- Dynamically populated mechanic cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Live Rescue Tracker -->
+      <div id="userTabTracker" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Real-Time Mechanic GPS Tracking</h3>
+              <p class="muted">Live telemetry and dispatch status of the en-route service van.</p>
+            </div>
+            <span class="badge badge-success" id="dispatchStatusBadge">Standby</span>
+          </div>
+
+          <div id="activeDispatchCard" class="dispatch-telemetry-container mt-3">
+            <div class="empty-state-box">
+              <span class="empty-icon">📍</span>
+              <p class="muted">No active roadside dispatch in progress. Select a certified mechanic on the search tab to call assistance.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Post Feedback -->
+      <div id="userTabFeedback" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Rate Roadside Assistance & Mechanic Work</h3>
+          <form onsubmit="handleUserSubmitFeedback(event)" class="mt-3">
+            <div class="form-group">
+              <label>Select Serviced Mechanic</label>
+              <select id="feedbackMechanicSelect" class="input" required>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Satisfaction Rating</label>
+              <select id="feedbackRatingScore" class="input">
+                <option value="5">★★★★★ - Lifesaver! Fast arrival (< 20 mins) & fair pricing</option>
+                <option value="4">★★★★☆ - Good professional work</option>
+                <option value="3">★★★☆☆ - Average response time</option>
+                <option value="2">★★☆☆☆ - Delayed arrival</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Comments / Highway Repair Notes</label>
+              <textarea id="feedbackCommentText" class="input" rows="3" placeholder="Mechanic Kumar arrived with portable compressor and plugged tyre in 10 minutes..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Publish Mechanic Review</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- MOBILE MECHANIC VIEW -->
+    <section id="mechanicSection" class="role-view hidden">
+      <div class="dashboard-header-card mechanic-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍🔧</div>
+          <div>
+            <h3>Master Tech: Kumar (Express Auto Care)</h3>
+            <p class="muted">License No: RSA-LIC-0941 | Status: <span class="badge badge-success">Admin Licensed & Verified</span></p>
+          </div>
+        </div>
+        <div class="mechanic-toggle-group">
+          <span class="muted text-xs mr-2">Live Availability:</span>
+          <button class="btn btn-success btn-sm" id="btnMechAvail" onclick="toggleMechanicDutyStatus()">🟢 Available for Duty</button>
+        </div>
+      </div>
+
+      <!-- Mechanic Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchMechanicTab('business')">🏢 Workshop & Service Profile</button>
+        <button class="tab-btn" onclick="switchMechanicTab('reviews')">⭐ Customer Feedback & Ratings</button>
+      </div>
+
+      <!-- Mechanic Tab: Business Profile -->
+      <div id="mechTabBusiness" class="tab-pane active">
+        <div class="card max-w-700 mx-auto">
+          <h3>Update Roadside Assistance Profile & Tariffs</h3>
+          <form onsubmit="handleSaveMechanicProfile(event)" class="mt-3">
+            <div class="form-group">
+              <label>Garage / Workshop Name</label>
+              <input type="text" id="mechGarageName" class="input" value="Express Mobile Auto Repair & Battery Hub" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Primary Highway Operating Zone</label>
+                <select id="mechOperatingZone" class="input">
+                  <option value="Tambaram / GST Road">Tambaram / GST Road (NH-45)</option>
+                  <option value="OMR / IT Corridor">OMR / IT Corridor</option>
+                  <option value="Sriperumbudur / NH-48">Sriperumbudur / NH-48</option>
+                  <option value="Guindy / Kathipara">Guindy / Kathipara Junction</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Direct Emergency Line</label>
+                <input type="tel" id="mechPhoneInput" class="input font-mono font-bold" value="+91 94441 22891" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Standard On-Road Callout Fee (₹)</label>
+                <input type="number" id="mechBaseRateInput" class="input" value="350" required>
+              </div>
+              <div class="form-group">
+                <label>Service Specialization</label>
+                <input type="text" id="mechSpecialization" class="input" value="Tyre, Battery Jumpstart, Overheating, Towing" required>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Save Workshop Credentials</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Mechanic Tab: Reviews -->
+      <div id="mechTabReviews" class="tab-pane">
+        <div class="card">
+          <h3>Motorist Feedback for Kumar Tech</h3>
+          <div id="mechanicFeedbackList" class="feedback-list-container mt-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LICENSING ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🛠️</span>
+          <div>
+            <div class="metric-value" id="adminTotalMechanics">4</div>
+            <div class="metric-label">Registered Mobile Mechanics</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">✅</span>
+          <div>
+            <div class="metric-value" id="adminApprovedMechanics">3</div>
+            <div class="metric-label">Approved Licensed Mechanics</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🚨</span>
+          <div>
+            <div class="metric-value" id="adminTotalSosDispatches">14</div>
+            <div class="metric-label">Highway Rescue Dispatches</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Mechanic Commercial Licensing & Safety Verification Queue</h3>
+        <p class="muted">Strictly only verified mechanics with valid toolkits and background clearance appear in public search.</p>
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>License ID</th>
+                <th>Mechanic Name & Garage</th>
+                <th>Highway Zone</th>
+                <th>Emergency Line</th>
+                <th>Callout Fee</th>
+                <th>Licensing Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminMechanicsTable">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Dispatch Modal -->
+  <div id="dispatchModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Request Emergency Mechanic Dispatch</h3>
+        <button class="modal-close" onclick="closeDispatchModal()">&times;</button>
+      </div>
+      <form onsubmit="handleConfirmDispatch(event)">
+        <input type="hidden" id="dispatchMechId">
+        <div class="form-group">
+          <label>Selected Service Provider</label>
+          <input type="text" id="dispatchMechNameDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vehicle Make & Registration</label>
+            <input type="text" id="dispatchVehicleNo" class="input uppercase font-mono" value="TN 09 CA 8812" required>
+          </div>
+          <div class="form-group">
+            <label>Breakdown Problem</label>
+            <input type="text" id="dispatchProblemDisplay" class="input" value="Flat Tyre / Puncture" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Current Breakdown Location / Nearest Mile Marker</label>
+          <input type="text" id="dispatchExactLocation" class="input" value="Near Tambaram Sanatorium Bridge, GST Road (Towards Chengalpattu)" required>
+        </div>
+
+        <div class="fare-preview-box my-3">
+          <div class="fare-row">
+            <span>Base Roadside Callout Charge:</span>
+            <span id="dispatchCalloutFee">₹350.00</span>
+          </div>
+          <div class="fare-row">
+            <span>Estimated Arrival Time (ETA):</span>
+            <span class="font-bold" style="color: #10b981;">15 - 20 Minutes</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeDispatchModal()">Cancel</button>
+          <button type="submit" class="btn btn-danger">🚨 Confirm & Dispatch Mechanic Now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 25: On-Road Vehicle Breakdown Assistance System | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

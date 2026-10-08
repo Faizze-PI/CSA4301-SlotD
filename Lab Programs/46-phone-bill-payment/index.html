@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 46 - Online Phone Bill Payment Website</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>📱 TeleConnect - Postpaid Telecom Billing Portal</span>
+      <span class="brand-badge">Exp 46</span>
+    </div>
+    <div class="role-switcher">
+      <label for="phoneRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="phoneRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="customer">Subscriber View</option>
+        <option value="admin">Telecom Billing Admin View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- SUBSCRIBER VIEW -->
+    <div id="phoneCustomerSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="activeBillTab">My Current Bill & Pay</button>
+        <button class="tab-btn" data-tab="billHistoryTab">Billing History & Invoices</button>
+        <button class="tab-btn" data-tab="autopayTab">Auto-Pay & Notification Settings</button>
+      </div>
+
+      <!-- Tab 1: Current Bill & Pay -->
+      <div id="activeBillTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <!-- Account Details -->
+          <div class="card">
+            <h2 class="card-title">Mobile Account Overview</h2>
+            <div style="font-size: 0.95rem; line-height: 1.8;">
+              <p><strong>Mobile Number:</strong> <span style="font-size: 1.1rem; font-weight: 700; color: var(--primary);">+91 98765 43210</span></p>
+              <p><strong>Subscriber Name:</strong> Faizze A.</p>
+              <p><strong>Plan Name:</strong> Infinity 5G Unlimited Postpaid (₹499/mo)</p>
+              <p><strong>Billing Cycle:</strong> <span id="telecomCycleText">01-Sep-2026 to 30-Sep-2026</span></p>
+              <p><strong>Due Date:</strong> <strong id="telecomDueDateText" style="color: #dc2626;">2026-10-02</strong></p>
+            </div>
+
+            <div id="phoneLateNotice" style="margin-top: 1rem; padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;">
+              <!-- Populated dynamically if overdue -->
+            </div>
+          </div>
+
+          <!-- Payment Box -->
+          <div class="card">
+            <h2 class="card-title">Outstanding Payment Breakdown</h2>
+            <div style="font-size: 0.95rem; line-height: 2;">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Plan Monthly Rental:</span>
+                <span>₹499.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Value Added Services & Roaming:</span>
+                <span>₹89.00</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>GST (18% Telecom Tax):</span>
+                <span>₹105.84</span>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Base Outstanding Bill:</span>
+                <strong id="baseBillAmountDisplay">₹693.84</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: #dc2626;">
+                <span>Overdue Surcharge (₹10/day):</span>
+                <strong id="phoneFineDisplay">₹40.00</strong>
+              </div>
+              <div style="border-top: 2px dashed var(--border-color); margin: 0.5rem 0; padding-top: 0.5rem; display: flex; justify-content: space-between; font-size: 1.25rem;">
+                <span>Total Due:</span>
+                <strong id="phoneTotalDueDisplay" style="color: var(--primary);">₹733.84</strong>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem;">
+              <div class="form-group">
+                <label class="form-label">Payment Amount Option:</label>
+                <div style="display: flex; gap: 1rem; margin-bottom: 0.5rem;">
+                  <label><input type="radio" name="amtChoice" value="full" checked onchange="toggleCustomAmount(false)"> Pay Full Amount (<span id="radioFullAmtLabel">₹733.84</span>)</label>
+                  <label><input type="radio" name="amtChoice" value="custom" onchange="toggleCustomAmount(true)"> Pay Custom Amount</label>
+                </div>
+                <input type="number" id="customPayAmt" class="form-control" placeholder="Enter amount to pay" style="display: none;" min="100">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Select Payment Method:</label>
+                <select id="telecomPaymentGateway" class="form-select">
+                  <option value="UPI">UPI (Google Pay, PhonePe, Paytm)</option>
+                  <option value="Debit Card">Debit / Credit Card</option>
+                  <option value="Net Banking">Net Banking</option>
+                  <option value="Wallet">Digital Telecom Wallet</option>
+                </select>
+              </div>
+
+              <button class="btn btn-success" style="width: 100%;" onclick="processPhoneBillPayment()">
+                Pay Bill & Generate Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Billing History -->
+      <div id="billHistoryTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Previous Bills & Payment Invoices</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Invoice / Receipt #</th>
+                  <th>Billing Month</th>
+                  <th>Base Bill</th>
+                  <th>Late Fee</th>
+                  <th>Total Paid</th>
+                  <th>Paid Date</th>
+                  <th>Payment Mode</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="telecomHistoryTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Auto-Pay & Alerts -->
+      <div id="autopayTab" class="tab-pane">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <h2 class="card-title">Recurring Payment & SMS Alerts</h2>
+          <div class="form-group">
+            <label class="form-label">
+              <input type="checkbox" id="autoPayToggle" checked> Enable Automated Monthly Recurring Bill Payments
+            </label>
+            <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">
+              Automatically charges your registered card/UPI 2 days before the due date, avoiding late fees.
+            </small>
+          </div>
+          <div class="form-group">
+            <label class="form-label">
+              <input type="checkbox" id="smsAlertToggle" checked> Enable SMS & WhatsApp Bill Reminders
+            </label>
+            <small style="color: var(--text-muted); display: block; margin-top: 0.25rem;">
+              Receive free alerts on billing generation, 3 days before due date, and on payment confirmation.
+            </small>
+          </div>
+          <button class="btn btn-primary" onclick="alert('Notification and Recurring payment preferences saved!')">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELECOM ADMIN VIEW -->
+    <div id="phoneAdminSection" style="display: none;">
+      <div class="card" style="max-width: 650px; margin: 0 auto;">
+        <h2 class="card-title">Monthly Billing Cycle & Late Fee Administration</h2>
+        <form id="adminPhoneCycleForm">
+          <div class="grid grid-cols-2" style="gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Cycle Start Date</label>
+              <input type="date" id="adminPhoneStart" class="form-control" value="2026-09-01" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cycle End Date</label>
+              <input type="date" id="adminPhoneEnd" class="form-control" value="2026-09-30" required>
+            </div>
+          </div>
+          <div class="grid grid-cols-2" style="gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Last Date of Payment (Due Date)</label>
+              <input type="date" id="adminPhoneDue" class="form-control" value="2026-10-02" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Late Fine Rate (₹/day)</label>
+              <input type="number" id="adminPhoneFineRate" class="form-control" value="10" required>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Publish New Billing Cycle</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

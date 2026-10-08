@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoteOnline - Secure Civic & University E-Voting System</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🗳️</span>
+      <div class="brand-text">
+        <span class="brand-title">VoteOnline</span>
+        <span class="brand-sub">Cryptographic Multi-Factor E-Voting & Ward Election Platform</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="voter" onclick="switchRole('voter')">🙋 Registered Voter</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Election Commission (Admin)</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- VOTER VIEW -->
+    <section id="voterSection" class="role-view">
+      <!-- Voter Authentication State Container -->
+      <div id="voterAuthContainer">
+        <!-- Step 1: Voter ID Login -->
+        <div id="voterLoginCard" class="card max-w-500 mx-auto">
+          <div class="text-center mb-3">
+            <span style="font-size: 3rem;">🔐</span>
+            <h3>Voter Authentication Portal</h3>
+            <p class="muted text-sm">Enter your Government/University Voter ID to initiate secure verification.</p>
+          </div>
+
+          <form id="voterLoginForm" onsubmit="handleVoterLogin(event)">
+            <div class="form-group">
+              <label>Official Voter ID / EPIC Number</label>
+              <input type="text" id="inputVoterId" class="input uppercase font-mono" placeholder="e.g. TN-CHE-10492" value="TN-CHE-10492" required>
+            </div>
+            <div class="form-group">
+              <label>Registered Mobile Number (for OTP)</label>
+              <input type="tel" id="inputVoterPhone" class="input font-mono" value="+91 98401 22910" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Send Login Verification OTP</button>
+          </form>
+
+          <div class="sample-voter-credentials mt-3">
+            <span class="muted text-xs">Demo Voters for Testing:</span>
+            <div class="token-chips">
+              <span class="token-chip" onclick="fillVoter('TN-CHE-10492', '+91 98401 22910')">Voter 1 (Ward 14)</span>
+              <span class="token-chip" onclick="fillVoter('TN-CHE-10493', '+91 98402 33811')">Voter 2 (Ward 14)</span>
+              <span class="token-chip" onclick="fillVoter('TN-CHE-20815', '+91 94440 99201')">Voter 3 (Ward 18)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Login OTP Verification Modal / Box -->
+        <div id="voterOtpCard" class="card max-w-500 mx-auto hidden">
+          <div class="text-center mb-3">
+            <span style="font-size: 3rem;">📲</span>
+            <h3>Enter Login OTP</h3>
+            <p class="muted text-sm">A 6-digit one-time passcode was dispatched to your mobile.</p>
+            <div class="simulated-sms-box mt-2">
+              <span class="text-xs muted">Simulated SMS Dispatched:</span>
+              <strong class="font-mono text-sm" id="simulatedLoginOtp">849201</strong>
+            </div>
+          </div>
+
+          <form id="voterOtpForm" onsubmit="handleVerifyLoginOtp(event)">
+            <div class="form-group">
+              <label>6-Digit Login Passcode</label>
+              <input type="text" id="inputLoginOtp" class="input text-center font-mono letter-spacing-lg font-bold" maxlength="6" placeholder="______" value="849201" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Verify & Enter Ballot Room</button>
+            <button type="button" class="btn btn-secondary btn-block mt-2" onclick="cancelVoterLogin()">Back to Login</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Authenticated Voter Dashboard & Ballot Room -->
+      <div id="voterBallotRoom" class="hidden">
+        <div class="dashboard-header-card">
+          <div class="user-profile-badge">
+            <div class="avatar">🗳️</div>
+            <div>
+              <h3 id="ballotVoterName">Dr. Aravind Swamy</h3>
+              <p class="muted" id="ballotVoterMeta">Voter ID: TN-CHE-10492 | Ward 14 (Chennai Central) | Status: Verified</p>
+            </div>
+          </div>
+          <div class="header-action-group">
+            <button class="btn btn-secondary btn-sm" onclick="logoutVoter()">Logout Session</button>
+          </div>
+        </div>
+
+        <!-- Voter tabs -->
+        <div class="tab-bar">
+          <button class="tab-btn active" onclick="switchVoterTab('ballot')">🗳️ Cast Electronic Ballot</button>
+          <button class="tab-btn" onclick="switchVoterTab('receipt')">🧾 My Voting Receipt</button>
+          <button class="tab-btn" onclick="switchVoterTab('progress')">📊 Live Election Tally</button>
+        </div>
+
+        <!-- Tab: Ballot -->
+        <div id="tabVoterBallot" class="tab-pane active">
+          <div id="alreadyVotedBanner" class="alert-banner alert-success hidden mb-3">
+            ✅ You have already exercised your democratic franchise for this election cycle. Double-voting is strictly barred by the electoral cryptographic registry.
+          </div>
+
+          <div class="card">
+            <div class="card-header-flex">
+              <div>
+                <h3>Official Ballot Paper - <span id="ballotWardTitle">Ward 14 Constituency</span></h3>
+                <p class="muted">Select one candidate and click Submit to request final confirmation OTP.</p>
+              </div>
+              <span class="badge badge-info">General Elections 2026</span>
+            </div>
+
+            <div id="candidatesGrid" class="candidates-grid mt-3">
+              <!-- Dynamically populated candidate cards -->
+            </div>
+
+            <!-- Dual-Factor Final OTP Ballot Submission -->
+            <div id="voteSubmissionContainer" class="vote-submit-panel mt-4 hidden">
+              <div class="card" style="background: rgba(15, 23, 42, 0.95); border: 2px solid #3b82f6;">
+                <h4>Step 2 of 2: Confirm Electronic Ballot Cast</h4>
+                <p class="muted text-sm">You have selected: <strong id="selectedCandidateName" style="color: #60a5fa;">-</strong></p>
+                
+                <div class="simulated-sms-box my-2">
+                  <span class="text-xs muted">Simulated Ballot OTP Sent to Phone:</span>
+                  <strong class="font-mono text-sm" id="simulatedVoteOtp">718290</strong>
+                </div>
+
+                <form onsubmit="handleFinalSubmitVote(event)" class="mt-3">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Enter Final Ballot OTP</label>
+                      <input type="text" id="finalVoteOtpInput" class="input font-mono text-center font-bold" maxlength="6" value="718290" required>
+                    </div>
+                    <div class="form-group flex-end">
+                      <button type="submit" class="btn btn-success btn-block">🔒 Sign & Cast Secret Vote</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Receipt -->
+        <div id="tabVoterReceipt" class="tab-pane">
+          <div class="card max-w-700 mx-auto">
+            <h3>Voter Verifiable Paper Audit Trail (VVPAT) Digital Token</h3>
+            <p class="muted">Cryptographic proof of participation without compromising ballot secrecy.</p>
+            <div id="voterReceiptDisplay" class="receipt-box mt-3">
+              <p class="muted text-center py-4">No vote cast yet in this session. Proceed to the ballot to cast your vote.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Live Election Progress -->
+        <div id="tabVoterProgress" class="tab-pane">
+          <div class="card">
+            <div class="card-header-flex">
+              <div>
+                <h3>Real-Time Ward & City-Wide Tally Progress</h3>
+                <p class="muted">Live democratic turnout and candidate vote count tracking.</p>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="renderLiveTally()">🔄 Refresh Tally</button>
+            </div>
+
+            <div class="grid-2 mt-4">
+              <div>
+                <h4>Candidate Vote Breakdown</h4>
+                <div id="liveTallyBars" class="tally-bars-container mt-3">
+                  <!-- Dynamically rendered progress bars -->
+                </div>
+              </div>
+
+              <div>
+                <h4>Voter Turnout Metric</h4>
+                <div class="turnout-metric-box mt-3">
+                  <div class="turnout-circle" id="turnoutPercentCircle">68%</div>
+                  <div class="mt-3">
+                    <div class="metric-row"><span>Total Registered Voters:</span> <strong id="tallyTotalVoters">10</strong></div>
+                    <div class="metric-row"><span>Ballots Cast:</span> <strong id="tallyCastVoters">7</strong></div>
+                    <div class="metric-row"><span>Turnout Percentage:</span> <strong id="tallyPercentText">70.0%</strong></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN / ELECTION COMMISSION VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">👥</span>
+          <div>
+            <div class="metric-value" id="adminTotalRegisteredVoters">10</div>
+            <div class="metric-label">Registered Electors in Registry</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🗳️</span>
+          <div>
+            <div class="metric-value" id="adminTotalVotesCast">7</div>
+            <div class="metric-label">Verified Ballots Cast</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🏛️</span>
+          <div>
+            <div class="metric-value" id="adminTotalCandidates">5</div>
+            <div class="metric-label">Approved Election Candidates</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('candidates')">🏛️ Candidates & Wards</button>
+        <button class="tab-btn" onclick="switchAdminTab('voterList')">📜 Voter List Management</button>
+        <button class="tab-btn" onclick="switchAdminTab('results')">🏆 Official Election Results</button>
+      </div>
+
+      <!-- Tab: Candidates -->
+      <div id="adminTabCandidates" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Registered Election Candidates</h3>
+            <div class="table-responsive mt-2">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Candidate</th>
+                    <th>Party</th>
+                    <th>Ward</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="adminCandidatesTable">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Register New Election Candidate</h3>
+            <form id="createCandidateForm" onsubmit="handleCreateCandidate(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Candidate Full Name</label>
+                  <input type="text" id="candName" class="input" placeholder="e.g. Shalini Natarajan" required>
+                </div>
+                <div class="form-group">
+                  <label>Election Ward / Constituency</label>
+                  <select id="candWard" class="input" required>
+                    <option value="Ward 14">Ward 14 (Chennai Central)</option>
+                    <option value="Ward 18">Ward 18 (Chennai South)</option>
+                    <option value="Ward 05">Ward 05 (Chennai North)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Political Party / Affiliation</label>
+                  <input type="text" id="candParty" class="input" placeholder="e.g. Civic Progress Union" required>
+                </div>
+                <div class="form-group">
+                  <label>Electoral Symbol (Emoji / Icon)</label>
+                  <select id="candSymbol" class="input">
+                    <option value="🌳">🌳 Tree of Growth</option>
+                    <option value="☀️">☀️ Rising Sun</option>
+                    <option value="📚">📚 Education Torch</option>
+                    <option value="⚙️">⚙️ Industry & Tech</option>
+                    <option value="🕊️">🕊️ Peace Dove</option>
+                    <option value="⚡">⚡ Clean Energy</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Key Manifesto & Campaign Promise</label>
+                <textarea id="candManifesto" class="input" rows="2" placeholder="Focus on solar street lighting, rainwater conservation..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">Register Candidate</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Voter List -->
+      <div id="adminTabVoterList" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Master Electoral Roll (Voter Registry)</h3>
+              <p class="muted">Maintain voter enrollment records, ward allocations, and voting status.</p>
+            </div>
+            <div class="action-btn-group">
+              <button class="btn btn-secondary btn-sm" onclick="openAddVoterModal()">+ Enroll New Voter</button>
+              <button class="btn btn-secondary btn-sm" onclick="seedDefaultVoters()">📥 Reset Sample Roll</button>
+            </div>
+          </div>
+
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Voter ID (EPIC)</th>
+                  <th>Full Name</th>
+                  <th>Ward</th>
+                  <th>Registered Mobile</th>
+                  <th>Voting Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminVoterRollTable">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Results -->
+      <div id="adminTabResults" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Official Certified Election Results</h3>
+              <p class="muted">Tally audit log and winner declaration across wards.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="window.print()">🖨️ Print Election Certification</button>
+          </div>
+
+          <div id="adminCertifiedResultsBox" class="mt-4">
+            <!-- Dynamic winner announcement and ward stats -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Voter Modal -->
+  <div id="addVoterModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Enroll New Voter to Electoral Roll</h3>
+        <button class="modal-close" onclick="closeAddVoterModal()">&times;</button>
+      </div>
+      <form onsubmit="handleAdminAddVoter(event)">
+        <div class="form-group">
+          <label>Voter Full Name</label>
+          <input type="text" id="newVoterName" class="input" placeholder="e.g. Vignesh Balaji" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Voter ID (EPIC)</label>
+            <input type="text" id="newVoterId" class="input uppercase font-mono" placeholder="TN-CHE-XXXXX" required>
+          </div>
+          <div class="form-group">
+            <label>Electoral Ward</label>
+            <select id="newVoterWard" class="input">
+              <option value="Ward 14">Ward 14</option>
+              <option value="Ward 18">Ward 18</option>
+              <option value="Ward 05">Ward 05</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Registered Mobile Number</label>
+          <input type="tel" id="newVoterPhone" class="input" placeholder="+91 98401 XXXXX" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeAddVoterModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Enroll in Registry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 17: VoteOnline E-Voting & Ward Allocation Platform | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

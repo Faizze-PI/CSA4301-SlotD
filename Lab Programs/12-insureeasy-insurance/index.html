@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 12 - InsureEasy Online Insurance Management Platform</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>🛡️ InsureEasy - Digital Policy & Claims Hub</span>
+      <span class="brand-badge">Exp 12</span>
+    </div>
+    <div class="role-switcher">
+      <label for="insRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="insRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="policyholder">Policyholder / User View</option>
+        <option value="agent">Licensed Insurance Agent View</option>
+        <option value="admin">InsureEasy Admin View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- POLICYHOLDER / USER VIEW -->
+    <div id="insHolderSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="comparePoliciesTab">Compare & Purchase Policies</button>
+        <button class="tab-btn" data-tab="myPoliciesTab">My Active Policies & Renewal</button>
+        <button class="tab-btn" data-tab="fileClaimsTab">File Insurance Claim</button>
+        <button class="tab-btn" data-tab="userSmsAlertsTab">My Agent SMS Alerts (<span id="userSmsBadge">0</span>)</button>
+      </div>
+
+      <!-- Tab 1: Compare Policies -->
+      <div id="comparePoliciesTab" class="tab-pane active">
+        <div class="card">
+          <h2 class="card-title">Policy Comparison Engine (Health, Auto, Home)</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Plan Name</th>
+                  <th>Category</th>
+                  <th>Coverage / Sum Insured</th>
+                  <th>Annual Premium</th>
+                  <th>Key Benefits</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="comparePoliciesTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: My Policies & Renewal -->
+      <div id="myPoliciesTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">My Enrolled Policies & Premium Status</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Policy #</th>
+                  <th>Plan</th>
+                  <th>Category</th>
+                  <th>Sum Insured</th>
+                  <th>Premium Due Date</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="userPoliciesTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: File Claim -->
+      <div id="fileClaimsTab" class="tab-pane">
+        <div class="card" style="max-width: 650px; margin: 0 auto;">
+          <h2 class="card-title">Submit Insurance Claim</h2>
+          <form id="fileClaimForm">
+            <div class="form-group">
+              <label class="form-label">Select Policy</label>
+              <select id="claimPolicySelect" class="form-select" required></select>
+            </div>
+            <div class="grid grid-cols-2" style="gap: 0.5rem;">
+              <div class="form-group">
+                <label class="form-label">Date of Incident</label>
+                <input type="date" id="claimDate" class="form-control" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Estimated Claim Amount (₹)</label>
+                <input type="number" id="claimAmount" class="form-control" required value="45000">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description of Incident / Hospitalization / Damage</label>
+              <textarea id="claimReason" class="form-control" rows="3" required placeholder="Describe event details..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">File Claim for Agent Review</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab 4: User SMS Alerts -->
+      <div id="userSmsAlertsTab" class="tab-pane">
+        <div class="card" style="max-width: 650px; margin: 0 auto;">
+          <h2 class="card-title">SMS & Notification Inbox</h2>
+          <div id="userSmsList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LICENSED AGENT VIEW -->
+    <div id="insAgentSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="agentClientsTab">Client Policy Management</button>
+        <button class="tab-btn" data-tab="agentSmsDispatcherTab">Send Renewal SMS Alerts</button>
+        <button class="tab-btn" data-tab="agentNewClientTab">Enroll New Customer</button>
+      </div>
+
+      <!-- Tab: Client Policies -->
+      <div id="agentClientsTab" class="tab-pane active">
+        <div class="card">
+          <h2 class="card-title">Assigned Policyholders & Commission Tracking</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Policy #</th>
+                  <th>Customer</th>
+                  <th>Plan</th>
+                  <th>Premium (₹)</th>
+                  <th>Due Date</th>
+                  <th>Agent Commission (10%)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="agentClientsTableBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Send SMS Alerts -->
+      <div id="agentSmsDispatcherTab" class="tab-pane">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <h2 class="card-title">Dispatch SMS Renewal Reminder</h2>
+          <form id="dispatchSmsForm">
+            <div class="form-group">
+              <label class="form-label">Select Policyholder</label>
+              <select id="smsRecipientSelect" class="form-select" required></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alert Template</label>
+              <select id="smsTemplateSelect" class="form-select">
+                <option value="upcoming">Upcoming Premium Due Reminder (Within 7 days)</option>
+                <option value="overdue">Urgent: Overdue Grace Period Expiry Alert</option>
+                <option value="congratulations">Policy Renewal Confirmation</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Custom SMS Message Text</label>
+              <textarea id="smsCustomText" class="form-control" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">📲 Transmit SMS to Policyholder</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Enroll Customer -->
+      <div id="agentNewClientTab" class="tab-pane">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <h2 class="card-title">Enroll New Customer to Policy</h2>
+          <form id="enrollClientForm">
+            <div class="form-group">
+              <label class="form-label">Customer Name</label>
+              <input type="text" id="newCustName" class="form-control" required placeholder="e.g. Ramesh Krishnan">
+            </div>
+            <div class="grid grid-cols-2" style="gap: 0.5rem;">
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="newCustPhone" class="form-control" required placeholder="9840123456">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="newCustEmail" class="form-control" required placeholder="ramesh@example.com">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select Policy Plan</label>
+              <select id="newCustPlan" class="form-select">
+                <option value="Comprehensive Health Shield">Comprehensive Health Shield (₹15,000/yr)</option>
+                <option value="Zero-Dep Motor Protector">Zero-Dep Motor Protector (₹9,500/yr)</option>
+                <option value="Home & Structural Safeguard">Home & Structural Safeguard (₹6,200/yr)</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Customer Policy</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- INSUREEASY ADMIN VIEW -->
+    <div id="insAdminSection" style="display: none;">
+      <div class="card">
+        <h2 class="card-title">Agent Approvals & Performance Roster</h2>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Agent ID</th>
+                <th>Agent Name</th>
+                <th>License / IRDAI Code</th>
+                <th>Active Clients</th>
+                <th>Approval Status</th>
+                <th>Admin Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminAgentsTableBody">
+              <!-- Loaded dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

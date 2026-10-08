@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Haven - Artisanal Fine Dining Experience</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-utensils"></i></div>
+                <div>
+                    <h1>Gourmet Haven</h1>
+                    <p class="subtitle">Contemporary Gastronomy & Fine Dining</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-user-tag"></i> Mode:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="guest">Guest Diner</option>
+                        <option value="maitre">Maître d' / Manager</option>
+                    </select>
+                </div>
+                <button class="btn btn-gold btn-sm" onclick="showTab('reserve')"><i class="fas fa-calendar-check"></i> Book a Table</button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="home" onclick="showTab('home')"><i class="fas fa-compass"></i> Home</button>
+            <button class="nav-tab" data-tab="menu" onclick="showTab('menu')"><i class="fas fa-book-open"></i> À La Carte Menu</button>
+            <button class="nav-tab" data-tab="reserve" onclick="showTab('reserve')"><i class="fas fa-chair"></i> Reservations</button>
+            <button class="nav-tab" data-tab="about" onclick="showTab('about')"><i class="fas fa-wine-glass-alt"></i> Culinary Heritage</button>
+            <button class="nav-tab" data-tab="gallery" onclick="showTab('gallery')"><i class="fas fa-images"></i> Ambiance Gallery</button>
+            <button class="nav-tab" data-tab="reviews" onclick="showTab('reviews')"><i class="fas fa-star"></i> Reviews & Awards</button>
+            <button class="nav-tab" data-tab="contact" onclick="showTab('contact')"><i class="fas fa-map-marker-alt"></i> Contact & Valet</button>
+            <button class="nav-tab" data-tab="admin" id="tabAdmin" style="display:none;" onclick="showTab('admin')"><i class="fas fa-concierge-bell"></i> Dining Manager</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: HOME -->
+        <section id="tab-home" class="content-tab active">
+            <!-- Hero Carousel -->
+            <div class="hero-carousel">
+                <div class="carousel-slide active" id="slide1">
+                    <div class="slide-content">
+                        <span class="gold-pill"><i class="fas fa-award"></i> Michelin Recommended 2026</span>
+                        <h2>An Epicurean Odyssey of Taste & Texture</h2>
+                        <p class="slide-desc">Immerse your palate in innovative culinary art, pairing hand-foraged heritage spices with progressive French-Mediterranean techniques in a lavish ambient setting.</p>
+                        <div class="slide-actions">
+                            <button class="btn btn-gold" onclick="showTab('reserve')"><i class="fas fa-utensils"></i> Reserve an Evening</button>
+                            <button class="btn btn-secondary" onclick="showTab('menu')"><i class="fas fa-scroll"></i> View Chef's Tasting Menu</button>
+                        </div>
+                    </div>
+                    <div class="slide-badge-circle">
+                        <i class="fas fa-fire-alt fa-4x" style="color:var(--gold)"></i>
+                    </div>
+                </div>
+
+                <div class="carousel-slide" id="slide2">
+                    <div class="slide-content">
+                        <span class="gold-pill"><i class="fas fa-wine-bottle"></i> Private Cellar Experience</span>
+                        <h2>Vintage Cellar & Sommelier Pairings</h2>
+                        <p class="slide-desc">Over 450 grand cru vintages curated from the finest European and boutique domestic estates, harmoniously matched with each tasting flight.</p>
+                        <div class="slide-actions">
+                            <button class="btn btn-gold" onclick="showTab('reserve')"><i class="fas fa-glass-cheers"></i> Book Private Wine Vault</button>
+                            <button class="btn btn-secondary" onclick="showTab('about')"><i class="fas fa-user-tie"></i> Meet Head Sommelier</button>
+                        </div>
+                    </div>
+                    <div class="slide-badge-circle">
+                        <i class="fas fa-wine-glass fa-4x" style="color:var(--gold)"></i>
+                    </div>
+                </div>
+
+                <div class="carousel-controls">
+                    <button class="carousel-btn" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-dots">
+                        <span class="dot active" onclick="setSlide(0)"></span>
+                        <span class="dot" onclick="setSlide(1)"></span>
+                    </div>
+                    <button class="carousel-btn" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Highlights Grid -->
+            <div class="highlights-grid">
+                <div class="highlight-card">
+                    <i class="fas fa-carrot fa-2x"></i>
+                    <h3>Farm-to-Table Ethos</h3>
+                    <p>All organic produce harvested within 40 kilometers of Chennai, supporting local regenerative organic cooperatives.</p>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-music fa-2x"></i>
+                    <h3>Acoustic Jazz Evenings</h3>
+                    <p>Live, intimate cello and grand piano performances accompanying every Thursday, Friday, and Saturday dinner service.</p>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-award fa-2x"></i>
+                    <h3>Bespoke Dietary Craft</h3>
+                    <p>Custom tailored menus honoring gluten-free, vegan, and specific allergy profiles without compromising on gastronomic depth.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: MENU -->
+        <section id="tab-menu" class="content-tab">
+            <div class="content-header-center">
+                <span class="gold-pill">Gastronomic Collections</span>
+                <h2>The Seasonal À La Carte Menu</h2>
+                <p>Crafted by Executive Chef Antoine Moreau & Chef de Cuisine Meera Raman</p>
+                <div class="menu-filter-chips">
+                    <button class="chip active" onclick="filterMenu('All', this)">All Offerings</button>
+                    <button class="chip" onclick="filterMenu('Appetizers', this)">Appetizers</button>
+                    <button class="chip" onclick="filterMenu('Mains', this)">Main Courses</button>
+                    <button class="chip" onclick="filterMenu('Signatures', this)">Chef's Signature</button>
+                    <button class="chip" onclick="filterMenu('Desserts', this)">Artisanal Desserts</button>
+                    <button class="chip" onclick="filterMenu('Beverages', this)">Vintages & Mocktails</button>
+                </div>
+            </div>
+
+            <div class="menu-grid" id="menuGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 3: RESERVATIONS -->
+        <section id="tab-reserve" class="content-tab">
+            <div class="reservation-layout">
+                <div class="reserve-form-panel">
+                    <h2><i class="fas fa-chair"></i> Reserve Your Dining Table</h2>
+                    <p class="subtitle-text">Advance booking is strongly encouraged. We hold reserved tables for up to 20 minutes past the scheduled arrival.</p>
+                    <form onsubmit="handleReservationSubmit(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date of Reservation:</label>
+                                <input type="date" id="resDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Dining Service / Time Slot:</label>
+                                <select id="resTime" required>
+                                    <option value="12:30 PM (Lunch)">12:30 PM (Lunch Service)</option>
+                                    <option value="02:00 PM (Lunch)">02:00 PM (Late Lunch)</option>
+                                    <option value="07:00 PM (Dinner)">07:00 PM (First Dinner Seating)</option>
+                                    <option value="08:45 PM (Dinner)">08:45 PM (Prime Dinner Seating)</option>
+                                    <option value="10:15 PM (Dinner)">10:15 PM (Late Evening Lounge)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Party Size (Guests):</label>
+                                <select id="resGuests" required>
+                                    <option value="2">2 Guests (Intimate / Couple)</option>
+                                    <option value="4" selected>4 Guests (Family / Small Party)</option>
+                                    <option value="6">6 Guests (Group)</option>
+                                    <option value="8">8 Guests (Celebration Banquet)</option>
+                                    <option value="12">12+ Guests (Private Vault Dining)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Seating Preference:</label>
+                                <select id="resArea">
+                                    <option value="Main Dining Salon">Main Dining Salon (Chandeliers & Piano)</option>
+                                    <option value="Garden Terrace">Verdant Garden Terrace (Al Fresco)</option>
+                                    <option value="Private Wine Vault">Private Wine Vault (Sommelier Host)</option>
+                                    <option value="Chef's Kitchen Counter">Chef's Interactive Counter</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Guest Full Name:</label>
+                                <input type="text" id="resName" required placeholder="e.g. Siddharth Menon">
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Contact:</label>
+                                <input type="tel" id="resPhone" required placeholder="e.g. +91 98401 23456">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Special Dietary Requests / Occasion:</label>
+                            <textarea id="resNotes" rows="2" placeholder="e.g. Anniversary celebration, strict gluten-free guest, quiet booth requested..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-gold btn-block"><i class="fas fa-check-circle"></i> Confirm Table Reservation</button>
+                    </form>
+                </div>
+
+                <div class="reserve-info-panel">
+                    <h3>Reservation Guidelines</h3>
+                    <div class="rule-box">
+                        <i class="fas fa-tshirt"></i>
+                        <div>
+                            <h4>Smart Casual Dress Code</h4>
+                            <p>We kindly request guests refrain from athletic sportswear, beach footwear, or sleeveless tops during evening service.</p>
+                        </div>
+                    </div>
+                    <div class="rule-box">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>20-Minute Grace Period</h4>
+                            <p>Should you be delayed by traffic or weather, notify our concierge to hold your preferred seating.</p>
+                        </div>
+                    </div>
+                    <div class="rule-box">
+                        <i class="fas fa-glass-cheers"></i>
+                        <div>
+                            <h4>Corkage Policy</h4>
+                            <p>Bespoke vintage wines may be brought for private dinners at ₹1,500 per 750ml bottle service charge.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ABOUT -->
+        <section id="tab-about" class="content-tab">
+            <div class="about-story-container">
+                <div class="story-header">
+                    <span class="gold-pill">Our Heritage</span>
+                    <h2>A Tradition of Gastronomic Distinction</h2>
+                    <p class="story-lead">Founded in 2017 in Chennai's historic cultural quarter, Gourmet Haven was conceived as a sanctuary where international culinary rigor meets South Indian terroir.</p>
+                </div>
+
+                <div class="chef-cards-row">
+                    <div class="chef-card">
+                        <i class="fas fa-user-tie fa-4x chef-icon"></i>
+                        <h3>Chef Antoine Moreau</h3>
+                        <p class="chef-role">Executive Chef & Co-Founder</p>
+                        <p class="chef-bio">Trained across Michelin-starred kitchens in Lyon and Paris, Chef Moreau brings 18 years of classical French precision, sauces, and fermentation technique.</p>
+                    </div>
+                    <div class="chef-card">
+                        <i class="fas fa-user-circle fa-4x chef-icon"></i>
+                        <h3>Chef Meera Raman</h3>
+                        <p class="chef-role">Chef de Cuisine</p>
+                        <p class="chef-bio">A native of Madurai with a diploma from Le Cordon Bleu London, Meera synthesizes heirloom Tamil aromatics, tamarind reductions, and modern sous-vide textures.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: GALLERY -->
+        <section id="tab-gallery" class="content-tab">
+            <div class="content-header-center">
+                <h2>The Gourmet Haven Atmosphere</h2>
+                <p>Visual highlights of our curated dining spaces, open hearth kitchen, and plating craft.</p>
+            </div>
+            <div class="ambiance-gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-thumb"><i class="fas fa-utensils fa-3x"></i></div>
+                    <h4>Signature Truffle Risotto Plating</h4>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-thumb"><i class="fas fa-wine-bottle fa-3x"></i></div>
+                    <h4>The Grand Cru Reserve Cellar</h4>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-thumb"><i class="fas fa-tree fa-3x"></i></div>
+                    <h4>Al Fresco Olive Grove Terrace</h4>
+                </div>
+                <div class="gallery-item">
+                    <div class="gallery-thumb"><i class="fas fa-fire fa-3x"></i></div>
+                    <h4>Open Woodfire Hearth Grill</h4>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: REVIEWS -->
+        <section id="tab-reviews" class="content-tab">
+            <div class="reviews-header">
+                <h2>Critic Accolades & Patron Reviews</h2>
+                <div class="rating-badge-banner">
+                    <span class="score-num">4.9</span>
+                    <div>
+                        <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                        <small>Based on 480+ Verified Diners & Times Food Guide</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reviews-list-grid" id="reviewsGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 7: CONTACT -->
+        <section id="tab-contact" class="content-tab">
+            <div class="contact-deck">
+                <div class="contact-details-box">
+                    <h2>Location & Valet Service</h2>
+                    <p>Nestled in the lush avenues of Boat Club Road, Gourmet Haven offers complimentary valet parking and private chauffeur lounges.</p>
+                    <div class="contact-line"><i class="fas fa-map-pin"></i> 18 Boat Club Avenue, R.A. Puram, Chennai - 600028</div>
+                    <div class="contact-line"><i class="fas fa-phone"></i> +91 (044) 4920-8000</div>
+                    <div class="contact-line"><i class="fas fa-envelope"></i> concierge@gourmethaven-simats.in</div>
+                    <div class="contact-line"><i class="fas fa-clock"></i> Lunch: 12:00 PM – 3:30 PM | Dinner: 7:00 PM – 11:30 PM</div>
+                </div>
+
+                <div class="map-simulator-box">
+                    <div class="map-display">
+                        <i class="fas fa-map-marked-alt fa-3x" style="color:var(--gold);"></i>
+                        <h4>Gourmet Haven Location Radar</h4>
+                        <p>13.0182° N, 80.2504° E | Boat Club Road, Chennai</p>
+                        <span class="badge" style="background:rgba(16,185,129,0.2); color:#10b981; padding:4px 12px; border-radius:12px; margin-top:8px;">Valet Parking Active</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 8: ADMIN DESK -->
+        <section id="tab-admin" class="content-tab">
+            <div class="content-header">
+                <h2>Maître d' Table Manifest & Ledger</h2>
+                <p>Inspect active table allocations, guest requests, and table turnover.</p>
+            </div>
+            <div class="table-manifest-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Voucher #</th>
+                            <th>Guest Name</th>
+                            <th>Date & Time</th>
+                            <th>Guests</th>
+                            <th>Seating Salon</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Confirmation Voucher Modal -->
+    <div class="modal" id="voucherModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeVoucherModal()">&times;</button>
+            <div class="modal-content" id="voucherModalContent"></div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 Gourmet Haven Fine Dining | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

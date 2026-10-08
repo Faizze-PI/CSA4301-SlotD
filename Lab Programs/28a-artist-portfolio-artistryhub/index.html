@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArtistryHub - Emily Harris | Official Fine Art Portfolio & Studio</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🎨</span>
+      <div class="brand-text">
+        <span class="brand-title">ArtistryHub</span>
+        <span class="brand-sub">Emily Harris Fine Arts, Soundscapes & Exhibition Studio</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="fan" onclick="switchRole('fan')">🖼️ Art Lover / Collector (Public)</button>
+      <button class="role-pill" data-role="artist" onclick="switchRole('artist')">👩‍🎨 Emily Harris (Artist Admin)</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- PUBLIC ART LOVER / VISITOR VIEW -->
+    <section id="fanSection" class="role-view">
+      <!-- Hero Banner -->
+      <div class="artist-hero-card mb-4">
+        <div class="hero-content">
+          <span class="hero-tag">Contemporary Expressionist & Soundscape Artist</span>
+          <h1 class="hero-title">Emily Harris Studio</h1>
+          <p class="hero-desc">Exploring the intersection of atmospheric light, organic textures, and acoustic resonances. Winner of the 2024 International Biennale Grand Prize for Visual Arts.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="scrollSectionTo('portfolio')">Explore Gallery</button>
+            <button class="btn btn-outline" onclick="scrollSectionTo('audio')">🎧 Listen to Studio Audio</button>
+          </div>
+        </div>
+        <div class="hero-portrait-frame">
+          <div class="portrait-avatar">👩‍🎨</div>
+          <div class="portrait-caption">
+            <strong>Emily Harris</strong><br>
+            <span class="muted text-xs">Based in London & Venice</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Sub-Bar -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchFanTab('portfolio')">🎨 Artworks Portfolio</button>
+        <button class="tab-btn" onclick="switchFanTab('bio')">📖 Biography & Journey</button>
+        <button class="tab-btn" onclick="switchFanTab('audio')">🎧 Audio & Soundscapes</button>
+        <button class="tab-btn" onclick="switchFanTab('bibliography')">📚 Bibliography & Catalog</button>
+        <button class="tab-btn" onclick="switchFanTab('exhibitions')">🏛️ Exhibitions & Media</button>
+        <button class="tab-btn" onclick="switchFanTab('store')">🛍️ Prints & Merch Store</button>
+        <button class="tab-btn" onclick="switchFanTab('contact')">✉️ Booking & Fan Mail</button>
+      </div>
+
+      <!-- Tab: Portfolio -->
+      <div id="fanTabPortfolio" class="tab-pane active">
+        <div class="filter-bar-card mb-4">
+          <div class="filter-pills-row">
+            <button class="pill active" onclick="filterArtworks('All', this)">All Collections (6)</button>
+            <button class="pill" onclick="filterArtworks('Oil on Canvas', this)">Oil on Canvas</button>
+            <button class="pill" onclick="filterArtworks('Modern Abstract', this)">Modern Abstract</button>
+            <button class="pill" onclick="filterArtworks('Charcoal & Ink', this)">Charcoal & Ink</button>
+          </div>
+        </div>
+
+        <div id="artworksGrid" class="artworks-grid">
+          <!-- Dynamically populated artwork cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Biography -->
+      <div id="fanTabBio" class="tab-pane">
+        <div class="card max-w-800 mx-auto">
+          <div class="bio-header-badge">
+            <div class="bio-portrait-box">👩‍🎨</div>
+            <div>
+              <h2>Emily Harris</h2>
+              <p class="muted">Master of Fine Arts (Royal College of Art, London) | Visual & Sonic Practitioner</p>
+            </div>
+          </div>
+          <div class="bio-body-text mt-4">
+            <h4>Artistic Philosophy & Trajectory</h4>
+            <p>Emily Harris (b. 1988) is an internationally exhibited British painter and composer known for large-scale immersive canvases that marry dynamic gestural brushwork with atmospheric glazing. Her signature series, <em>"Resonances of Solitude"</em>, earned critical praise at the Venice Biennale and the Tate Modern.</p>
+            <p>Working primarily with hand-ground mineral pigments, raw linen, and acoustic field recordings, Emily treats each canvas as a physical score. Her visual pieces are frequently exhibited alongside site-specific binaural soundscapes created in her Cornwall studio.</p>
+            
+            <h4 class="mt-4">Notable Career Milestones</h4>
+            <ul class="milestones-timeline">
+              <li><strong>2024:</strong> Grand Laureate, Venice Contemporary Art Biennale.</li>
+              <li><strong>2022:</strong> Solo Retrospective, <em>Echoes in Ochre</em>, Hayward Gallery, London.</li>
+              <li><strong>2019:</strong> Resident Master Artist, Villa Medici French Academy, Rome.</li>
+              <li><strong>2015:</strong> MFA Distinction in Painting, Royal College of Art.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Audio & Soundscapes -->
+      <div id="fanTabAudio" class="tab-pane">
+        <div class="card max-w-800 mx-auto">
+          <h3>Emily Harris - Studio Ambient Soundscapes & Sonic Compositions</h3>
+          <p class="muted">Original binaural field recordings and acoustic pieces composed to accompany visual exhibition collections.</p>
+
+          <div class="audio-player-container my-4">
+            <div class="now-playing-info">
+              <span class="track-disc-icon">💿</span>
+              <div>
+                <h4 id="audioTrackTitle">Track 01: Whispers of the Atlantic (Rain on St Ives Canvas)</h4>
+                <p class="muted text-xs" id="audioTrackAlbum">Album: Resonances of Solitude (2024)</p>
+              </div>
+            </div>
+
+            <div class="audio-controls-row">
+              <button class="btn btn-primary btn-sm" id="btnAudioPlay" onclick="toggleAudioPlay()">▶ Play Track</button>
+              <div class="audio-progress-bar-bg">
+                <div class="audio-progress-bar-fill" id="audioProgressFill" style="width: 32%;"></div>
+              </div>
+              <span class="font-mono text-xs" id="audioTimeDisplay">01:48 / 04:30</span>
+            </div>
+          </div>
+
+          <h4>Studio Tracklist</h4>
+          <div class="tracklist-container" id="tracklistContainer">
+            <!-- Dynamically populated tracks -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Bibliography & Catalog -->
+      <div id="fanTabBibliography" class="tab-pane">
+        <div class="card max-w-800 mx-auto">
+          <h3>Published Monographs, Exhibition Catalogues & Discography</h3>
+          <p class="muted">Official scholarly catalog entries and international publishing identifiers (ISBN / UPC).</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Title</th>
+                  <th>Publisher / Label</th>
+                  <th>Year</th>
+                  <th>ISBN / UPC</th>
+                </tr>
+              </thead>
+              <tbody id="bibliographyTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Exhibitions & Media -->
+      <div id="fanTabExhibitions" class="tab-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Upcoming Exhibitions & Shows</h3>
+            <div id="exhibitionsList" class="timeline-event-list mt-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+          <div class="card">
+            <h3>Studio Documentary & Press Media</h3>
+            <div class="media-video-placeholder my-3">
+              <span style="font-size: 3rem;">🎬</span>
+              <h4>"Inside the Atelier: Emily Harris"</h4>
+              <p class="muted text-xs">BBC Arts Documentary & Curator Interview (28 mins)</p>
+              <button class="btn btn-outline btn-xs mt-2" onclick="showAlert('Simulated BBC Arts Documentary streaming link opened.', 'info')">▶ Watch Interview</button>
+            </div>
+            <div class="press-quotes-box">
+              <blockquote>"Harris captures the fleeting turbulence of modern existence with breathtaking serenity." — The Guardian Art Review</blockquote>
+              <blockquote>"An extraordinary synthesis of sight, substance, and sound." — Artforum International</blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Store -->
+      <div id="fanTabStore" class="tab-pane">
+        <div class="card-header-flex mb-3">
+          <div>
+            <h3>Studio Store: Limited Edition Prints & Merchandise</h3>
+            <p class="muted">Archival museum-grade giclée prints signed and numbered by Emily Harris.</p>
+          </div>
+          <div class="cart-summary-badge" onclick="openCartModal()">
+            🛒 Cart (<span id="cartCountBadge">0</span>) - <strong class="text-success" id="cartTotalBadge">₹0</strong>
+          </div>
+        </div>
+
+        <div id="storeProductsGrid" class="store-grid">
+          <!-- Dynamically populated merch items -->
+        </div>
+      </div>
+
+      <!-- Tab: Contact & Booking -->
+      <div id="fanTabContact" class="tab-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Gallery Inquiries & Exhibition Booking</h3>
+            <form onsubmit="handleSendFanMessage(event)" class="mt-3">
+              <div class="form-group">
+                <label>Your Full Name</label>
+                <input type="text" id="contactName" class="input" placeholder="e.g. Sir Arthur Sterling" required>
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="contactEmail" class="input" placeholder="e.g. curator@modernarts.org" required>
+              </div>
+              <div class="form-group">
+                <label>Inquiry Purpose</label>
+                <select id="contactPurpose" class="input">
+                  <option value="Gallery Exhibition Request">Gallery Solo / Group Exhibition Request</option>
+                  <option value="Private Art Commission">Private Residential Art Commission</option>
+                  <option value="Museum Loan">Museum Retrospective Loan Request</option>
+                  <option value="Fan Appreciation">Fan Appreciation & Message</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Your Message / Proposal</label>
+                <textarea id="contactMessage" class="input" rows="4" placeholder="Detail your gallery dates or personal thoughts on Emily's works..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Send Dispatch to Emily Harris Studio</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Newsletter & Collector Circle</h3>
+            <p class="muted">Receive private previews of new studio collections and invitations to upcoming vernissage galas.</p>
+            <form onsubmit="handleSubscribeNewsletter(event)" class="my-3">
+              <div class="form-group">
+                <label>Collector Email</label>
+                <input type="email" id="newsletterEmail" class="input" placeholder="collector@artlovers.com" required>
+              </div>
+              <button type="submit" class="btn btn-outline btn-block">Subscribe to Studio Dispatch</button>
+            </form>
+
+            <div class="studio-info-block mt-4">
+              <h4>Studio Representation</h4>
+              <p class="text-sm muted"><strong>Main Atelier:</strong> St Ives Coastal Studio, Cornwall, UK<br>
+              <strong>Representation:</strong> Victoria Miro Gallery, London & Venice<br>
+              <strong>Direct Inquiries:</strong> studio@emilyharris-art.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARTIST ADMIN VIEW (EMILY HARRIS) -->
+    <section id="artistSection" class="role-view hidden">
+      <div class="dashboard-header-card artist-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👩‍🎨</div>
+          <div>
+            <h3>Emily Harris Studio Management Console</h3>
+            <p class="muted">Manage artwork portfolio archives, monitor exhibition bookings, and catalog print sales.</p>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-sm" onclick="openAddArtworkModal()">➕ Add New Artwork</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>Received Gallery Inquiries & Fan Messages</h3>
+          <div id="adminMessagesList" class="messages-container mt-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Studio Quick Stats</h3>
+          <div class="grid-2 my-3">
+            <div class="metric-card">
+              <span class="metric-icon">🖼️</span>
+              <div>
+                <div class="metric-value" id="artistTotalArtworks">6</div>
+                <div class="metric-label">Archived Artworks</div>
+              </div>
+            </div>
+            <div class="metric-card">
+              <span class="metric-icon">✉️</span>
+              <div>
+                <div class="metric-value" id="artistTotalMessages">3</div>
+                <div class="metric-label">Curator Messages</div>
+              </div>
+            </div>
+          </div>
+          <h4>Active Studio Prints in Store</h4>
+          <p class="muted text-sm">Fine art giclée reproduction inventory is synced automatically with client purchases.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Artwork Modal -->
+  <div id="addArtworkModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Archive New Artwork to Portfolio</h3>
+        <button class="modal-close" onclick="closeAddArtworkModal()">&times;</button>
+      </div>
+      <form onsubmit="handleAddArtworkSubmit(event)">
+        <div class="form-group">
+          <label>Artwork Title</label>
+          <input type="text" id="newArtTitle" class="input" placeholder="e.g. Nocturne over St Ives Pier" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Medium / Category</label>
+            <select id="newArtCategory" class="input">
+              <option value="Oil on Canvas">Oil on Canvas</option>
+              <option value="Modern Abstract">Modern Abstract</option>
+              <option value="Charcoal & Ink">Charcoal & Ink</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Creation Year</label>
+            <input type="number" id="newArtYear" class="input" value="2025" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Dimensions (cm)</label>
+            <input type="text" id="newArtDimensions" class="input" value="180 x 140 cm" required>
+          </div>
+          <div class="form-group">
+            <label>Print Price (₹)</label>
+            <input type="number" id="newArtPrice" class="input" value="4500" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Artist Statement / Description</label>
+          <textarea id="newArtDescription" class="input" rows="3" placeholder="Describe the pigment layering, emotional resonance, and soundscape pairings..." required></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeAddArtworkModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Publish to Public Portfolio</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Studio Store Cart</h3>
+        <button class="modal-close" onclick="closeCartModal()">&times;</button>
+      </div>
+      <div id="cartItemsList" class="my-3">
+        <!-- Dynamically populated cart items -->
+      </div>
+      <div class="fee-row fee-total">
+        <strong>Total Order Amount:</strong>
+        <strong id="cartModalTotal" class="text-success" style="font-size: 1.25rem;">₹0</strong>
+      </div>
+      <div class="modal-actions mt-3">
+        <button class="btn btn-secondary" onclick="closeCartModal()">Continue Exploring</button>
+        <button class="btn btn-primary" onclick="handleCheckoutCart()">Checkout Fine Art Prints</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 28a: ArtistryHub - Emily Harris Artist Portfolio & Exhibition Studio | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

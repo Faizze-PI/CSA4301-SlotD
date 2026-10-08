@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtSentiment - Painting Rating & Review Platform</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-palette"></i></div>
+                <div>
+                    <h1>ArtSentiment</h1>
+                    <p class="subtitle">Fine Art Exhibition, Rating & Sentiment Intelligence</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-user-circle"></i> Role:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="customer">Visitor / Art Enthusiast</option>
+                        <option value="admin">Gallery Curator (Admin)</option>
+                    </select>
+                </div>
+                <div class="gallery-status-pill">
+                    <i class="fas fa-eye"></i> Fall 2026 Exhibition Active
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="exhibition" onclick="showTab('exhibition')"><i class="fas fa-images"></i> Art Exhibition</button>
+            <button class="nav-tab" data-tab="sentiment" onclick="showTab('sentiment')"><i class="fas fa-brain"></i> Sentiment Analytics</button>
+            <button class="nav-tab" data-tab="admin" id="tabAdmin" style="display:none;" onclick="showTab('admin')"><i class="fas fa-cloud-upload-alt"></i> Curator Admin Desk</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: ART EXHIBITION -->
+        <section id="tab-exhibition" class="content-tab active">
+            <div class="content-header-row">
+                <div>
+                    <h2>Contemporary & Classical Painting Collection</h2>
+                    <p>Discover masterworks, rate aesthetic value, and contribute your critical artistic impressions.</p>
+                </div>
+                <div class="search-sort-box">
+                    <input type="text" id="artSearch" placeholder="Search painting, artist, or style..." onkeyup="filterArtworks()">
+                </div>
+            </div>
+
+            <div class="artworks-grid" id="artworksGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 2: SENTIMENT INTELLIGENCE DASHBOARD -->
+        <section id="tab-sentiment" class="content-tab">
+            <div class="content-header">
+                <h2>Automated Sentiment Analytics & Audience Perception</h2>
+                <p>Natural language sentiment decomposition aggregating positive praise, critique, and rating metrics.</p>
+            </div>
+
+            <div class="sentiment-metrics-row">
+                <div class="s-metric-card positive">
+                    <div class="s-metric-icon"><i class="fas fa-smile"></i></div>
+                    <div>
+                        <h3 id="statPositivePct">78%</h3>
+                        <p>Positive Sentiment (Aesthetic Praise)</p>
+                    </div>
+                </div>
+                <div class="s-metric-card neutral">
+                    <div class="s-metric-icon"><i class="fas fa-meh"></i></div>
+                    <div>
+                        <h3 id="statNeutralPct">14%</h3>
+                        <p>Neutral / Analytical Critique</p>
+                    </div>
+                </div>
+                <div class="s-metric-card negative">
+                    <div class="s-metric-icon"><i class="fas fa-frown"></i></div>
+                    <div>
+                        <h3 id="statNegativePct">8%</h3>
+                        <p>Negative / Contrast Critique</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sentiment-details-grid">
+                <div class="sentiment-chart-card">
+                    <h3>Overall Rating Distribution (1 - 5 Stars)</h3>
+                    <div class="rating-bars-container" id="ratingBarsContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="sentiment-keywords-card">
+                    <h3>Curator Sentiment Terminology Cloud</h3>
+                    <p class="subtitle-text">Key vocabulary extracted from verified gallery visitor feedback:</p>
+                    <div class="sentiment-chips-cloud">
+                        <span class="chip-pos">breathtaking (+0.92)</span>
+                        <span class="chip-pos">evocative (+0.88)</span>
+                        <span class="chip-pos">masterpiece (+0.95)</span>
+                        <span class="chip-pos">luminous (+0.79)</span>
+                        <span class="chip-pos">exquisite brushwork (+0.84)</span>
+                        <span class="chip-neu">abstract composition (0.00)</span>
+                        <span class="chip-neu">monochromatic (0.00)</span>
+                        <span class="chip-neg">overly chaotic (-0.72)</span>
+                        <span class="chip-neg">muddy pigments (-0.65)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: CURATOR ADMIN DESK -->
+        <section id="tab-admin" class="content-tab">
+            <div class="admin-grid-layout">
+                <div class="form-card">
+                    <h2><i class="fas fa-plus-circle"></i> Upload New Artwork to Gallery</h2>
+                    <p class="subtitle-text">Curate new paintings for public exhibition and visitor rating.</p>
+                    <form onsubmit="handleUploadPainting(event)">
+                        <div class="form-group">
+                            <label>Artwork Title:</label>
+                            <input type="text" id="newArtTitle" required placeholder="e.g. Whispers of the Azure Coast">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Artist / Master:</label>
+                                <input type="text" id="newArtArtist" required placeholder="e.g. Camille Laurent">
+                            </div>
+                            <div class="form-group">
+                                <label>Year Created:</label>
+                                <input type="number" id="newArtYear" value="2025" min="1500" max="2026">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Medium / Technique:</label>
+                                <select id="newArtMedium">
+                                    <option value="Oil on Canvas">Oil on Canvas</option>
+                                    <option value="Acrylic on Linen">Acrylic on Linen</option>
+                                    <option value="Tempera & Gold Leaf">Tempera & Gold Leaf</option>
+                                    <option value="Watercolor on Paper">Watercolor on Paper</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Estimated Value (₹):</label>
+                                <input type="text" id="newArtPrice" value="₹4,50,000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Curator’s Exhibition Statement:</label>
+                            <textarea id="newArtDesc" rows="3" required placeholder="Describe stylistic intent, emotional resonance, and composition..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-cloud-upload-alt"></i> Publish Artwork to Exhibition</button>
+                    </form>
+                </div>
+
+                <div class="admin-reviews-oversight-card">
+                    <h3>Curator Feedback Moderation & Response</h3>
+                    <div id="adminFeedbackList">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detailed Artwork & Rating Modal -->
+    <div class="modal" id="artModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeArtModal()">&times;</button>
+            <div class="modal-content" id="artModalContent"></div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 ArtSentiment Gallery | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

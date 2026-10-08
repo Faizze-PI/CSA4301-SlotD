@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 42 - Online Electricity Bill Payment & Tariff Engine</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>⚡ PowerPay - Tamil Nadu Electricity Board (TNEB)</span>
+      <span class="brand-badge">Exp 42</span>
+    </div>
+    <div class="role-switcher">
+      <label for="ebRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="ebRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="customer">Consumer / Customer View</option>
+        <option value="admin">TNEB Super Admin View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- CONSUMER VIEW -->
+    <div id="ebCustomerSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="consumerBillsTab">Current Bill & Online Payment</button>
+        <button class="tab-btn" data-tab="tariffCalculatorTab">Tariff Slab Calculator</button>
+        <button class="tab-btn" data-tab="consumerHistoryTab">Payment History & Receipts</button>
+      </div>
+
+      <!-- Tab: Current Bill & Payment -->
+      <div id="consumerBillsTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <!-- Active Account Details -->
+          <div class="card">
+            <h2 class="card-title">Consumer Account Info</h2>
+            <div style="font-size: 0.95rem; line-height: 1.8;">
+              <p><strong>Consumer Service No:</strong> <span id="consumerNoLabel">04-102-9481</span></p>
+              <p><strong>Consumer Name:</strong> <span id="consumerNameLabel">Faizze A.</span></p>
+              <p><strong>Connection Category:</strong> <span class="badge badge-primary" id="consumerTypeLabel">Domestic</span></p>
+              <p><strong>Billing Cycle:</strong> <span id="cycleLabel">01-Aug-2026 to 30-Sep-2026 (Bi-Monthly)</span></p>
+              <p><strong>Due Date:</strong> <span id="dueDateLabel" style="font-weight: 700; color: #dc2626;">2026-10-01</span></p>
+            </div>
+            
+            <div style="margin-top: 1rem; padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-sm);" id="overdueAlertBox">
+              <!-- Dynamically populated late fine alert -->
+            </div>
+          </div>
+
+          <!-- Bill Summary & Payment Box -->
+          <div class="card">
+            <h2 class="card-title">Current Electricity Bill Breakdown</h2>
+            <div style="font-size: 0.95rem; line-height: 2;">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Meter Units Consumed:</span>
+                <strong id="unitsConsumedLabel">340 Units</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between;">
+                <span>Energy Base Charge:</span>
+                <strong id="baseChargeLabel">₹910.00</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: #dc2626;">
+                <span>Late Payment Fine (₹10/day):</span>
+                <strong id="fineChargeLabel">₹50.00</strong>
+              </div>
+              <div style="border-top: 2px dashed var(--border-color); margin: 0.75rem 0; padding-top: 0.75rem; display: flex; justify-content: space-between; font-size: 1.25rem;">
+                <span>Net Total Payable:</span>
+                <strong id="totalPayableLabel" style="color: var(--primary);">₹960.00</strong>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+              <h4 style="margin-bottom: 0.5rem;">Select Payment Method:</h4>
+              <div class="grid grid-cols-2" style="gap: 0.5rem; margin-bottom: 1rem;">
+                <label class="payment-radio"><input type="radio" name="payMethod" value="UPI" checked> UPI (GPay/PhonePe)</label>
+                <label class="payment-radio"><input type="radio" name="payMethod" value="Credit/Debit Card"> Debit / Credit Card</label>
+                <label class="payment-radio"><input type="radio" name="payMethod" value="Net Banking"> Net Banking</label>
+                <label class="payment-radio"><input type="radio" name="payMethod" value="Wallet"> Digital Wallet</label>
+              </div>
+              <button class="btn btn-success" style="width: 100%;" onclick="payElectricityBill()">Pay Bill & Download Receipt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Tariff Slab Calculator -->
+      <div id="tariffCalculatorTab" class="tab-pane">
+        <div class="card" style="max-width: 700px; margin: 0 auto;">
+          <h2 class="card-title">Interactive Tariff Slab Simulator</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+            Calculate expected bi-monthly charges using the official TNEB tiered slab rate engine.
+          </p>
+
+          <div class="grid grid-cols-2" style="gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Connection Type</label>
+              <select id="calcConnType" class="form-select">
+                <option value="domestic" selected>Domestic (Residential)</option>
+                <option value="commercial">Commercial (Shop / Office)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Units Consumed</label>
+              <input type="number" id="calcUnitsInput" class="form-control" value="250" min="0">
+            </div>
+          </div>
+
+          <div class="card" style="background: #f8fafc; border: 1px solid var(--border-color); margin-top: 1rem;">
+            <h4 style="margin-bottom: 0.5rem;">Slab Calculation Breakdown:</h4>
+            <div id="calcBreakdownDetails" style="font-size: 0.9rem; line-height: 1.8;">
+              <!-- Calculated live -->
+            </div>
+            <div style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem; display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700;">
+              <span>Total Energy Charges:</span>
+              <span id="calcTotalResult" style="color: var(--primary);">₹0.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Payment History -->
+      <div id="consumerHistoryTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Payment History & Tax Invoices</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Receipt #</th>
+                  <th>Billing Cycle</th>
+                  <th>Units</th>
+                  <th>Energy Charge</th>
+                  <th>Late Fine</th>
+                  <th>Total Paid</th>
+                  <th>Payment Date</th>
+                  <th>Receipt</th>
+                </tr>
+              </thead>
+              <tbody id="paymentHistoryBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TNEB ADMIN VIEW -->
+    <div id="ebAdminSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="adminTariffRulesTab">Tariff Slab Configuration</button>
+        <button class="tab-btn" data-tab="adminBillingCycleTab">Bi-Monthly Billing Management</button>
+      </div>
+
+      <!-- Admin Tab: Tariff Rules -->
+      <div id="adminTariffRulesTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <!-- Domestic Slabs -->
+          <div class="card">
+            <h3 class="card-title">Domestic Tariff Slabs</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Slab Units</th><th>Rate (₹/Unit)</th></tr></thead>
+                <tbody>
+                  <tr><td>0 - 100 Units</td><td><input type="number" step="0.5" id="dom_slab1" class="form-control" value="1.00"></td></tr>
+                  <tr><td>101 - 200 Units</td><td><input type="number" step="0.5" id="dom_slab2" class="form-control" value="2.50"></td></tr>
+                  <tr><td>201 - 500 Units</td><td><input type="number" step="0.5" id="dom_slab3" class="form-control" value="4.00"></td></tr>
+                  <tr><td>501+ Units</td><td><input type="number" step="0.5" id="dom_slab4" class="form-control" value="6.00"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Commercial Slabs -->
+          <div class="card">
+            <h3 class="card-title">Commercial Tariff Slabs</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead><tr><th>Slab Units</th><th>Rate (₹/Unit)</th></tr></thead>
+                <tbody>
+                  <tr><td>0 - 100 Units</td><td><input type="number" step="0.5" id="comm_slab1" class="form-control" value="2.00"></td></tr>
+                  <tr><td>101 - 200 Units</td><td><input type="number" step="0.5" id="comm_slab2" class="form-control" value="4.50"></td></tr>
+                  <tr><td>201 - 500 Units</td><td><input type="number" step="0.5" id="comm_slab3" class="form-control" value="6.00"></td></tr>
+                  <tr><td>501+ Units</td><td><input type="number" step="0.5" id="comm_slab4" class="form-control" value="7.00"></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: right; margin-top: 1rem;">
+          <button class="btn btn-primary" onclick="saveAdminTariffRules()">Save Tariff Rates</button>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Billing Cycle & Fine Rule -->
+      <div id="adminBillingCycleTab" class="tab-pane">
+        <div class="card" style="max-width: 650px;">
+          <h2 class="card-title">Configure Bi-Monthly Billing Schedule</h2>
+          <form id="adminCycleForm">
+            <div class="grid grid-cols-2" style="gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Cycle Start Date</label>
+                <input type="date" id="cycleStartDate" class="form-control" value="2026-08-01" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Cycle End Date</label>
+                <input type="date" id="cycleEndDate" class="form-control" value="2026-09-30" required>
+              </div>
+            </div>
+            <div class="grid grid-cols-2" style="gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Last Date of Payment (Due Date)</label>
+                <input type="date" id="cycleDueDate" class="form-control" value="2026-10-01" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Daily Overdue Fine Amount (₹)</label>
+                <input type="number" id="dailyFineAmount" class="form-control" value="10" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Publish Billing Cycle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

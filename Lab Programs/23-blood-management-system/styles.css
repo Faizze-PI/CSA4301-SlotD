@@ -1,0 +1,278 @@
+/* RaktSeva Blood Bank Scoped Styles */
+
+.donor-theme {
+  background: linear-gradient(135deg, rgba(153, 27, 27, 0.35), rgba(15, 23, 42, 0.95));
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.hospital-theme {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.35), rgba(15, 23, 42, 0.95));
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.dashboard-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile-badge .avatar {
+  font-size: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.65rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  color: #ef4444;
+  border-bottom: 2px solid #ef4444;
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Filter Bar */
+.filter-bar-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+
+.flex-2 {
+  flex: 2;
+}
+
+/* Donor Cards Grid */
+.donors-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.donor-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.donor-card:hover {
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: translateY(-2px);
+}
+
+.donor-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.blood-drop-badge {
+  background: linear-gradient(135deg, #ef4444, #991b1b);
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 800;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+.donor-name-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0.5rem 0 0.2rem 0;
+}
+
+.donor-meta-info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* Hospital Blood Banks Grid */
+.blood-banks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.5rem;
+}
+
+.hospital-bank-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.stock-chips-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.stock-chip {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem;
+  text-align: center;
+}
+
+.stock-chip .group-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.stock-chip .unit-val {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #ef4444;
+}
+
+/* Stock Matrix Grid (Hospital Admin) */
+.stock-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.stock-matrix-card {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.stock-matrix-card.low-stock {
+  border-color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.matrix-group-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ef4444;
+  margin-bottom: 0.25rem;
+}
+
+.matrix-unit-counter {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+.matrix-btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.counter-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.counter-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Digital Donor Card */
+.digital-donor-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 2px solid #ef4444;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(239, 68, 68, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.digital-donor-card::before {
+  content: "🩸 DONOR";
+  position: absolute;
+  right: -20px;
+  bottom: -20px;
+  font-size: 5rem;
+  opacity: 0.05;
+  font-weight: 900;
+}
+
+.max-w-700 {
+  max-width: 700px;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}

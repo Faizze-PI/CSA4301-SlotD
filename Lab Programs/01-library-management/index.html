@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 01 - Local Library Management System</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header with Role Switcher -->
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>📚 LibPulse - Library Portal</span>
+      <span class="brand-badge">Exp 01</span>
+    </div>
+    <div class="role-switcher">
+      <label for="roleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Active Role:</label>
+      <select id="roleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="user">User / Student View</option>
+        <option value="admin">Librarian Admin View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Student / User Interface -->
+    <div id="userSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="catalogTab">Book Catalog & Search</button>
+        <button class="tab-btn" data-tab="myHistoryTab">My Borrow History & Fines</button>
+        <button class="tab-btn" data-tab="materialsTab">Study Materials (Year/Sem)</button>
+        <button class="tab-btn" data-tab="profileTab">My Profile</button>
+      </div>
+
+      <!-- Tab: Catalog -->
+      <div id="catalogTab" class="tab-pane active">
+        <div class="card">
+          <div class="search-row">
+            <input type="text" id="userBookSearch" class="form-control" placeholder="Search books by title, author, or category...">
+            <select id="userGenreFilter" class="form-select" style="max-width: 200px;">
+              <option value="all">All Genres</option>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Data Structures">Data Structures</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Electronics">Electronics</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-3" id="booksGrid" style="margin-top: 1.5rem;">
+            <!-- Books loaded dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Borrow History & Fines -->
+      <div id="myHistoryTab" class="tab-pane">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 class="card-title" style="margin: 0;">My Borrowed Books & Returns</h2>
+            <div class="fine-badge" id="totalFinesDisplay">Total Outstanding Fine: ₹0</div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Book Title</th>
+                  <th>Issue Date</th>
+                  <th>Due Date (Exp Date)</th>
+                  <th>Status</th>
+                  <th>Fine (₹)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="borrowHistoryTableBody">
+                <!-- Rows loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Study Materials -->
+      <div id="materialsTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Academic Study Materials</h2>
+          <div class="search-row" style="margin-bottom: 1.5rem;">
+            <select id="filterYear" class="form-select">
+              <option value="all">All Years</option>
+              <option value="Year 1">Year 1</option>
+              <option value="Year 2">Year 2</option>
+              <option value="Year 3">Year 3</option>
+              <option value="Year 4">Year 4</option>
+            </select>
+            <select id="filterSem" class="form-select">
+              <option value="all">All Semesters</option>
+              <option value="Semester 1">Semester 1</option>
+              <option value="Semester 2">Semester 2</option>
+              <option value="Semester 5">Semester 5</option>
+              <option value="Semester 7">Semester 7</option>
+            </select>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Material Title</th>
+                  <th>Year</th>
+                  <th>Semester</th>
+                  <th>Subject</th>
+                  <th>File Format</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="materialsTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: User Profile -->
+      <div id="profileTab" class="tab-pane">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <h2 class="card-title">Student Profile</h2>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="profName" class="form-control" value="Faizze A." readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Register Number</label>
+            <input type="text" id="profReg" class="form-control" value="191041042" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department / Year</label>
+            <input type="text" id="profDept" class="form-control" value="Computer Science & Engineering - Year 3" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email ID</label>
+            <input type="email" id="profEmail" class="form-control" value="faizze@simats.edu">
+          </div>
+          <button class="btn btn-primary" onclick="alert('Profile details updated successfully!')">Save Profile</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Librarian Admin Interface -->
+    <div id="adminSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="adminInventoryTab">Manage Inventory</button>
+        <button class="tab-btn" data-tab="adminIssueTab">Issue & Return Books</button>
+        <button class="tab-btn" data-tab="adminMaterialsTab">Upload Study Materials</button>
+      </div>
+
+      <!-- Admin Tab: Inventory -->
+      <div id="adminInventoryTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title" id="adminBookFormTitle">Add New Book</h3>
+            <form id="adminBookForm">
+              <input type="hidden" id="editBookId">
+              <div class="form-group">
+                <label class="form-label">Book Title</label>
+                <input type="text" id="bookTitle" class="form-control" required placeholder="e.g. Internet & World Wide Web">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Author</label>
+                <input type="text" id="bookAuthor" class="form-control" required placeholder="e.g. Deitel & Deitel">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category / Genre</label>
+                <input type="text" id="bookGenre" class="form-control" required placeholder="e.g. Web Development">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Total Copies Available</label>
+                <input type="number" id="bookCopies" class="form-control" min="1" value="5" required>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn btn-primary" id="saveBookBtn">Save Book</button>
+                <button type="button" class="btn btn-secondary" id="cancelEditBookBtn" style="display: none;">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Library Inventory List</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Copies</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminInventoryTableBody">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Issue & Return -->
+      <div id="adminIssueTab" class="tab-pane">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title">Issue Book to Student</h3>
+            <form id="adminIssueForm">
+              <div class="form-group">
+                <label class="form-label">Select Book</label>
+                <select id="issueBookSelect" class="form-select" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Student Register No</label>
+                <input type="text" id="issueStudentNo" class="form-control" required placeholder="e.g. 191041042">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Loan Duration (Days)</label>
+                <input type="number" id="issueDays" class="form-control" value="14" min="1" max="30">
+              </div>
+              <button type="submit" class="btn btn-primary">Issue Book</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Issued Books Tracker & Fine Management</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Book</th>
+                    <th>Due Date</th>
+                    <th>Fine</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="adminIssuedTrackerBody">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Materials -->
+      <div id="adminMaterialsTab" class="tab-pane">
+        <div class="card" style="max-width: 600px;">
+          <h3 class="card-title">Upload Study Material</h3>
+          <form id="adminMaterialForm">
+            <div class="form-group">
+              <label class="form-label">Material / Notes Title</label>
+              <input type="text" id="matTitle" class="form-control" required placeholder="e.g. Unit 1: HTTP Protocols & Servlets">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year</label>
+              <select id="matYear" class="form-select" required>
+                <option value="Year 1">Year 1</option>
+                <option value="Year 2">Year 2</option>
+                <option value="Year 3" selected>Year 3</option>
+                <option value="Year 4">Year 4</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Semester</label>
+              <select id="matSem" class="form-select" required>
+                <option value="Semester 1">Semester 1</option>
+                <option value="Semester 2">Semester 2</option>
+                <option value="Semester 5" selected>Semester 5</option>
+                <option value="Semester 7">Semester 7</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject Name</label>
+              <input type="text" id="matSubject" class="form-control" required value="CSA4301 - Internet Programming">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload Material</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

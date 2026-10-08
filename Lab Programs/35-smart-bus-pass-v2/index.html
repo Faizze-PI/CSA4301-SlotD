@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartBus Pass v2 - Intelligent Transit Concession & Conductor Scanner</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🚍</span>
+      <div class="brand-text">
+        <span class="brand-title">SmartBus Pass v2</span>
+        <span class="brand-sub">Next-Gen Metropolitan Transit Concessions, IoT Bus ETA & NFC/QR Validation</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="commuter" onclick="switchRole('commuter')">🎒 Commuter / Student</button>
+      <button class="role-pill" data-role="conductor" onclick="switchRole('conductor')">🎫 Bus Conductor</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Transport Director Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- COMMUTER VIEW -->
+    <section id="commuterSection" class="role-view">
+      <div class="dashboard-header-card commuter-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍🎓</div>
+          <div>
+            <h3>Commuter: Divya Ramesh</h3>
+            <p class="muted">Institution: Govt Arts & Science College, Nandanam | Category: <span class="badge badge-success">Govt Student (100% Free Pass)</span></p>
+          </div>
+        </div>
+        <div class="wallet-badge-card">
+          <span class="muted text-xs">e-Wallet Balance:</span>
+          <span class="wallet-balance" id="commuterWalletBalance">₹620.00</span>
+          <button class="btn btn-outline btn-xs mt-1" onclick="openWalletTopUpModal()">+ Add Funds</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchCommuterTab('myPass')">🪪 Digital Bus Pass & QR</button>
+        <button class="tab-btn" onclick="switchCommuterTab('apply')">📝 Apply / Renew Pass</button>
+        <button class="tab-btn" onclick="switchCommuterTab('eTicket')">🎟️ Buy Transit e-Ticket</button>
+        <button class="tab-btn" onclick="switchCommuterTab('eta')">⏱️ Real-Time Bus ETA & Stoppings</button>
+      </div>
+
+      <!-- Tab: My Pass -->
+      <div id="comTabPass" class="tab-pane active">
+        <div id="commuterPassesGrid" class="passes-grid">
+          <!-- Dynamically populated pass cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Apply / Renew Pass -->
+      <div id="comTabApply" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Apply for Smart Student & Route Bus Pass</h3>
+          <p class="muted">Concessions: Government School Students travel 100% Free. College Students receive 50% state concession.</p>
+
+          <form onsubmit="handleApplyNewPass(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Applicant Full Name</label>
+                <input type="text" id="passApplicantName" class="input" value="Divya Ramesh" required>
+              </div>
+              <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="passDob" class="input" value="2005-08-22" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Applicant Category Type</label>
+                <select id="passUserCategory" class="input" onchange="calculatePassTariffPreview()">
+                  <option value="Govt Student">Government School / College Student (100% Free)</option>
+                  <option value="Private College Student">Private College / University Student (50% Concession)</option>
+                  <option value="Corporate Route Commuter">Corporate Working Professional (Standard Fare)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Institution / Organization Name</label>
+                <input type="text" id="passOrgName" class="input" value="Govt Arts & Science College" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Selected Metropolitan Route</label>
+                <select id="passRouteChoice" class="input" onchange="calculatePassTariffPreview()">
+                  <!-- Dynamically populated from routes -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Pass Validity Duration</label>
+                <select id="passDurationMonths" class="input" onchange="calculatePassTariffPreview()">
+                  <option value="1">1 Month (Monthly Renewable)</option>
+                  <option value="3">3 Months (Quarterly Pass)</option>
+                  <option value="6">6 Months (Semester Pass)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="fee-breakdown-card my-3">
+              <div class="fee-row">
+                <span>Standard Monthly Rate:</span>
+                <span id="passBaseTariffDisplay">₹850.00</span>
+              </div>
+              <div class="fee-row">
+                <span>Concession Subsidy:</span>
+                <span id="passConcessionDisplay" class="text-success font-bold">- ₹850.00 (100% Free)</span>
+              </div>
+              <div class="fee-row fee-total">
+                <span>Net Payable from Wallet:</span>
+                <span id="passNetPayableDisplay" class="font-bold text-primary font-mono" style="font-size: 1.25rem;">₹0.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Submit Bus Pass Application</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Buy e-Ticket -->
+      <div id="comTabTicket" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Single-Journey Smart Transit e-Ticket</h3>
+          <p class="muted">Instant paperless ticket charged directly to your digital e-Wallet with 2-hour boarding validity.</p>
+
+          <form onsubmit="handleBuyETicket(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Select Route</label>
+                <select id="ticketRouteChoice" class="input" onchange="updateETicketFare()">
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Number of Passengers</label>
+                <input type="number" id="ticketPassengerCount" class="input font-bold" min="1" max="6" value="1" onchange="updateETicketFare()" required>
+              </div>
+            </div>
+
+            <div class="fare-preview-box my-3">
+              <div class="fare-row">
+                <span>Stage Distance Fare:</span>
+                <span id="ticketStageFareDisplay">₹28.00</span>
+              </div>
+              <div class="fee-row fee-total">
+                <span>Total Amount Deducted:</span>
+                <span id="ticketTotalFareDisplay" class="font-bold text-success font-mono" style="font-size: 1.25rem;">₹28.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">Deduct Wallet & Generate e-Ticket</button>
+          </form>
+
+          <div id="generatedTicketPreview" class="mt-4">
+            <!-- Dynamically populated generated ticket -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Real-Time ETA -->
+      <div id="comTabEta" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Real-Time Fleet Telemetry & ETA Projector</h3>
+              <p class="muted">Live stop-by-stop transit waypoint updates broadcasted directly from conductor GPS units.</p>
+            </div>
+            <span class="badge badge-success">GPS Telemetry Active</span>
+          </div>
+
+          <div class="form-row mt-3">
+            <div class="form-group flex-2">
+              <label>Select Bus Route</label>
+              <select id="etaRouteChoice" class="input" onchange="renderEtaTimeline()">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Your Target Boarding Stop</label>
+              <select id="etaTargetStopChoice" class="input" onchange="recalculateTargetStopEta()">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+          </div>
+
+          <div class="eta-result-card my-3">
+            <div class="eta-box-header">
+              <span class="eta-time-val" id="etaMinutesDisplay">10 Mins</span>
+              <div>
+                <h4 id="etaBusHeadingText">Bus #19B (Saidapet to Kelambakkam)</h4>
+                <p class="muted" id="etaSubTextDetail">Current Location: SRP Tools OMR | Next Stop: Perungudi</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="route-timeline-container" id="etaTimelineContainer">
+            <!-- Timeline steps -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONDUCTOR VIEW -->
+    <section id="conductorSection" class="role-view hidden">
+      <div class="dashboard-header-card conductor-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍✈️</div>
+          <div>
+            <h3>Conductor: G. Annamalai (Badge #CON-409)</h3>
+            <p class="muted">Current Route: <strong>19B (Saidapet &harr; Kelambakkam)</strong> | Vehicle: <strong>TN 01 N 8412</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Optical Scanner -->
+        <div class="card">
+          <h3>Conductor Optical QR / Pass ID Validator</h3>
+          <p class="muted">Scan or enter commuter Pass ID or Ticket PNR to verify authentic transit clearance.</p>
+
+          <div class="scanner-box my-3">
+            <span class="scanner-laser"></span>
+            <span style="font-size: 3rem;">📷</span>
+            <p class="text-sm muted mt-2">Optical Scanner Ready</p>
+          </div>
+
+          <div class="form-group">
+            <label>Input Pass Token or Ticket PNR</label>
+            <div style="display: flex; gap: 0.5rem;">
+              <input type="text" id="conductorInputCode" class="input font-mono uppercase" placeholder="e.g. PASS-v2-101 or TKT-v2-401">
+              <button class="btn btn-primary" onclick="handleConductorVerifyCode()">Verify Token</button>
+            </div>
+          </div>
+
+          <div id="conductorResultCard" class="verification-card-result hidden">
+            <!-- Dynamically populated verification result -->
+          </div>
+        </div>
+
+        <!-- Update Waypoint Milestone -->
+        <div class="card">
+          <h3>Broadcast Live Route Milestone Waypoint</h3>
+          <p class="muted">Updating current arrival stop immediately recalibrates commuter countdown timers along the corridor.</p>
+
+          <form onsubmit="handleConductorBroadcastStop(event)" class="mt-3">
+            <div class="form-group">
+              <label>Current Stop Reached</label>
+              <select id="conductorStopChoice" class="input">
+                <!-- Dynamically populated -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Bus Occupancy Telemetry</label>
+              <select id="conductorPassengerLoad" class="input">
+                <option value="Low (Seats Available)">🟢 Seats Available (Low Crowd)</option>
+                <option value="Moderate (Standing Room Only)">🟡 Standing Room Only (Moderate)</option>
+                <option value="High (Full Capacity)">🔴 Full Capacity (High Volume)</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success btn-block">Broadcast Milestone to GPS Feed</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🪪</span>
+          <div>
+            <div class="metric-value" id="adminTotalPassesCount">0</div>
+            <div class="metric-label">Active Pass Holders</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🎓</span>
+          <div>
+            <div class="metric-value text-success" id="adminFreePassesCount">0</div>
+            <div class="metric-label">Free Student Concessions</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <div>
+            <div class="metric-value text-primary" id="adminTotalWalletRevenue">₹0</div>
+            <div class="metric-label">Wallet Revenue Collected</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header-flex">
+          <h3>Commuter Pass Approval Queue & Verification</h3>
+          <span class="badge badge-warning" id="adminPendingPassesBadge">Pending Approvals</span>
+        </div>
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Pass ID</th>
+                <th>Applicant</th>
+                <th>Category</th>
+                <th>Institution</th>
+                <th>Route</th>
+                <th>Validity</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminPassesTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Create New Bus Route & Stage Stoppings</h3>
+        <form onsubmit="handleAdminCreateRoute(event)" class="mt-3">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Route Number</label>
+              <input type="text" id="adminRouteNo" class="input font-bold uppercase" placeholder="e.g. 102X" required>
+            </div>
+            <div class="form-group">
+              <label>Origin & Destination</label>
+              <input type="text" id="adminRouteEndpoints" class="input" placeholder="e.g. Broadway ➔ Kelambakkam" required>
+            </div>
+            <div class="form-group">
+              <label>Stage Fare (₹)</label>
+              <input type="number" id="adminRouteFare" class="input" value="30" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Via Stopping Stages (Comma-separated in sequential order)</label>
+            <input type="text" id="adminRouteStops" class="input" placeholder="Broadway, Central, LIC, Adyar, SRP Tools, Sholinganallur, Kelambakkam" required>
+          </div>
+          <button type="submit" class="btn btn-primary">➕ Register Metropolitan Route</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Wallet Top-Up Modal -->
+  <div id="walletTopUpModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add Money to SmartBus e-Wallet</h3>
+        <button class="modal-close" onclick="closeWalletTopUpModal()">&times;</button>
+      </div>
+      <form onsubmit="handleWalletTopUpSubmit(event)">
+        <div class="form-group">
+          <label>Top-Up Amount (₹)</label>
+          <input type="number" id="walletAmountInput" class="input font-mono font-bold" min="50" max="5000" value="500" required>
+        </div>
+        <div class="form-group">
+          <label>Payment Source</label>
+          <select class="input">
+            <option>Unified Payments Interface (UPI Instant)</option>
+            <option>Debit Card / ATM Pin</option>
+            <option>Net Banking</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeWalletTopUpModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Top-Up e-Wallet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 35: Smart Bus Pass System v2 (Transit Concessions, IoT ETA & Conductor Scanner) | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

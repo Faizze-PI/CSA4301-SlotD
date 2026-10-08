@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSA4301 - Internet Programming Lab Suite</title>
+  <link rel="stylesheet" href="shared/css/theme.css">
+  <style>
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: white;
+      padding: 3rem 1.5rem;
+      border-radius: var(--radius-lg);
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+    }
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 750px;
+    }
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pill {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .pill.active, .pill:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .search-input {
+      min-width: 280px;
+      padding: 0.55rem 1rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+    .exp-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .exp-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary-light);
+    }
+    .exp-num {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .exp-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0.35rem 0 0.5rem 0;
+      color: var(--text-main);
+    }
+    .exp-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      flex-grow: 1;
+      line-height: 1.4;
+    }
+    .exp-roles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-bottom: 1rem;
+    }
+    .role-badge {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.45rem;
+      background: #f1f5f9;
+      color: #334155;
+      border-radius: var(--radius-sm);
+      font-weight: 500;
+    }
+    .stats-strip {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .stat-item h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    .stat-item p {
+      font-size: 0.8rem;
+      opacity: 0.8;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <a href="/" class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+      <span>SIMATS Engineering</span>
+      <span class="brand-badge">CSA4301</span>
+    </a>
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <button id="btnExportDb" class="btn btn-secondary btn-sm" style="font-size: 0.78rem;" title="Download entire lab database as JSON">📥 Export DB</button>
+      <button id="btnResetDb" class="btn btn-danger btn-sm" style="font-size: 0.78rem;" title="Clear and reinitialize all local storage">🔄 Reset Lab Data</button>
+      <span class="badge badge-success">Internet Programming Lab</span>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="hero">
+      <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 0.75rem;">CURRICULUM LAB SUITE</span>
+      <h1>Internet Programming Lab Experiments</h1>
+      <p>Complete professional repository of 46 web applications covering responsive UI/UX, multi-role authentication, state machines, business algorithms, and persistent data operations.</p>
+      <div class="stats-strip">
+        <div class="stat-item">
+          <h3>46</h3>
+          <p>Total Experiments</p>
+        </div>
+        <div class="stat-item">
+          <h3>7</h3>
+          <p>Domain Categories</p>
+        </div>
+        <div class="stat-item">
+          <h3>100%</h3>
+          <p>Offline & Live Ready</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter & Search Controls -->
+    <div class="filter-bar">
+      <div class="filter-pills" id="categoryFilters">
+        <button class="pill active" data-cat="all">All Experiments (46)</button>
+        <button class="pill" data-cat="transport">Transport & Booking</button>
+        <button class="pill" data-cat="ecommerce">E-Commerce</button>
+        <button class="pill" data-cat="utility">Calculators & Utility</button>
+        <button class="pill" data-cat="healthcare">Healthcare & Public</button>
+        <button class="pill" data-cat="content">Content & Portfolios</button>
+        <button class="pill" data-cat="edtech">EdTech & Exam</button>
+      </div>
+      <div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by name, role, or feature...">
+      </div>
+    </div>
+
+    <!-- Experiments Grid -->
+    <div class="grid grid-cols-3" id="experimentsGrid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <script src="shared/js/db.js"></script>
+  <script>
+    // Master catalog of all 46 experiments
+    const experiments = [
+      { id: "01", path: "01-library-management", title: "Local Library Management", cat: "healthcare", desc: "Catalog search, book borrow/return status, fine calculator, and semester-wise materials.", roles: ["Librarian Admin", "User/Student"] },
+      { id: "02", path: "02-hotel-booking", title: "Online Hotel Room Booking", cat: "transport", desc: "Search rooms, manage reservations, 3-day cancellation policy, admin pricing for 4 room types.", roles: ["Administrator", "User"] },
+      { id: "03", path: "03-bus-booking", title: "Online Bus Ticket Booking", cat: "transport", desc: "Route/schedule search, seat selection, category management (Volvo, Sleeper), PDF report generator.", roles: ["Admin", "User"] },
+      { id: "04", path: "04-train-reservation", title: "Train Reservation System", cat: "transport", desc: "Class availability, PNR status tracking (Confirmed, RAC, WL), offline/online payments, refund rules.", roles: ["Admin", "Passenger"] },
+      { id: "05", path: "05-flight-reservation", title: "Flight Reservation System", cat: "transport", desc: "Seat inventory, real-time availability, e-ticket generation, flight schedules, customer feedback.", roles: ["Administrator", "User"] },
+      { id: "06", path: "06-cake-ordering", title: "Online Cake Ordering Portal", cat: "ecommerce", desc: "Flavor/occasion catalog, size/message customization, cart, order tracking, shipping status.", roles: ["Admin", "Customer"] },
+      { id: "07", path: "07-beauty-parlour", title: "Beauty Parlour Appointment", cat: "transport", desc: "Real-time calendar slot bookings, lockout hours, stylist profiles, deposit payments.", roles: ["Salon Manager", "Customer"] },
+      { id: "08", path: "08-hospital-appointment", title: "MedCare Hospital Booking", cat: "healthcare", desc: "Doctor specialty & location search, check-in forms, appointment stats, Google Maps integration.", roles: ["Admin", "Doctor", "Patient"] },
+      { id: "09", path: "09-techsavvy-electronics", title: "TechSavvy Electronics Store", cat: "ecommerce", desc: "Gadget categories, cart management, 13 defined use cases, checkout customer tracking.", roles: ["Admin", "Customer"] },
+      { id: "10", path: "10-stylehub-fashion", title: "StyleHub Fashion Retailer", cat: "ecommerce", desc: "Apparel catalog, size guides, seasonal collections, cart, wishlists, flash sales.", roles: ["Admin", "Customer"] },
+      { id: "11", path: "11-real-estate-homefinder", title: "Home Finder Real Estate", cat: "transport", desc: "Property database, Google Maps neighborhood exploration, mortgage calculator, agent search.", roles: ["Admin", "Agent", "Buyer"] },
+      { id: "12", path: "12-insureeasy-insurance", title: "InsureEasy Policy Management", cat: "utility", desc: "Compare health/auto/home policies, premium payments, claim filing, automated SMS alerts.", roles: ["Admin", "Agent", "Customer"] },
+      { id: "13", path: "13-blossomgifts-flowers", title: "BlossomGifts Ordering Portal", cat: "ecommerce", desc: "Floral arrangements, custom delivery date/time scheduler, cart, inventory management.", roles: ["Admin", "Customer"] },
+      { id: "14", path: "14-renewmarket-marketplace", title: "ReNewMarket Second-Hand Goods", cat: "ecommerce", desc: "C2C listing tool, price negotiation channel, commodity management, logistics status.", roles: ["Admin", "Buyer", "Seller"] },
+      { id: "15", path: "15-easytoll-toll-payment", title: "EasyToll Online Toll Payment", cat: "transport", desc: "e-Wallet, advance toll pass renewal, QR code generation, operator toll booth verification.", roles: ["Admin", "Driver", "Toll Operator"] },
+      { id: "16", path: "16-complainease-grievance", title: "ComplainEase Grievance Redressal", cat: "healthcare", desc: "Citizen complaint form with photos, Google Map marker, officer proof-of-work status updates.", roles: ["Admin", "Officer", "Citizen"] },
+      { id: "17", path: "17-voteonline-evoting", title: "VoteOnline E-Voting System", cat: "edtech", desc: "Remote voting with voter ID, dual-factor OTP verification, ward allocation, live tally.", roles: ["Admin", "Voter"] },
+      { id: "18", path: "18-agrimart-agriculture", title: "AgriMart Agricultural Portal", cat: "ecommerce", desc: "Seeds/equipment catalog, farmer product/sales portal, consumer wallet payment.", roles: ["Farmer", "Public Buyer"] },
+      { id: "19", path: "19-veterinary-telehealth", title: "Tele-Vet Animal Healthcare", cat: "healthcare", desc: "Upload symptom media (video/audio/photo), Govt CVH vs private clinics, area outbreak analytics.", roles: ["Doctor", "Farmer/Pet Owner"] },
+      { id: "20", path: "20-rentride-vehicle-rental", title: "RentRide Vehicle Rentals", cat: "transport", desc: "Cars/trucks/SUVs fleet browsing, rental duration booking, admin booking approval gate.", roles: ["Admin", "Customer"] },
+      { id: "21", path: "21-job-recruitment-portal", title: "Online Job Recruitment Portal", cat: "edtech", desc: "Vacancy search by location/category, resume submission, director candidate screening.", roles: ["Admin", "Director", "Applicant"] },
+      { id: "22", path: "22-solid-waste-management", title: "Solid Waste Management", cat: "healthcare", desc: "Public complaints, dustbin tracking, truck route optimization with Google Maps, driver log.", roles: ["Admin", "Driver", "Public"] },
+      { id: "23", path: "23-blood-management-system", title: "Blood Bank Information System", cat: "healthcare", desc: "Donor registry, live blood group availability matrix, hospital stock management.", roles: ["Hospital Admin", "Donor"] },
+      { id: "24", path: "24-wanderlust-travel-agency", title: "Wanderlust Travels Agency", cat: "transport", desc: "Tour packages, food, accommodation, route scheduling, unified travel booking.", roles: ["Admin", "Traveler"] },
+      { id: "25", path: "25-road-breakdown-assistance", title: "Breakdown Assistance (Mechanic)", cat: "healthcare", desc: "Emergency nearby mechanic search, GPS geo-location, admin licensing approval.", roles: ["Admin", "Mechanic", "User"] },
+      { id: "26", path: "26-trafficsquad-police-fir", title: "Traffic Squad E-Challan FIR", cat: "healthcare", desc: "Police online FIR filing with proof photos, fine receipt generation, live traffic link.", roles: ["Admin", "Police", "Citizen"] },
+      { id: "27", path: "27-bus-pass-system", title: "Bus Pass Management (v1)", cat: "transport", desc: "Student & route passes, concession management, conductor QR scanner, monthly renewal.", roles: ["Admin", "User", "Conductor"] },
+      { id: "28a", path: "28a-artist-portfolio-artistryhub", title: "ArtistryHub Artist Portfolio", cat: "content", desc: "Visual/audio portfolio, bibliography, media gallery, exhibition updates, merchandise store.", roles: ["Artist/Admin", "Public"] },
+      { id: "28b", path: "28b-event-landing-page", title: "Single Event Landing Page", cat: "content", desc: "Speaker lineup with profiles, schedule timetable, venue details, instant attendee registration.", roles: ["Organizer", "Attendee"] },
+      { id: "30", path: "30-ijsse-scopus-journal", title: "IJSSE Scopus Journal Publisher", cat: "content", desc: "ISSN journal, manuscript submission, 4-tier editorial workflow (Editor, Reviewer, Author).", roles: ["Editor", "Reviewer", "Author"] },
+      { id: "31", path: "31-komatha-dairy-farm", title: "Ko-Matha Smart Dairy Farm", cat: "ecommerce", desc: "A1 cow milk & sweets, daily/monthly stock reports, customer orders, milk vendor logs.", roles: ["Admin", "Vendor", "Customer"] },
+      { id: "32", path: "32-ram-infotech-laptop-service", title: "Ram Infotech Laptop Sales & Repair", cat: "ecommerce", desc: "Store laptop catalog, repair service ticket tracker, rental agreement contracts.", roles: ["Admin", "Technician", "Customer"] },
+      { id: "33", path: "33-kodaikanaleats-dining-rooms", title: "KodaikanalEats Dining & Rooms", cat: "transport", desc: "Table bookings, seasonal suite pricing (Single, Double, Deluxe), room boy staffing.", roles: ["Admin", "Customer"] },
+      { id: "34", path: "34-learnwell-tuition-centre", title: "LearnWell Tuition Centre", cat: "edtech", desc: "Subject fees, class announcements, student monthly/yearly reports, maintenance tickets.", roles: ["Admin", "Teacher", "Student"] },
+      { id: "35", path: "35-smart-bus-pass-v2", title: "Smart Bus Pass System (v2)", cat: "transport", desc: "e-Wallet integration, QR code passes, stops & timing, conductor verification, ETA calculation.", roles: ["Admin", "Commuter", "Conductor"] },
+      { id: "36a", path: "36a-educonnect-online-lms", title: "EduConnect Online Teaching LMS", cat: "edtech", desc: "Course catalog, video classes, quiz modules, timetable and subject allocation.", roles: ["Admin", "Teacher", "Student"] },
+      { id: "36b", path: "36b-bookhaven-online-bookstore", title: "BookHaven Online Bookstore", cat: "ecommerce", desc: "Curated collections, bestsellers carousel, cart, checkout, reviews, and blog recommendations.", roles: ["Customer", "Admin"] },
+      { id: "37", path: "37-professional-portfolio", title: "MyProfessionalShowcase Portfolio", cat: "content", desc: "Career milestone timeline, interactive project demo showcase, downloadable resume, contact form.", roles: ["Professional", "Recruiter"] },
+      { id: "38", path: "38-gourmet-haven-restaurant", title: "Gourmet Haven Fine Dining", cat: "content", desc: "Interactive categorized menu, table reservation calendar, chef biographies, Google Maps.", roles: ["Manager", "Customer"] },
+      { id: "39", path: "39-general-ecommerce-store", title: "Universal Online Store", cat: "ecommerce", desc: "Product catalog with facets (price, brand), shopping cart state, order summary & email simulation.", roles: ["Customer", "Admin"] },
+      { id: "40", path: "40-travel-blog-interactive-map", title: "Travel Blog & Interactive Map", cat: "content", desc: "Travel journals, geotagged clickable destination map, photo galleries, comments.", roles: ["Traveler", "Reader"] },
+      { id: "41", path: "41-digital-recipe-book", title: "Digital Recipe Book Platform", cat: "content", desc: "Recipe instructions, ingredient scaler by servings, weekly meal planner, shopping list maker.", roles: ["Chef/Creator", "User"] },
+      { id: "42", path: "42-electricity-bill-payment", title: "Electricity Bill Payment Engine", cat: "utility", desc: "Domestic vs Commercial tiered slab tariff engine, bi-monthly cycle, Rs. 10/day fine calculator.", roles: ["Admin", "Customer"] },
+      { id: "43", path: "43-online-placement-exam", title: "Online Placement Examination", cat: "edtech", desc: "Scheduled candidate exam, auto-grading, pass list and rank scorecard generation.", roles: ["Admin", "Candidate"] },
+      { id: "44", path: "44-painting-rating-review", title: "Art Rating & Sentiment Review", cat: "content", desc: "1-5 star artwork ratings, positive/negative sentiment aggregation, owner display packages.", roles: ["Admin", "Artist Owner", "Customer"] },
+      { id: "45", path: "45-income-tax-calculator", title: "Income Tax Calculation Webpage", cat: "utility", desc: "Net taxable income (Gross, HRA, 80C, 80D), Rs. 500k zero rebate, 5%/20%/30% tax slabs.", roles: ["Admin", "Employee"] },
+      { id: "46", path: "46-phone-bill-payment", title: "Online Phone Bill Payment", cat: "utility", desc: "Monthly billing dashboard, partial/full payment, payment history, Rs. 10/day overdue fine.", roles: ["Admin", "Customer"] }
+    ];
+
+    const grid = document.getElementById('experimentsGrid');
+    const searchInput = document.getElementById('searchInput');
+    const filterPills = document.querySelectorAll('.pill');
+
+    let currentCat = 'all';
+    let searchQuery = '';
+
+    function renderCards() {
+      grid.innerHTML = '';
+      const filtered = experiments.filter(exp => {
+        const matchesCat = currentCat === 'all' || exp.cat === currentCat;
+        const matchesSearch = exp.title.toLowerCase().includes(searchQuery) ||
+                              exp.desc.toLowerCase().includes(searchQuery) ||
+                              exp.id.includes(searchQuery) ||
+                              exp.roles.some(r => r.toLowerCase().includes(searchQuery));
+        return matchesCat && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">No experiments match your search criteria.</div>`;
+        return;
+      }
+
+      filtered.forEach(exp => {
+        const card = document.createElement('div');
+        card.className = 'exp-card';
+        card.innerHTML = `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="exp-num">EXPERIMENT ${exp.id}</span>
+              <span class="badge badge-primary">${exp.cat}</span>
+            </div>
+            <h2 class="exp-title">${exp.title}</h2>
+            <p class="exp-desc">${exp.desc}</p>
+            <div class="exp-roles">
+              ${exp.roles.map(r => `<span class="role-badge">${r}</span>`).join('')}
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+            <a href="${exp.path}/index.html" class="btn btn-primary btn-sm" style="flex: 1;">Launch App</a>
+            <a href="${exp.path}/README.md" class="btn btn-secondary btn-sm" target="_blank">Manual</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      renderCards();
+    });
+
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        filterPills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentCat = pill.dataset.cat;
+        renderCards();
+      });
+    });
+
+    renderCards();
+
+    // Lab Suite Database Utilities
+    const exportBtn = document.getElementById('btnExportDb');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        try {
+          const payload = typeof DB !== 'undefined' && DB.exportAll ? DB.exportAll() : JSON.stringify(localStorage);
+          const blob = new Blob([payload], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `csa4301_lab_suite_backup_${new Date().toISOString().slice(0, 10)}.json`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          alert('Failed to export database: ' + err.message);
+        }
+      });
+    }
+
+    const resetBtn = document.getElementById('btnResetDb');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset all lab data? This will clear all local storage records across all 47 experiments and restore clean initial state for viva/demo.')) {
+          if (typeof DB !== 'undefined' && DB.clearAll) {
+            DB.clearAll();
+          } else {
+            localStorage.clear();
+          }
+          alert('All lab application state has been successfully reset.');
+          location.reload();
+        }
+      });
+    }
+  </script>
+</body>
+</html>

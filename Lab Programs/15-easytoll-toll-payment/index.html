@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyToll - Advanced Online Toll Payment & Pass System</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🛣️</span>
+      <div class="brand-text">
+        <span class="brand-title">EasyToll</span>
+        <span class="brand-sub">Express Highway Digital Tollway & Pass Management</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="user" onclick="switchRole('user')">🚗 Commuter / Driver</button>
+      <button class="role-pill" data-role="operator" onclick="switchRole('operator')">🛂 Toll Gate Operator</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">⚙️ System Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <!-- Quick notification alert banner -->
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- USER VIEW -->
+    <section id="userSection" class="role-view">
+      <div class="dashboard-header-card">
+        <div class="user-profile-badge">
+          <div class="avatar">🚘</div>
+          <div>
+            <h3 id="currentUserName">Rajesh Kumar (TN 09 CB 8472)</h3>
+            <p class="muted">Fastag & EasyToll Registered Vehicle | Car / SUV</p>
+          </div>
+        </div>
+        <div class="wallet-badge">
+          <span class="wallet-label">e-Wallet Balance</span>
+          <span class="wallet-amount" id="userWalletBalance">₹1,450.00</span>
+          <button class="btn btn-secondary btn-sm" onclick="openTopUpModal()">+ Top Up Wallet</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs for User -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchUserTab('buyTicket')">🎫 Buy Toll e-Ticket</button>
+        <button class="tab-btn" onclick="switchUserTab('tollPasses')">🪪 My Toll Passes & QR</button>
+        <button class="tab-btn" onclick="switchUserTab('applyPass')">📝 Apply / Renew Pass</button>
+        <button class="tab-btn" onclick="switchUserTab('history')">📜 Transaction History</button>
+      </div>
+
+      <!-- Tab: Buy eTicket -->
+      <div id="tabBuyTicket" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Instant Advance Toll e-Ticket</h3>
+            <p class="muted">Pay before arriving at the plaza to cruise through express QR lanes.</p>
+            <form id="buyTicketForm" onsubmit="handleBuyTicket(event)">
+              <div class="form-group">
+                <label>Select Toll Plaza</label>
+                <select id="ticketPlaza" class="input" onchange="calculateTicketFare()" required>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Vehicle Number</label>
+                  <input type="text" id="ticketVehicleNo" class="input uppercase" value="TN 09 CB 8472" required>
+                </div>
+                <div class="form-group">
+                  <label>Vehicle Category</label>
+                  <select id="ticketVehicleType" class="input" onchange="calculateTicketFare()" required>
+                    <option value="Car">Car / Jeep / Van</option>
+                    <option value="LCV">Light Commercial Vehicle (LCV)</option>
+                    <option value="Truck">Bus / 2-Axle Truck</option>
+                    <option value="MultiAxle">3+ Axle Heavy Commercial</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Trip Type</label>
+                  <select id="ticketTripType" class="input" onchange="calculateTicketFare()">
+                    <option value="single">Single Journey</option>
+                    <option value="return">Return Journey (Within 24h)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Payment Source</label>
+                  <select id="ticketPayMethod" class="input">
+                    <option value="wallet">e-Wallet (Instant Deduct)</option>
+                    <option value="upi">UPI / Net Banking</option>
+                    <option value="card">Credit / Debit Card</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="fare-preview-box">
+                <div class="fare-row">
+                  <span>Base Toll Rate:</span>
+                  <span id="previewBaseFare">₹85.00</span>
+                </div>
+                <div class="fare-row">
+                  <span>Return Discount:</span>
+                  <span id="previewDiscount">₹0.00</span>
+                </div>
+                <div class="fare-row total">
+                  <span>Net Payable Amount:</span>
+                  <span id="previewTotalFare">₹85.00</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block mt-3">⚡ Pay & Generate e-Ticket QR</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Latest Generated e-Ticket</h3>
+            <div id="latestTicketDisplay" class="ticket-display-container">
+              <p class="muted text-center py-5">No recently purchased e-ticket in this session. Book on the left to generate instant QR code.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: My Passes & QR -->
+      <div id="tabTollPasses" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Active Toll Passes & Concession Passes</h3>
+              <p class="muted">Display pass QR code at the toll booth or keep on dashboard.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="switchUserTab('applyPass')">+ Apply New Pass</button>
+          </div>
+          <div id="userPassesGrid" class="passes-grid mt-3">
+            <!-- Passes rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Apply / Renew Pass -->
+      <div id="tabApplyPass" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Apply for Route / Monthly Toll Pass</h3>
+          <p class="muted">Monthly unlimited and discounted trip passes for frequent highway commuters.</p>
+          <form id="applyPassForm" onsubmit="handleApplyPass(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Applicant Full Name</label>
+                <input type="text" id="passApplicant" class="input" value="Rajesh Kumar" required>
+              </div>
+              <div class="form-group">
+                <label>Contact Phone Number</label>
+                <input type="tel" id="passPhone" class="input" value="+91 98401 23456" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Vehicle Registration No.</label>
+                <input type="text" id="passVehicleNo" class="input uppercase" value="TN 09 CB 8472" required>
+              </div>
+              <div class="form-group">
+                <label>Vehicle Class</label>
+                <select id="passVehicleClass" class="input" onchange="calculatePassFee()">
+                  <option value="Car">Car / SUV (Non-commercial)</option>
+                  <option value="LCV">Light Commercial Vehicle</option>
+                  <option value="Truck">Bus / Commercial Truck</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Select Toll Plaza</label>
+              <select id="passPlaza" class="input" onchange="calculatePassFee()" required>
+                <!-- Plazas populated dynamically -->
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Pass Type & Validity</label>
+                <select id="passType" class="input" onchange="calculatePassFee()">
+                  <option value="monthly_unlimited">Monthly Unlimited Passes (30 Days)</option>
+                  <option value="trips_50">50-Trips FastPass (60 Days)</option>
+                  <option value="local_resident">Local Resident Subsidized (20 km Radius)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Pass Fee</label>
+                <input type="text" id="passCalculatedFee" class="input font-bold" value="₹1,200.00" readonly>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>RC Book / Residential Address Proof</label>
+              <input type="text" id="passDocRef" class="input" placeholder="e.g. RC-TN09CB8472-DIGILOCKER" value="RC-TN09CB8472-VERIFIED">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-3">Submit Pass Application</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Transaction History -->
+      <div id="tabHistory" class="tab-pane">
+        <div class="card">
+          <h3>Toll Crossing & Payment History</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Date & Time</th>
+                  <th>Transaction ID</th>
+                  <th>Toll Plaza</th>
+                  <th>Type</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="userHistoryTableBody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOLL OPERATOR VIEW -->
+    <section id="operatorSection" class="role-view hidden">
+      <div class="dashboard-header-card operator-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🛂</div>
+          <div>
+            <h3>Toll Plaza Lane Operator Console</h3>
+            <p class="muted">Plaza: <strong id="operatorPlazaName">Sriperumbudur Toll Plaza (NH-48)</strong> | Lane: #04 (Express Fast Lane)</p>
+          </div>
+        </div>
+        <div class="operator-controls">
+          <select id="operatorPlazaSelector" class="input input-sm" onchange="changeOperatorPlaza()">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-4">
+        <div class="card">
+          <h3>⚡ Scan & Verify QR Toll Token</h3>
+          <p class="muted">Simulate barrier camera scan or manual code verification.</p>
+          
+          <div class="scanner-simulation-box">
+            <div class="scanner-reticle"></div>
+            <div class="scanner-status">READY FOR SCANNING</div>
+          </div>
+
+          <form id="verifyCodeForm" onsubmit="handleOperatorVerify(event)" class="mt-3">
+            <div class="form-group">
+              <label>Enter or Scan QR Token / Pass ID</label>
+              <div class="input-with-button">
+                <input type="text" id="scanInputCode" class="input uppercase font-mono" placeholder="e.g. ET-TKT-XXXX or ET-PASS-XXXX" required>
+                <button type="submit" class="btn btn-primary">Verify</button>
+              </div>
+            </div>
+          </form>
+
+          <div class="quick-test-tokens mt-3">
+            <span class="muted text-sm">Quick Test Tokens:</span>
+            <div id="quickTokensContainer" class="token-chips"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Verification Result & Gate Clearance</h3>
+          <div id="operatorResultBox" class="result-box waiting">
+            <div class="result-placeholder">
+              <span class="placeholder-icon">📷</span>
+              <p>Awaiting QR scan from incoming vehicle...</p>
+            </div>
+          </div>
+
+          <div id="gateBarrierAction" class="gate-controls mt-3 hidden">
+            <button class="btn btn-success btn-block" onclick="raiseBarrier()">🟢 Open Boom Barrier (Clear Vehicle)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mt-4">
+        <h3>Live Booth Vehicle Crossing Log</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Vehicle No</th>
+                <th>Token / Pass ID</th>
+                <th>Classification</th>
+                <th>Fare Collected</th>
+                <th>Gate Decision</th>
+              </tr>
+            </thead>
+            <tbody id="boothCrossingTable">
+              <!-- Populated dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <div>
+            <div class="metric-value" id="adminTotalRevenue">₹84,250</div>
+            <div class="metric-label">Total Toll Revenue Collected</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🚗</span>
+          <div>
+            <div class="metric-value" id="adminTotalCrossings">1,420</div>
+            <div class="metric-label">Total Verified Crossings</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🪪</span>
+          <div>
+            <div class="metric-value" id="adminPendingPassesCount">2</div>
+            <div class="metric-label">Pass Applications Pending Approval</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('passes')">📋 Manage & Approve Passes</button>
+        <button class="tab-btn" onclick="switchAdminTab('plazas')">🏢 Toll Plazas & Tariff Chart</button>
+        <button class="tab-btn" onclick="switchAdminTab('audit')">🔍 Live System Crossing Audit</button>
+      </div>
+
+      <!-- Tab: Manage Passes -->
+      <div id="adminTabPasses" class="tab-pane active">
+        <div class="card">
+          <h3>Commuter Pass Approval Queue</h3>
+          <p class="muted">Review applicant vehicle documents and issue official encrypted QR passes.</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Application ID</th>
+                  <th>Applicant</th>
+                  <th>Vehicle No</th>
+                  <th>Plaza</th>
+                  <th>Pass Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminPassesTable">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Toll Plazas & Tariffs -->
+      <div id="adminTabPlazas" class="tab-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Registered Toll Plazas</h3>
+            <div class="table-responsive mt-2">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Plaza Name</th>
+                    <th>Highway</th>
+                    <th>Base Car Fare</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="adminPlazasTable">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Add New Toll Plaza Location</h3>
+            <form id="createPlazaForm" onsubmit="handleCreatePlaza(event)">
+              <div class="form-group">
+                <label>Plaza Name</label>
+                <input type="text" id="newPlazaName" class="input" placeholder="e.g. Paranur Toll Plaza" required>
+              </div>
+              <div class="form-group">
+                <label>Highway / Route Corridor</label>
+                <input type="text" id="newPlazaRoute" class="input" placeholder="e.g. GST Road / NH-45" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Car Rate (₹)</label>
+                  <input type="number" id="newPlazaCarRate" class="input" value="70" required>
+                </div>
+                <div class="form-group">
+                  <label>LCV Rate (₹)</label>
+                  <input type="number" id="newPlazaLcvRate" class="input" value="115" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Truck Rate (₹)</label>
+                  <input type="number" id="newPlazaTruckRate" class="input" value="230" required>
+                </div>
+                <div class="form-group">
+                  <label>Multi-Axle Rate (₹)</label>
+                  <input type="number" id="newPlazaMultiRate" class="input" value="360" required>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Add Toll Plaza</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Audit -->
+      <div id="adminTabAudit" class="tab-pane">
+        <div class="card">
+          <h3>Highway Network Real-Time Audit Log</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Log Time</th>
+                  <th>Plaza</th>
+                  <th>Vehicle</th>
+                  <th>Token Reference</th>
+                  <th>Fare</th>
+                  <th>Verification Mode</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminAuditTable">
+                <!-- Dynamic rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Top Up Wallet Modal -->
+  <div id="topUpModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Top Up EasyToll e-Wallet</h3>
+        <button class="modal-close" onclick="closeTopUpModal()">&times;</button>
+      </div>
+      <form onsubmit="handleTopUpWallet(event)">
+        <p class="muted">Add funds to enable automatic zero-delay toll clearance.</p>
+        <div class="preset-chips my-3">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setTopUpAmount(200)">+ ₹200</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setTopUpAmount(500)">+ ₹500</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setTopUpAmount(1000)">+ ₹1,000</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="setTopUpAmount(2000)">+ ₹2,000</button>
+        </div>
+        <div class="form-group">
+          <label>Top Up Amount (₹)</label>
+          <input type="number" id="topUpAmountInput" class="input" value="500" min="50" step="50" required>
+        </div>
+        <div class="form-group">
+          <label>Payment Mode</label>
+          <select class="input">
+            <option>UPI (Google Pay / PhonePe / Paytm)</option>
+            <option>Net Banking (SBI / HDFC / ICICI)</option>
+            <option>Debit / Credit Card</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeTopUpModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Authorize & Add Funds</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 15: EasyToll Online Toll Payment & QR Verification System | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VetCare Telehealth - Animal Health & Regional Outbreak Surveillance</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🐾</span>
+      <div class="brand-text">
+        <span class="brand-title">VetCare Telehealth</span>
+        <span class="brand-sub">Livestock & Pet Teleconsultation with Regional Outbreak Analytics</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="farmer" onclick="switchRole('farmer')">👨‍🌾 Farmer / Pet Parent</button>
+      <button class="role-pill" data-role="doctor" onclick="switchRole('doctor')">🩺 Veterinary Doctor</button>
+      <button class="role-pill" data-role="analytics" onclick="switchRole('analytics')">📊 Regional Disease Analytics</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- FARMER / PET OWNER VIEW -->
+    <section id="farmerSection" class="role-view">
+      <div class="dashboard-header-card farmer-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🐮</div>
+          <div>
+            <h3>Murugan Dairy Farm (Farmer ID: VET-F104)</h3>
+            <p class="muted">Livestock Holding: 8 Jersey Cows, 12 Goats | District: Chengalpattu Agro Zone</p>
+          </div>
+        </div>
+        <div class="subscription-status-badge">
+          <span class="badge badge-success">Govt. CVH Subscribed (Free Care)</span>
+          <span class="text-xs muted block mt-1">Civil Veterinary Hospital Kanchipuram Unit</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchFarmerTab('consult')">🩺 New Telehealth Consultation</button>
+        <button class="tab-btn" onclick="switchFarmerTab('history')">📋 Consultation History & Prescriptions</button>
+        <button class="tab-btn" onclick="switchFarmerTab('vetcure')">📖 Common Animal Disease Encyclopedia</button>
+        <button class="tab-btn" onclick="switchFarmerTab('doctors')">👨‍⚕️ Find Veterinary Doctors & Clinics</button>
+        <button class="tab-btn" onclick="switchFarmerTab('advisories')">📢 Health Advisories & News</button>
+      </div>
+
+      <!-- Tab: New Consultation -->
+      <div id="farmerTabConsult" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Lodge Telehealth Animal Complaint</h3>
+            <p class="muted">Provide multimedia symptom details (video, audio notes, images, or clinical description).</p>
+            <form id="consultForm" onsubmit="handleFarmerSubmitConsult(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Select Animal Species</label>
+                  <select id="consultSpecies" class="input" required>
+                    <option value="Cattle / Cow">Cattle / Dairy Cow (Bovine)</option>
+                    <option value="Buffalo">Buffalo</option>
+                    <option value="Goat / Sheep">Goat / Sheep (Caprine/Ovine)</option>
+                    <option value="Dog / Canine">Pet Dog (Canine)</option>
+                    <option value="Cat / Feline">Pet Cat (Feline)</option>
+                    <option value="Poultry">Poultry / Country Chicken</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Consultation Channel / Doctor</label>
+                  <select id="consultDoctorChoice" class="input" onchange="handleDoctorChoiceChange()" required>
+                    <!-- Populated dynamically -->
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Primary Clinical Signs & Symptoms</label>
+                <input type="text" id="consultSymptomTitle" class="input" placeholder="e.g. High fever, nasal discharge, blisters on mouth and hooves" required>
+              </div>
+
+              <div class="form-group">
+                <label>Detailed Disease Observation & Behavior</label>
+                <textarea id="consultDetailedDesc" class="input" rows="3" placeholder="Animal stopped ruminating, milk yield dropped by 60%, lethargy observed since yesterday..." required></textarea>
+              </div>
+
+              <!-- Multimedia attachments -->
+              <div class="multimedia-attachments-card">
+                <h4>Multimedia Diagnostic Proof</h4>
+                <p class="muted text-xs">Simulate video, audio, or photographic evidence transmission.</p>
+
+                <div class="form-row mt-2">
+                  <div class="form-group">
+                    <label>📸 Image URL Evidence</label>
+                    <input type="text" id="consultImgUrl" class="input text-xs" value="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=500">
+                  </div>
+                  <div class="form-group">
+                    <label>🎥 Video / Audio Log Reference</label>
+                    <input type="text" id="consultMediaUrl" class="input text-xs" value="AUDIO-REC-RUMINATION-CLICK.mp3">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Payment Box for Private Doctors -->
+              <div id="privateDoctorPaymentBox" class="payment-gateway-box mt-3 hidden">
+                <div class="card-header-flex">
+                  <strong style="color: #f59e0b;">Private Doctor Consultation Fee: ₹400.00</strong>
+                  <span class="badge badge-warning">Payment Gateway Required</span>
+                </div>
+                <p class="muted text-xs mt-1">Government CVHs are free; private specialists require payment confirmation.</p>
+                <div class="form-row mt-2">
+                  <div class="form-group">
+                    <label>Payment Method</label>
+                    <select id="paymentGatewaySelect" class="input">
+                      <option value="easypaisa">EasyPaisa / UPI Mobile Wallet</option>
+                      <option value="bank">Direct Bank Transfer (IMPS/NEFT)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Transaction / UTR Reference</label>
+                    <input type="text" id="consultPaymentRef" class="input font-mono" placeholder="e.g. UTR-982104881" value="UTR-891024881">
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block mt-3">🚀 Transmit Symptoms to Veterinary Doctor</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Recent Case Summary</h3>
+            <div id="latestConsultSummary" class="latest-case-preview">
+              <div class="empty-state-box">
+                <span class="empty-icon">🩺</span>
+                <p class="muted">No consultation lodged in this session. Submit on the left to transmit diagnostic data to your selected veterinarian.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: History & Prescriptions -->
+      <div id="farmerTabHistory" class="tab-pane">
+        <div class="card">
+          <h3>My Teleconsultation Cases & Digital Prescriptions</h3>
+          <div id="farmerCasesList" class="cases-list-container mt-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Disease Encyclopedia -->
+      <div id="farmerTabVetcure" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Vetcure Animal Disease & First-Aid Encyclopedia</h3>
+              <p class="muted">Diagnostic photos, common seasonal symptoms, and veterinarian-approved first-aid protocols.</p>
+            </div>
+            <input type="text" id="vetcureSearch" class="input input-sm" placeholder="Search disease, symptom..." oninput="renderVetcureEncyclopedia()">
+          </div>
+          <div id="vetcureGrid" class="vetcure-grid mt-4">
+            <!-- Dynamically populated disease cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Doctors -->
+      <div id="farmerTabDoctors" class="tab-pane">
+        <div class="card">
+          <h3>Registered Veterinary Practitioners & Government Hospitals</h3>
+          <div id="doctorsListGrid" class="doctors-grid mt-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Advisories -->
+      <div id="farmerTabAdvisories" class="tab-pane">
+        <div class="card">
+          <h3>Livestock Health News & Outbreak Alerts</h3>
+          <div id="newsAdvisoriesList" class="news-list-container mt-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VETERINARY DOCTOR VIEW -->
+    <section id="doctorSection" class="role-view hidden">
+      <div class="dashboard-header-card doctor-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍⚕️</div>
+          <div>
+            <h3>Dr. K. Swaminathan (BVSc & AH, MVSc)</h3>
+            <p class="muted">Chief Veterinary Officer | Reg No: TN-VET-4192 | Govt. CVH Kanchipuram</p>
+          </div>
+        </div>
+        <div class="doctor-badge-group">
+          <span class="badge badge-info" id="docPendingCount">2 Cases Awaiting Response</span>
+        </div>
+      </div>
+
+      <!-- Doctor Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchDoctorTab('cases')">📋 Incoming Farmer Consultations</button>
+        <button class="tab-btn" onclick="switchDoctorTab('news')">📢 Publish Health Bulletins</button>
+        <button class="tab-btn" onclick="switchDoctorTab('profile')">🏦 Bank & EasyPaisa Payment Profile</button>
+      </div>
+
+      <!-- Doctor Tab: Cases -->
+      <div id="doctorTabCases" class="tab-pane active">
+        <div class="card">
+          <h3>Farmer Diagnostic Requests & Case Responses</h3>
+          <div id="doctorCasesQueue" class="doctor-cases-grid mt-3">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Doctor Tab: Publish News -->
+      <div id="doctorTabNews" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Broadcast Livestock Health Bulletin</h3>
+          <p class="muted">Publish preventive vaccination schedules, seasonal advisories, and hygiene alerts to all registered farmers.</p>
+          <form onsubmit="handleDoctorPublishNews(event)" class="mt-3">
+            <div class="form-group">
+              <label>Advisory Title</label>
+              <input type="text" id="newBulletinTitle" class="input" placeholder="e.g. Mandatory Lumpy Skin Disease (LSD) Ring Vaccination Drive" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Target Species</label>
+                <select id="newBulletinSpecies" class="input">
+                  <option value="All Livestock">All Livestock & Pets</option>
+                  <option value="Cattle / Bovine">Cattle / Dairy Herds</option>
+                  <option value="Goat & Sheep">Goats & Sheep</option>
+                  <option value="Canine & Feline">Dogs & Cats</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Urgency Level</label>
+                <select id="newBulletinUrgency" class="input">
+                  <option value="Advisory">Advisory Bulletin</option>
+                  <option value="Warning">Warning / Epidemic Alert</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Full Advisory Content</label>
+              <textarea id="newBulletinBody" class="input" rows="4" placeholder="Detail symptoms to watch for, quarantine guidelines, and recommended CVH vaccination dates..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Broadcast Bulletin to Farmers</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Doctor Tab: Profile -->
+      <div id="doctorTabProfile" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Doctor Settlement & Payment Gateway Setup</h3>
+          <p class="muted">Private clinics receive consultation fees via direct bank transfer or EasyPaisa mobile account.</p>
+          <form onsubmit="handleDoctorSavePaymentProfile(event)" class="mt-3">
+            <div class="form-group">
+              <label>Doctor Full Name</label>
+              <input type="text" class="input" value="Dr. K. Swaminathan" readonly>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" id="docBankName" class="input" value="State Bank of India (SBI) - Agro Branch">
+              </div>
+              <div class="form-group">
+                <label>Bank Account Number</label>
+                <input type="text" id="docBankAcc" class="input font-mono" value="984210492819">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" id="docBankIfsc" class="input font-mono uppercase" value="SBIN0001048">
+              </div>
+              <div class="form-group">
+                <label>EasyPaisa / UPI Mobile Number</label>
+                <input type="tel" id="docEasyPaisa" class="input font-mono" value="+91 94441 90283">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save Settlement Credentials</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- REGIONAL DISEASE OUTBREAK ANALYTICS VIEW -->
+    <section id="analyticsSection" class="role-view hidden">
+      <div class="card mb-4">
+        <div class="card-header-flex">
+          <div>
+            <h3>🛰️ Regional Livestock & Pet Disease Surveillance System</h3>
+            <p class="muted">Automated spatial and epidemiological clustering of reported animal diseases to pinpoint outbreak epicenters.</p>
+          </div>
+          <span class="badge badge-warning">Surveillance Active</span>
+        </div>
+
+        <div class="grid-2 mt-4">
+          <div>
+            <h4>Disease Frequency Breakdown (By Case Reports)</h4>
+            <div id="analyticsDiseaseBars" class="analytics-bars-container mt-3">
+              <!-- Dynamically populated disease frequency bars -->
+            </div>
+          </div>
+
+          <div>
+            <h4>Regional Spatial Clustering Heatmap</h4>
+            <div class="regional-outbreak-table-box mt-3">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>District / Cluster</th>
+                    <th>Prevalent Disease</th>
+                    <th>Incidence</th>
+                    <th>Alert Status</th>
+                  </tr>
+                </thead>
+                <tbody id="regionalClustersTable">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Doctor Prescription Modal -->
+  <div id="doctorPrescriptionModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Formulate Veterinary Clinical Prescription</h3>
+        <button class="modal-close" onclick="closeDoctorPrescriptionModal()">&times;</button>
+      </div>
+      <form onsubmit="handleDoctorSubmitPrescription(event)">
+        <input type="hidden" id="modalCaseId">
+        <div class="form-group">
+          <label>Case ID & Patient Animal</label>
+          <input type="text" id="modalCaseTitleDisplay" class="input font-mono" readonly>
+        </div>
+        <div class="form-group">
+          <label>Confirmed Diagnosis</label>
+          <select id="modalPrescriptionDiagnosis" class="input" required>
+            <option value="Foot and Mouth Disease (FMD)">Foot and Mouth Disease (FMD)</option>
+            <option value="Lumpy Skin Disease (LSD)">Lumpy Skin Disease (LSD)</option>
+            <option value="Bovine Mastitis (Udder Infection)">Bovine Mastitis (Udder Infection)</option>
+            <option value="Canine Parvovirus (CPV)">Canine Parvovirus (CPV)</option>
+            <option value="Tick Fever (Haemoprotozoa)">Tick Fever (Haemoprotozoa)</option>
+            <option value="Rumen Acidosis / Indigestion">Rumen Acidosis / Indigestion</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prescribed Drug & Dosage Protocol</label>
+          <textarea id="modalPrescriptionMedication" class="input" rows="3" placeholder="1. Inj. Enrofloxacin 10ml IM for 3 days&#10;2. Meloxicam 15ml for fever reduction&#10;3. Potassium permanganate mouth wash 1:1000" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Dietary & Quarantine Instructions for Farmer</label>
+          <textarea id="modalPrescriptionCare" class="input" rows="2" placeholder="Isolate animal from common milking stall. Provide soft rice gruel and electrolyte water." required></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeDoctorPrescriptionModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Transmit Official Prescription</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 19: Veterinary Telehealth & Disease Analytics System | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KodaikanalEats & MistyHills Resort - Dining Reservations & Suite Stays</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🌲</span>
+      <div class="brand-text">
+        <span class="brand-title">KodaikanalEats</span>
+        <span class="brand-sub">Hill Station Dining Reservations, Mountain View Suites & Attendant Staffing</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="tourist" onclick="switchRole('tourist')">🧳 Tourist / Vacationer</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Resort & Dining Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- TOURIST / GUEST VIEW -->
+    <section id="touristSection" class="role-view">
+      <!-- Hill Station Hero -->
+      <div class="kodai-hero-card mb-4">
+        <div>
+          <span class="badge badge-success mb-2" id="seasonDisplayBadge">🌸 Non-Seasonal Regular Tariff Active</span>
+          <h1 class="hero-title">Experience the Magic of the Princess of Hill Stations</h1>
+          <p class="muted" style="max-width: 650px;">Reserve premier candlelit dining overlooking the mist-clad Kodai Lake or book colonial mountain-view suites with personalized room attendant service.</p>
+        </div>
+        <div class="header-action-group">
+          <button class="btn btn-primary" onclick="switchTouristTab('dining')">🍽️ Book Table</button>
+          <button class="btn btn-outline" onclick="switchTouristTab('suites')">🏨 Reserve Suites</button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTouristTab('dining')">🍽️ Local Dining & Restaurants</button>
+        <button class="tab-btn" onclick="switchTouristTab('suites')">🛏️ Suites & Room Stays</button>
+        <button class="tab-btn" onclick="switchTouristTab('myBookings')">📜 My Confirmed Vouchers</button>
+      </div>
+
+      <!-- Tab: Dining -->
+      <div id="touristTabDining" class="tab-pane active">
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Cuisine Specialization</label>
+              <select id="cuisineFilterSelect" class="input" onchange="filterRestaurants()">
+                <option value="All">All Cuisines (Fine Dining, Cafe, Specialty)</option>
+                <option value="South Indian & Chettinad">South Indian & Chettinad Spices</option>
+                <option value="Continental & Bakeries">Continental, Pastas & Artisan Bakery</option>
+                <option value="Tibetan & Himalayan">Tibetan Momos & Thukpa Specialties</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Location Area</label>
+              <select id="locationFilterSelect" class="input" onchange="filterRestaurants()">
+                <option value="All">All Kodaikanal Locations</option>
+                <option value="Lake Road">Kodai Lake Promenade</option>
+                <option value="Coaker's Walk">Coaker's Walk Ridge</option>
+                <option value="Upper Shola">Upper Shola Pine Forest</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="restaurantsGrid" class="restaurants-cards-grid">
+          <!-- Dynamically populated restaurant cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Suites & Stays -->
+      <div id="touristTabSuites" class="tab-pane">
+        <div class="suites-grid mb-4" id="suitesGrid">
+          <!-- Dynamically populated suite cards -->
+        </div>
+      </div>
+
+      <!-- Tab: My Bookings -->
+      <div id="touristTabBookings" class="tab-pane">
+        <div class="card">
+          <h3>Your Confirmed Dining Reservations & Room Vouchers</h3>
+          <div id="guestBookingsList" class="bookings-list mt-3">
+            <!-- Dynamically populated vouchers -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESORT ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="dashboard-header-card admin-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🏛️</div>
+          <div>
+            <h3>Kodaikanal Hospitality Operations Control</h3>
+            <p class="muted">Manage seasonal price surges, assign room attendants, and monitor guest table covers.</p>
+          </div>
+        </div>
+        <div class="season-toggle-box">
+          <span class="muted text-xs mr-2">Pricing Matrix Season:</span>
+          <button class="btn btn-warning btn-sm" id="btnToggleSeason" onclick="toggleSeasonalTariff()">Toggle Peak Season Surge (+40%)</button>
+        </div>
+      </div>
+
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🍽️</span>
+          <div>
+            <div class="metric-value" id="adminTotalTableBookings">0</div>
+            <div class="metric-label">Dining Reservations</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🛏️</span>
+          <div>
+            <div class="metric-value" id="adminTotalRoomNights">0</div>
+            <div class="metric-label">Suite Bookings</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🧑‍🍳</span>
+          <div>
+            <div class="metric-value text-success" id="adminAvailableAttendants">3</div>
+            <div class="metric-label">Active Room Attendants</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Room Boys / Attendant Roster -->
+        <div class="card">
+          <h3>Room Boys & Housekeeping Attendants Allocation</h3>
+          <p class="muted">Dedicated service attendants assigned to suites for room service and luggage care.</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Attendant ID</th>
+                  <th>Name</th>
+                  <th>Assigned Suite Tier</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminAttendantsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Master Bookings Table -->
+        <div class="card">
+          <h3>Combined Guest Bookings Ledger</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Voucher ID</th>
+                  <th>Type</th>
+                  <th>Guest Name</th>
+                  <th>Details</th>
+                  <th>Assigned Staff</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="adminBookingsTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Table Booking Modal -->
+  <div id="tableBookingModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Reserve Restaurant Dining Table</h3>
+        <button class="modal-close" onclick="closeTableModal()">&times;</button>
+      </div>
+      <form onsubmit="handleConfirmTableBooking(event)">
+        <input type="hidden" id="bookRestId">
+        <div class="form-group">
+          <label>Selected Dining Destination</label>
+          <input type="text" id="bookRestNameDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Guest Full Name</label>
+            <input type="text" id="bookGuestName" class="input" value="Siddharth Menon" required>
+          </div>
+          <div class="form-group">
+            <label>Contact Mobile</label>
+            <input type="tel" id="bookGuestPhone" class="input font-mono" value="+91 98401 55621" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Reservation Date</label>
+            <input type="date" id="bookDiningDate" class="input" value="2026-10-12" required>
+          </div>
+          <div class="form-group">
+            <label>Dining Time Slot</label>
+            <select id="bookDiningSlot" class="input">
+              <option value="Lunch: 12:30 PM - 02:00 PM">Lunch: 12:30 PM - 02:00 PM</option>
+              <option value="High Tea & Sunset: 04:30 PM - 06:00 PM">High Tea & Sunset: 04:30 PM - 06:00 PM</option>
+              <option value="Dinner: 07:30 PM - 09:30 PM" selected>Dinner: 07:30 PM - 09:30 PM</option>
+              <option value="Candlelight Lakeview: 09:30 PM - 11:00 PM">Candlelight Lakeview: 09:30 PM - 11:00 PM</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Party Size (Headcount)</label>
+            <input type="number" id="bookGuestCount" class="input font-bold" min="1" max="12" value="2" required>
+          </div>
+          <div class="form-group">
+            <label>Seating Preference</label>
+            <select id="bookSeatingPref" class="input">
+              <option value="Balcony Lake View">Balcony Lake View (Open Air)</option>
+              <option value="Indoor Fireplace Cozy">Indoor Fireplace Cozy</option>
+              <option value="Garden Gazebo">Garden Gazebo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeTableModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Table Reservation</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Suite Stay Booking Modal -->
+  <div id="suiteBookingModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Book Resort Suite & Assign Attendant</h3>
+        <button class="modal-close" onclick="closeSuiteModal()">&times;</button>
+      </div>
+      <form onsubmit="handleConfirmSuiteBooking(event)">
+        <input type="hidden" id="bookSuiteId">
+        <div class="form-group">
+          <label>Selected Suite Category</label>
+          <input type="text" id="bookSuiteNameDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Guest Name</label>
+            <input type="text" id="suiteGuestName" class="input" value="Siddharth Menon" required>
+          </div>
+          <div class="form-group">
+            <label>Contact Phone</label>
+            <input type="tel" id="suiteGuestPhone" class="input font-mono" value="+91 98401 55621" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Check-in Date</label>
+            <input type="date" id="suiteCheckInDate" class="input" value="2026-10-15" onchange="calculateSuiteStayTariff()" required>
+          </div>
+          <div class="form-group">
+            <label>Number of Nights</label>
+            <input type="number" id="suiteNights" class="input font-mono font-bold" min="1" max="14" value="2" onchange="calculateSuiteStayTariff()" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dedicated Room Attendant (Room Boy)</label>
+          <select id="suiteAttendantSelect" class="input">
+            <!-- Dynamically populated from available attendants -->
+          </select>
+        </div>
+
+        <div class="fee-breakdown-card my-3">
+          <div class="fee-row">
+            <span>Base Tariff Per Night:</span>
+            <span id="suiteNightlyRateDisplay">₹3,500.00</span>
+          </div>
+          <div class="fee-row">
+            <span>Seasonal Surge Multiplier:</span>
+            <span id="suiteSeasonMultiplierDisplay" class="font-bold text-success">Regular (1.0x)</span>
+          </div>
+          <div class="fee-row fee-total">
+            <span>Total Stay Amount:</span>
+            <span id="suiteTotalAmountDisplay" class="font-bold text-success font-mono" style="font-size: 1.25rem;">₹7,000.00</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeSuiteModal()">Cancel</button>
+          <button type="submit" class="btn btn-success">✅ Confirm Reservation & Issue Voucher</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 33: KodaikanalEats Dining & Room Stays Management Platform | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
