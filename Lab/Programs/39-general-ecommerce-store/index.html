@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniStore - Universal E-Commerce Marketplace</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-shopping-bag"></i></div>
+                <div>
+                    <h1>OmniStore</h1>
+                    <p class="subtitle">Universal Online E-Commerce Platform</p>
+                </div>
+            </div>
+
+            <div class="header-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="headerSearchInput" placeholder="Search 10,000+ products, brands, categories..." onkeyup="handleHeaderSearch(event)">
+            </div>
+
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-user-circle"></i> Role:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="customer">Shopper (Alex Kumar)</option>
+                        <option value="merchant">Merchant / Admin</option>
+                    </select>
+                </div>
+                <button class="cart-btn" onclick="showTab('cart')">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-label">Cart</span>
+                    <span class="cart-badge" id="cartCountBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="storefront" onclick="showTab('storefront')"><i class="fas fa-store"></i> Storefront</button>
+            <button class="nav-tab" data-tab="catalog" onclick="showTab('catalog')"><i class="fas fa-th-large"></i> Product Catalog</button>
+            <button class="nav-tab" data-tab="cart" onclick="showTab('cart')"><i class="fas fa-shopping-basket"></i> Cart (<span id="cartCountNav">0</span>)</button>
+            <button class="nav-tab" data-tab="orders" onclick="showTab('orders')"><i class="fas fa-box"></i> Order History</button>
+            <button class="nav-tab" data-tab="merchant" id="tabMerchant" style="display:none;" onclick="showTab('merchant')"><i class="fas fa-warehouse"></i> Merchant Inventory</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: STOREFRONT -->
+        <section id="tab-storefront" class="content-tab active">
+            <!-- Promo Banner -->
+            <div class="promo-banner">
+                <div class="promo-content">
+                    <span class="badge promo-tag"><i class="fas fa-bolt"></i> FESTIVAL OF SAVINGS</span>
+                    <h2>Mega Electronics & Lifestyle Showcase</h2>
+                    <p>Flat 15% discount on all orders above ₹1,500 with code <strong>SAVE15</strong>. Free express delivery across India.</p>
+                    <button class="btn btn-primary" onclick="showTab('catalog')"><i class="fas fa-shopping-bag"></i> Shop Now</button>
+                </div>
+                <div class="promo-badge-icon">
+                    <i class="fas fa-tags fa-6x" style="color:rgba(16,185,129,0.3)"></i>
+                </div>
+            </div>
+
+            <!-- Category Pills -->
+            <div class="category-strip">
+                <div class="cat-pill" onclick="quickFilterCategory('Electronics')"><i class="fas fa-laptop"></i> Electronics</div>
+                <div class="cat-pill" onclick="quickFilterCategory('Apparel')"><i class="fas fa-tshirt"></i> Apparel & Fashion</div>
+                <div class="cat-pill" onclick="quickFilterCategory('Footwear')"><i class="fas fa-shoe-prints"></i> Footwear</div>
+                <div class="cat-pill" onclick="quickFilterCategory('Home')"><i class="fas fa-couch"></i> Home & Living</div>
+                <div class="cat-pill" onclick="quickFilterCategory('Accessories')"><i class="fas fa-clock"></i> Accessories</div>
+            </div>
+
+            <!-- Featured Products -->
+            <div class="section-block">
+                <div class="section-header-row">
+                    <h3>Featured Trending Products</h3>
+                    <button class="btn btn-link" onclick="showTab('catalog')">View All Products <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="products-grid" id="featuredGrid">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CATALOG -->
+        <section id="tab-catalog" class="content-tab">
+            <div class="catalog-layout">
+                <aside class="catalog-sidebar">
+                    <h3><i class="fas fa-sliders-h"></i> Refine Catalog</h3>
+                    
+                    <div class="filter-group">
+                        <label>Category:</label>
+                        <select id="catSelect" onchange="filterProducts()">
+                            <option value="All">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Apparel">Apparel & Fashion</option>
+                            <option value="Footwear">Footwear</option>
+                            <option value="Home">Home & Living</option>
+                            <option value="Accessories">Accessories</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Brand:</label>
+                        <select id="brandSelect" onchange="filterProducts()">
+                            <option value="All">All Brands</option>
+                            <option value="Sony">Sony</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Nike">Nike</option>
+                            <option value="Levi's">Levi's</option>
+                            <option value="Philips">Philips</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Max Price: <span id="priceDisplay">₹45,000</span></label>
+                        <input type="range" id="priceRange" min="500" max="50000" step="500" value="50000" oninput="updatePrice(this.value)">
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Sort By:</label>
+                        <select id="sortSelect" onchange="filterProducts()">
+                            <option value="popular">Popularity & Rating</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <div class="catalog-results-area">
+                    <div class="results-header">
+                        <span id="resultsCount">Showing all items</span>
+                    </div>
+                    <div class="products-grid" id="catalogGrid">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: SHOPPING CART & CHECKOUT -->
+        <section id="tab-cart" class="content-tab">
+            <div class="cart-layout">
+                <div class="cart-list-card">
+                    <h2><i class="fas fa-shopping-basket"></i> Your Shopping Bag</h2>
+                    <div id="cartItemsContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="cart-checkout-card">
+                    <h3>Order Breakdown</h3>
+                    <div class="summary-line">
+                        <span>Items Subtotal:</span>
+                        <span id="subtotalVal">₹0</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Delivery Fee:</span>
+                        <span id="deliveryVal">₹0</span>
+                    </div>
+                    <div class="summary-line" id="discountLine" style="display:none; color:#10b981;">
+                        <span>Promotional Discount (15%):</span>
+                        <span id="discountVal">-₹0</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Estimated GST (18%):</span>
+                        <span id="taxVal">₹0</span>
+                    </div>
+                    <div class="summary-hr"></div>
+                    <div class="summary-total-line">
+                        <span>Total Payable:</span>
+                        <span id="totalVal">₹0</span>
+                    </div>
+
+                    <div class="coupon-group">
+                        <input type="text" id="couponCode" placeholder="Discount code: 'SAVE15'">
+                        <button class="btn btn-secondary btn-sm" onclick="applyCoupon()">Apply</button>
+                    </div>
+
+                    <div class="checkout-fields">
+                        <h4>Shipping Destination</h4>
+                        <div class="form-group">
+                            <input type="text" id="custName" placeholder="Full Recipient Name" value="Alex Kumar">
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="custPhone" placeholder="Mobile Number" value="+91 98401 54321">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="custAddress" rows="2" placeholder="Full Street Address & Pincode">Flat 302, Palm Heights, Anna Nagar West, Chennai - 600040</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="font-size:0.85rem; color:var(--text-muted);">Payment Method:</label>
+                            <select id="payMethod">
+                                <option value="UPI / QR Code">UPI (GPay / PhonePe / Paytm)</option>
+                                <option value="Credit / Debit Card">Credit / Debit Card</option>
+                                <option value="Net Banking">Net Banking</option>
+                                <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="checkout()"><i class="fas fa-lock"></i> Place Secure Order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: ORDER HISTORY -->
+        <section id="tab-orders" class="content-tab">
+            <div class="content-header">
+                <h2>Your Order History & Tracking Milestones</h2>
+                <p>Monitor current consignments, estimated deliveries, and past purchase receipts.</p>
+            </div>
+            <div class="orders-list-grid" id="ordersListGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 5: MERCHANT INVENTORY -->
+        <section id="tab-merchant" class="content-tab">
+            <div class="content-header">
+                <h2>Merchant Product Management & Restock</h2>
+                <p>Add new products and monitor live marketplace stock inventory.</p>
+            </div>
+            <div class="merchant-grid">
+                <div class="form-card">
+                    <h3><i class="fas fa-plus-circle"></i> Add New Marketplace Product</h3>
+                    <form onsubmit="handleCreateProduct(event)">
+                        <div class="form-group">
+                            <label>Product Title:</label>
+                            <input type="text" id="newProdName" required placeholder="e.g. Wireless Noise Canceling Headphones">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Category:</label>
+                                <select id="newProdCategory">
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Apparel">Apparel</option>
+                                    <option value="Footwear">Footwear</option>
+                                    <option value="Home">Home</option>
+                                    <option value="Accessories">Accessories</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Brand:</label>
+                                <input type="text" id="newProdBrand" required placeholder="e.g. Sony">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Price (₹):</label>
+                                <input type="number" id="newProdPrice" required value="2499" min="100">
+                            </div>
+                            <div class="form-group">
+                                <label>Inventory Stock Units:</label>
+                                <input type="number" id="newProdStock" required value="50" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea id="newProdDesc" rows="3" required placeholder="Key features, specifications, and warranty info..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> List on Storefront</button>
+                    </form>
+                </div>
+
+                <div class="merchant-table-card">
+                    <h3><i class="fas fa-boxes"></i> Live Warehouse Inventory</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Item Code</th>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventoryTableBody">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Dispatch & Email Simulation Modal -->
+    <div class="modal" id="orderConfirmModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            <div class="modal-content" id="orderConfirmModalContent"></div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 OmniStore E-Commerce | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

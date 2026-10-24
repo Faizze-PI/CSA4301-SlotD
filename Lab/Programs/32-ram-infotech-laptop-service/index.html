@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ram Infotech - Laptop Sales, Repair Service Center & Corporate Rentals</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">💻</span>
+      <div class="brand-text">
+        <span class="brand-title">Ram Infotech</span>
+        <span class="brand-sub">Premier Laptop Sales, Certified Chip-Level Service & Corporate Rentals</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="customer" onclick="switchRole('customer')">🛒 Customer / Buyer</button>
+      <button class="role-pill" data-role="technician" onclick="switchRole('technician')">🔧 Service Technician</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Store Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- CUSTOMER VIEW -->
+    <section id="customerSection" class="role-view">
+      <div class="dashboard-header-card tech-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">💻</div>
+          <div>
+            <h3>Ram Infotech Laptop Superstore & Service Clinic</h3>
+            <p class="muted">Authorized Sales Partner & Multi-Brand Chip-Level Repair Lab | GST: 33AABCR8812K1Z9</p>
+          </div>
+        </div>
+        <div class="cart-summary-badge" onclick="openCartModal()">
+          🛒 Cart (<span id="cartCountBadge">0</span>) - <strong class="text-success" id="cartTotalBadge">₹0</strong>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchCustomerTab('store')">💻 Laptop Sales Catalog</button>
+        <button class="tab-btn" onclick="switchCustomerTab('bookService')">🛠️ Book Repair Service</button>
+        <button class="tab-btn" onclick="switchCustomerTab('trackService')">🔍 Track Service Ticket</button>
+        <button class="tab-btn" onclick="switchCustomerTab('rental')">📑 Corporate Laptop Rental</button>
+      </div>
+
+      <!-- Tab: Store -->
+      <div id="custTabStore" class="tab-pane active">
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Filter by Brand</label>
+              <select id="brandFilterSelect" class="input" onchange="filterLaptops()">
+                <option value="All">All Brands (Dell, Lenovo, HP, Apple, ASUS)</option>
+                <option value="Dell">Dell Laptops</option>
+                <option value="Lenovo">Lenovo ThinkPad / IdeaPad</option>
+                <option value="HP">HP Pavilion / Envy</option>
+                <option value="Apple">Apple MacBook</option>
+                <option value="ASUS">ASUS ROG / ZenBook</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Usage Category</label>
+              <select id="usageFilterSelect" class="input" onchange="filterLaptops()">
+                <option value="All">All Categories</option>
+                <option value="Business">Business & Corporate</option>
+                <option value="Gaming">Gaming & High Performance</option>
+                <option value="Student">Student / Daily Productivity</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="laptopsCatalogGrid" class="laptops-grid">
+          <!-- Dynamically populated laptops -->
+        </div>
+      </div>
+
+      <!-- Tab: Book Service -->
+      <div id="custTabService" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Schedule Chip-Level Laptop Service & Repair</h3>
+          <p class="muted">Certified technicians for motherboard BGA rework, cracked screens, battery replacements, and OS recovery.</p>
+
+          <form onsubmit="handleBookServiceSubmit(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="serviceCustName" class="input" value="K. Arvind" required>
+              </div>
+              <div class="form-group">
+                <label>Contact Phone</label>
+                <input type="tel" id="serviceCustPhone" class="input font-mono" value="+91 98402 11994" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Laptop Brand & Exact Model</label>
+                <input type="text" id="serviceModel" class="input" placeholder="e.g. Dell Latitude 5420 / MacBook Air M1" required>
+              </div>
+              <div class="form-group">
+                <label>Service Category</label>
+                <select id="serviceCategorySelect" class="input">
+                  <option value="Broken Screen / Display Flickering">Broken Screen / Display Panel Replacement</option>
+                  <option value="Dead Battery / Fast Drain">Battery Health Degraded / Replacement</option>
+                  <option value="Motherboard No Power / Short Circuit">Motherboard Dead / No Power (Chip-Level)</option>
+                  <option value="Overheating & Fan Noise">Thermal Paste Repaste & Cooling Fan Service</option>
+                  <option value="OS Boot Failure & Data Recovery">OS Corruption / Blue Screen & Data Recovery</option>
+                  <option value="Keyboard / Trackpad Defect">Liquid Spill / Keyboard & Trackpad Fault</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Detailed Issue Description</label>
+              <textarea id="serviceIssueNotes" class="input" rows="3" placeholder="Describe when the problem started, error codes shown, or liquid incidents..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Service Mode</label>
+              <select id="serviceModeSelect" class="input">
+                <option value="Direct Lab Drop-off (T. Nagar Center)">🏢 Direct Lab Drop-off (Ram Infotech, T. Nagar)</option>
+                <option value="Doorstep Courier Pickup">🛵 Doorstep Secure Pickup (Chennai Metro)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Generate Service Ticket & Token</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tab: Track Service -->
+      <div id="custTabTrack" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Track Live Repair Ticket Status</h3>
+          <div class="search-flex-row mt-3">
+            <div class="form-group flex-2">
+              <label>Enter Repair Ticket ID (e.g., REP-1021)</label>
+              <input type="text" id="trackTicketQuery" class="input font-mono uppercase" placeholder="REP-XXXX" value="REP-1021">
+            </div>
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button class="btn btn-primary btn-block" onclick="handleTrackTicketSearch()">Query Status</button>
+            </div>
+          </div>
+
+          <div id="ticketQueryResultContainer" class="mt-4">
+            <!-- Dynamically populated ticket tracker -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Rental Agreement -->
+      <div id="custTabRental" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Corporate & Student Laptop Rental Agreement Generator</h3>
+          <p class="muted">Flexible workstation rentals for software testing, startups, corporate events, and college projects.</p>
+
+          <form onsubmit="handleGenerateRentalAgreement(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Company / Individual Hirer Name</label>
+                <input type="text" id="rentHirerName" class="input" value="Apex Cloud Technologies Pvt Ltd" required>
+              </div>
+              <div class="form-group">
+                <label>Hirer GST / Aadhaar ID</label>
+                <input type="text" id="rentIdProof" class="input font-mono uppercase" value="33AAACA9921B1Z2" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Laptop Configuration Tier</label>
+                <select id="rentLaptopTier" class="input" onchange="calculateRentalFees()">
+                  <option value="Core i5 • 16GB RAM • 512GB SSD" data-monthly="1500" data-deposit="3000">Business: Intel Core i5 / 16GB / 512GB SSD (₹1,500/mo)</option>
+                  <option value="Core i7 • 32GB RAM • RTX 4060 GPU" data-monthly="3200" data-deposit="6000">Dev/Gaming: Core i7 / 32GB / RTX 4060 (₹3,200/mo)</option>
+                  <option value="Apple MacBook Pro M3 • 18GB RAM" data-monthly="4500" data-deposit="9000">MacBook Pro M3 / 18GB Unified Memory (₹4,500/mo)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Quantity of Units</label>
+                <input type="number" id="rentQuantity" class="input font-mono font-bold" min="1" max="50" value="5" onchange="calculateRentalFees()" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tenure Duration</label>
+                <select id="rentDurationMonths" class="input" onchange="calculateRentalFees()">
+                  <option value="1">1 Month</option>
+                  <option value="3" selected>3 Months (Quarterly Contract)</option>
+                  <option value="6">6 Months (Semi-Annual Contract)</option>
+                  <option value="12">12 Months (Annual Contract - 10% Discount)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Agreement Start Date</label>
+                <input type="date" id="rentStartDate" class="input" value="2026-10-10" required>
+              </div>
+            </div>
+
+            <div class="fee-breakdown-card my-3">
+              <div class="fee-row">
+                <span>Monthly Rental Fee:</span>
+                <span id="rentMonthlyTotal" class="font-bold">₹7,500.00</span>
+              </div>
+              <div class="fee-row">
+                <span>Refundable Security Deposit:</span>
+                <span id="rentDepositTotal" class="text-success font-bold">₹15,000.00</span>
+              </div>
+              <div class="fee-row fee-total">
+                <span>Contract Advance Payable:</span>
+                <span id="rentGrandPayable" class="font-bold text-primary font-mono" style="font-size: 1.25rem;">₹37,500.00</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Generate Legal Rental Agreement Contract</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECHNICIAN VIEW -->
+    <section id="technicianSection" class="role-view hidden">
+      <div class="dashboard-header-card tech-workbench-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍🔧</div>
+          <div>
+            <h3>Senior Bench Tech: Vignesh R. (Tech #TECH-81)</h3>
+            <p class="muted">Lab Station: BGA Chip-Level Rework Station 02 | Active Bench Queue: 4 Devices</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Customer Repair Ticket Workbench</h3>
+        <p class="muted">Diagnose customer machines, update progression milestones, and add repair invoices.</p>
+
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Model</th>
+                <th>Reported Problem</th>
+                <th>Customer</th>
+                <th>Stage Status</th>
+                <th>Repair Estimate</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="technicianTicketsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORE ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">💻</span>
+          <div>
+            <div class="metric-value" id="adminTotalInventoryUnits">0</div>
+            <div class="metric-label">Laptops in Inventory</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🛠️</span>
+          <div>
+            <div class="metric-value text-warning" id="adminActiveRepairs">0</div>
+            <div class="metric-label">Active Repair Tickets</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div>
+            <div class="metric-value text-success" id="adminRentalAgreementsCount">0</div>
+            <div class="metric-label">Corporate Rental Leases</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Stock Management Table -->
+        <div class="card">
+          <h3>Hardware Stock Inventory</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Specs</th>
+                  <th>Price</th>
+                  <th>In Stock</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminInventoryTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Corporate Leases Table -->
+        <div class="card">
+          <h3>Corporate Rental Contracts Ledger</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Lease ID</th>
+                  <th>Hirer Name</th>
+                  <th>Units</th>
+                  <th>Deposit</th>
+                  <th>Tenure</th>
+                </tr>
+              </thead>
+              <tbody id="adminLeasesTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cart Modal -->
+  <div id="cartModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Laptop Store Cart</h3>
+        <button class="modal-close" onclick="closeCartModal()">&times;</button>
+      </div>
+      <div id="cartItemsContainer" class="my-3">
+        <!-- Dynamically populated -->
+      </div>
+      <div class="fee-row fee-total">
+        <strong>Total Amount:</strong>
+        <strong id="cartModalTotal" class="text-success font-mono" style="font-size: 1.25rem;">₹0</strong>
+      </div>
+      <div class="modal-actions mt-3">
+        <button class="btn btn-secondary" onclick="closeCartModal()">Continue Shopping</button>
+        <button class="btn btn-primary" onclick="handleCheckoutLaptops()">Complete Purchase Order</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rental Contract Modal -->
+  <div id="contractModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Official Corporate Laptop Rental Agreement</h3>
+        <button class="modal-close" onclick="closeContractModal()">&times;</button>
+      </div>
+      <div id="contractPrintableContent" class="contract-paper-box">
+        <!-- Dynamically populated legal agreement -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeContractModal()">Close</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Binding Agreement</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 32: Ram Infotech Laptop Sales, Repair Service Center & Corporate Rentals | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

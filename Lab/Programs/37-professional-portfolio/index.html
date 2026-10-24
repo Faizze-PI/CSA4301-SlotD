@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyProfessionalShowcase - Alex Kumar Portfolio</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-code"></i></div>
+                <div>
+                    <h1>Alex Kumar</h1>
+                    <p class="subtitle">Lead Full-Stack & Distributed Systems Engineer</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-eye"></i> View Mode:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="recruiter">Recruiter / Client View</option>
+                        <option value="owner">Portfolio Owner (Edit Mode)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-sm" onclick="showTab('contact')"><i class="fas fa-paper-plane"></i> Hire Me</button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="home" onclick="showTab('home')"><i class="fas fa-home"></i> Home</button>
+            <button class="nav-tab" data-tab="about" onclick="showTab('about')"><i class="fas fa-user"></i> About Me</button>
+            <button class="nav-tab" data-tab="projects" onclick="showTab('projects')"><i class="fas fa-briefcase"></i> Portfolio Projects</button>
+            <button class="nav-tab" data-tab="resume" onclick="showTab('resume')"><i class="fas fa-file-alt"></i> Interactive Resume</button>
+            <button class="nav-tab" data-tab="blog" onclick="showTab('blog')"><i class="fas fa-pen-nib"></i> Tech Blog</button>
+            <button class="nav-tab" data-tab="contact" onclick="showTab('contact')"><i class="fas fa-envelope"></i> Contact & Hire</button>
+            <button class="nav-tab" data-tab="admin" id="tabAdmin" style="display:none;" onclick="showTab('admin')"><i class="fas fa-edit"></i> CMS Studio</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: HOME -->
+        <section id="tab-home" class="content-tab active">
+            <div class="hero-section">
+                <div class="hero-text-box">
+                    <span class="availability-badge"><i class="fas fa-circle live-dot"></i> Available for Senior Engineering Roles</span>
+                    <h2>Hi, I'm Alex Kumar. <br><span class="gradient-text">I architect distributed systems & robust web applications.</span></h2>
+                    <p class="hero-summary">Senior Software Engineer with 6+ years of experience engineering high-throughput microservices, real-time web applications, and resilient cloud architectures handling 50k+ daily transactions.</p>
+                    <div class="hero-btns">
+                        <button class="btn btn-primary" onclick="showTab('projects')"><i class="fas fa-project-diagram"></i> Explore Projects</button>
+                        <button class="btn btn-secondary" onclick="downloadResume()"><i class="fas fa-download"></i> Download Resume</button>
+                    </div>
+                    <div class="social-links-row">
+                        <a href="https://github.com" target="_blank" class="social-btn"><i class="fab fa-github"></i></a>
+                        <a href="https://linkedin.com" target="_blank" class="social-btn"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://twitter.com" target="_blank" class="social-btn"><i class="fab fa-x-twitter"></i></a>
+                        <a href="mailto:alex.kumar@example.com" class="social-btn"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+                <div class="hero-avatar-box">
+                    <div class="avatar-card">
+                        <div class="avatar-glow"></div>
+                        <i class="fas fa-user-astronaut fa-7x" style="color: #6366f1;"></i>
+                        <h3>Alex Kumar, M.Tech</h3>
+                        <p>Chennai, India (UTC+5:30)</p>
+                        <div class="stats-row">
+                            <div class="stat-col"><strong>6+</strong><span>Yrs Exp</span></div>
+                            <div class="stat-col"><strong>32+</strong><span>Projects</span></div>
+                            <div class="stat-col"><strong>99.9%</strong><span>Uptime</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack Showcase -->
+            <div class="tech-stack-section">
+                <h3>Core Engineering Competencies</h3>
+                <div class="stack-grid">
+                    <div class="stack-item"><i class="fab fa-js-square" style="color:#f7df1e"></i> TypeScript / Node.js</div>
+                    <div class="stack-item"><i class="fab fa-react" style="color:#61dafb"></i> React & Next.js</div>
+                    <div class="stack-item"><i class="fab fa-python" style="color:#3776ab"></i> Python & FastAPI</div>
+                    <div class="stack-item"><i class="fab fa-docker" style="color:#2496ed"></i> Docker & Kubernetes</div>
+                    <div class="stack-item"><i class="fas fa-database" style="color:#47a248"></i> PostgreSQL & MongoDB</div>
+                    <div class="stack-item"><i class="fab fa-aws" style="color:#ff9900"></i> AWS & Cloudflare</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ABOUT ME -->
+        <section id="tab-about" class="content-tab">
+            <div class="about-grid">
+                <div class="about-bio-card">
+                    <h2>Engineering Philosophy & Career Journey</h2>
+                    <p>I began my career building full-stack web applications and quickly grew fascinated by what happens when applications scale from thousands to millions of concurrent users. My focus shifted toward high-performance event-driven architectures, distributed databases, and fault-tolerant system design.</p>
+                    <p>When I'm not tuning database query indices or optimizing bundle sizes, I mentor aspiring university computer science students and author deep-dive technical essays on systems design.</p>
+
+                    <h3 style="margin-top:24px; margin-bottom:12px;">Education & Credentials</h3>
+                    <div class="credential-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div>
+                            <h4>M.Tech in Distributed Computing & Software Engineering</h4>
+                            <p class="text-muted">SIMATS School of Engineering | 2020 - 2022 | Gold Medalist (CGPA: 9.6/10)</p>
+                        </div>
+                    </div>
+                    <div class="credential-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <div>
+                            <h4>B.Tech in Computer Science and Engineering</h4>
+                            <p class="text-muted">Anna University | 2016 - 2020 | First Class with Distinction</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonials-card">
+                    <h3><i class="fas fa-quote-left"></i> Endorsements & Client Testimonials</h3>
+                    <div class="testimonial-bubble">
+                        <p>"Alex restructured our e-commerce payment pipeline, slashing checkout latency by 68% and eliminating race conditions during our peak Diwali flash sales."</p>
+                        <div class="testi-author">
+                            <strong>Sarah Jenkins</strong> - VP of Engineering at OmniRetail
+                        </div>
+                    </div>
+                    <div class="testimonial-bubble">
+                        <p>"One of the rare engineers who genuinely understands both elegant frontend UI architecture and bulletproof microservice reliability. An incredible technical lead."</p>
+                        <div class="testi-author">
+                            <strong>Dr. Anand Swaminathan</strong> - Principal Architect, CloudScale Labs
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: PROJECTS -->
+        <section id="tab-projects" class="content-tab">
+            <div class="content-header-row">
+                <div>
+                    <h2>Featured Engineering Deliverables</h2>
+                    <p>Production systems, open-source utilities, and architectural blueprints.</p>
+                </div>
+                <div class="project-filters">
+                    <button class="btn btn-secondary btn-sm active" onclick="filterProjects('All', this)">All</button>
+                    <button class="btn btn-secondary btn-sm" onclick="filterProjects('Distributed', this)">Distributed Systems</button>
+                    <button class="btn btn-secondary btn-sm" onclick="filterProjects('Full-Stack', this)">Full-Stack Web</button>
+                    <button class="btn btn-secondary btn-sm" onclick="filterProjects('Cloud', this)">Cloud / DevOps</button>
+                </div>
+            </div>
+
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 4: INTERACTIVE RESUME -->
+        <section id="tab-resume" class="content-tab">
+            <div class="resume-header-row">
+                <h2>Curriculum Vitae & Career Trajectory</h2>
+                <button class="btn btn-primary" onclick="downloadResume()"><i class="fas fa-print"></i> Print / Download PDF</button>
+            </div>
+
+            <div class="resume-layout">
+                <div class="timeline-column">
+                    <h3><i class="fas fa-history"></i> Experience Timeline</h3>
+                    <div class="timeline">
+                        <div class="timeline-node">
+                            <span class="timeline-date">2023 - Present</span>
+                            <h4>Staff Full-Stack & Systems Engineer</h4>
+                            <p class="timeline-company">NovaScale Technologies, Chennai</p>
+                            <p class="timeline-desc">Architected distributed consensus cache replication layer across 8 geographic regions, lowering p99 response times from 340ms to 42ms.</p>
+                        </div>
+                        <div class="timeline-node">
+                            <span class="timeline-date">2021 - 2023</span>
+                            <h4>Senior Web Systems Architect</h4>
+                            <p class="timeline-company">HyperCloud Solutions</p>
+                            <p class="timeline-desc">Led the migration of a legacy monolithic enterprise portal into Dockerized microservices with zero downtime.</p>
+                        </div>
+                        <div class="timeline-node">
+                            <span class="timeline-date">2019 - 2021</span>
+                            <h4>Software Engineer</h4>
+                            <p class="timeline-company">Aura Labs</p>
+                            <p class="timeline-desc">Developed reactive single-page dashboards and WebSocket real-time analytics engines using React and Node.js.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skills-column">
+                    <h3><i class="fas fa-sliders-h"></i> Technical Mastery Index</h3>
+                    <div class="skill-meter-group">
+                        <div class="meter-label"><span>TypeScript / JavaScript (ESNext)</span><span>95%</span></div>
+                        <div class="meter-bar"><div class="meter-fill" style="width: 95%;"></div></div>
+                    </div>
+                    <div class="skill-meter-group">
+                        <div class="meter-label"><span>Distributed Systems & Consensus</span><span>92%</span></div>
+                        <div class="meter-bar"><div class="meter-fill" style="width: 92%;"></div></div>
+                    </div>
+                    <div class="skill-meter-group">
+                        <div class="meter-label"><span>React / Modern SPA Frameworks</span><span>90%</span></div>
+                        <div class="meter-bar"><div class="meter-fill" style="width: 90%;"></div></div>
+                    </div>
+                    <div class="skill-meter-group">
+                        <div class="meter-label"><span>PostgreSQL / Data Modeling</span><span>88%</span></div>
+                        <div class="meter-bar"><div class="meter-fill" style="width: 88%;"></div></div>
+                    </div>
+                    <div class="skill-meter-group">
+                        <div class="meter-label"><span>Kubernetes / Cloud Infrastructure</span><span>85%</span></div>
+                        <div class="meter-bar"><div class="meter-fill" style="width: 85%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: TECH BLOG -->
+        <section id="tab-blog" class="content-tab">
+            <div class="content-header">
+                <h2>Systems Engineering Journal</h2>
+                <p>Articles on distributed consensus, frontend performance, and web standards.</p>
+            </div>
+            <div class="blog-cards-grid" id="portfolioBlogGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 6: CONTACT -->
+        <section id="tab-contact" class="content-tab">
+            <div class="contact-card-layout">
+                <div class="contact-cta">
+                    <h2>Let's Build Something Exceptional Together</h2>
+                    <p>Have an engineering inquiry, consulting requirement, or full-time opportunity? Reach out directly via the form or through my professional channels.</p>
+                    <div class="contact-details">
+                        <p><i class="fas fa-envelope"></i> alex.kumar.systems@gmail.com</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Anna Nagar, Chennai, Tamil Nadu, India</p>
+                        <p><i class="fas fa-calendar-check"></i> Mon - Fri, 9:00 AM - 6:00 PM IST</p>
+                    </div>
+                </div>
+
+                <div class="contact-form-box">
+                    <form onsubmit="handleInquirySubmit(event)">
+                        <div class="form-group">
+                            <label>Your Name:</label>
+                            <input type="text" id="inqName" required placeholder="e.g. Maya Sundaram">
+                        </div>
+                        <div class="form-group">
+                            <label>Work Email:</label>
+                            <input type="email" id="inqEmail" required placeholder="e.g. maya@enterprise.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Opportunity / Project Scope:</label>
+                            <select id="inqType">
+                                <option value="Full-Time Engineering Role">Full-Time Senior/Staff Role</option>
+                                <option value="Architecture Consulting">Architecture Consulting</option>
+                                <option value="Keynote Speaking / Workshop">Technical Workshop / Keynote</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Project Details / Message:</label>
+                            <textarea id="inqMsg" rows="4" required placeholder="Tell me about your technical problem or company mission..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-paper-plane"></i> Send Inquiry</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: OWNER CMS STUDIO -->
+        <section id="tab-admin" class="content-tab">
+            <div class="content-header">
+                <h2>Portfolio Content Management Studio</h2>
+                <p>Quickly add new projects to your live portfolio.</p>
+            </div>
+            <div class="cms-form-card">
+                <form onsubmit="handleCreatePortfolioProject(event)">
+                    <div class="form-group">
+                        <label>Project Title:</label>
+                        <input type="text" id="newProjTitle" required placeholder="e.g. Chronos Distributed Key-Value Store">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <select id="newProjCategory">
+                                <option value="Distributed">Distributed Systems</option>
+                                <option value="Full-Stack">Full-Stack Web</option>
+                                <option value="Cloud">Cloud / DevOps</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Live URL / Demo Link:</label>
+                            <input type="text" id="newProjUrl" value="https://demo.example.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Tech Stack (Comma Separated):</label>
+                        <input type="text" id="newProjStack" placeholder="e.g. Rust, Raft, RocksDB, gRPC" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Project Overview & Key Impact:</label>
+                        <textarea id="newProjDesc" rows="3" required placeholder="Describe problem solved and quantitative metrics..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-plus"></i> Publish Project</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Project Demo Modal -->
+    <div class="modal" id="projModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeProjModal()">&times;</button>
+            <div class="modal-content" id="modalProjContent"></div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 Alex Kumar | MyProfessionalShowcase | SIMATS Internet Programming Lab</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

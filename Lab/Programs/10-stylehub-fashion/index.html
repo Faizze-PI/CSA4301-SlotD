@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 10 - StyleHub Online Fashion Retailer</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>👗 StyleHub Fashion & Apparel</span>
+      <span class="brand-badge">Exp 10</span>
+    </div>
+    <div class="role-switcher">
+      <label for="fashionRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="fashionRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="customer">Shopper / Fashion Customer</option>
+        <option value="admin">Fashion Store Administrator</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- CUSTOMER VIEW -->
+    <div id="fashionCustomerSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="fashionCatalogTab">Apparel Catalog & Trends</button>
+        <button class="tab-btn" data-tab="fashionCartTab">Fashion Bag (<span id="bagCountBadge">0</span>)</button>
+        <button class="tab-btn" data-tab="fashionWishlistTab">My Wishlist</button>
+        <button class="tab-btn" data-tab="fashionOrdersTab">Orders & Returns</button>
+        <button class="tab-btn" data-tab="sizeGuideTab">Interactive Size Guide</button>
+      </div>
+
+      <!-- Tab 1: Catalog -->
+      <div id="fashionCatalogTab" class="tab-pane active">
+        <!-- Flash Sale Alert -->
+        <div style="background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%); color: white; padding: 1rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h3 style="margin: 0; font-size: 1.15rem;">🔥 Seasonal Flash Sale: Flat 30% OFF</h3>
+            <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; opacity: 0.9;">Exclusive discounts on Men, Women, and Kids collections.</p>
+          </div>
+          <span class="badge" style="background: rgba(255,255,255,0.25); color: white; font-size: 0.85rem;">Ends Tonight</span>
+        </div>
+
+        <div class="card">
+          <div class="search-row" style="flex-wrap: wrap; gap: 0.75rem;">
+            <select id="fashionGenderFilter" class="form-select" style="flex: 1; min-width: 150px;">
+              <option value="all">All Departments</option>
+              <option value="Men">Men's Fashion</option>
+              <option value="Women">Women's Fashion</option>
+              <option value="Kids">Kids & Teens</option>
+            </select>
+            <select id="fashionCategoryFilter" class="form-select" style="flex: 1; min-width: 150px;">
+              <option value="all">All Categories</option>
+              <option value="Casual Wear">Casual Wear</option>
+              <option value="Formal Attire">Formal Attire</option>
+              <option value="Footwear">Footwear & Shoes</option>
+              <option value="Accessories">Accessories</option>
+            </select>
+            <input type="text" id="fashionSearchInput" class="form-control" placeholder="Search kurtas, blazers, sneakers..." style="flex: 2; min-width: 200px;">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3" id="fashionCatalogGrid" style="margin-top: 1.5rem;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Shopping Bag -->
+      <div id="fashionCartTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Shopping Bag</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Department</th>
+                  <th>Size</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Subtotal</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="fashionCartBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Bag Subtotal:</span>
+              <div id="fashionBagTotalDisplay" style="font-size: 1.6rem; font-weight: 800; color: var(--primary);">₹0</div>
+            </div>
+            <div>
+              <button class="btn btn-primary" onclick="checkoutFashionCart()">Proceed to Checkout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Wishlist -->
+      <div id="fashionWishlistTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Saved Wishlist Items</h2>
+          <div class="grid grid-cols-3" id="wishlistGrid">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Orders & Returns -->
+      <div id="fashionOrdersTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">My Orders & Easy Returns</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Purchased Items</th>
+                  <th>Total Paid</th>
+                  <th>Order Date</th>
+                  <th>Delivery Status</th>
+                  <th>Return Policy Action</th>
+                </tr>
+              </thead>
+              <tbody id="fashionOrdersTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: Size Guide -->
+      <div id="sizeGuideTab" class="tab-pane">
+        <div class="card" style="max-width: 700px; margin: 0 auto;">
+          <h2 class="card-title">Standard Apparel Size Chart (Inches)</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Chest / Bust</th>
+                  <th>Waist</th>
+                  <th>Hip</th>
+                  <th>Collar (Men)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>S</strong></td><td>36 - 38"</td><td>30 - 32"</td><td>37 - 39"</td><td>15.0"</td></tr>
+                <tr><td><strong>M</strong></td><td>39 - 41"</td><td>33 - 35"</td><td>40 - 42"</td><td>15.5"</td></tr>
+                <tr><td><strong>L</strong></td><td>42 - 44"</td><td>36 - 38"</td><td>43 - 45"</td><td>16.5"</td></tr>
+                <tr><td><strong>XL</strong></td><td>45 - 47"</td><td>39 - 41"</td><td>46 - 48"</td><td>17.5"</td></tr>
+                <tr><td><strong>XXL</strong></td><td>48 - 50"</td><td>42 - 44"</td><td>49 - 51"</td><td>18.5"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORE ADMIN VIEW -->
+    <div id="fashionAdminSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="adminFashionInventoryTab">Fashion Inventory & Price Control</button>
+        <button class="tab-btn" data-tab="adminFashionCustomersTab">Checkout Customers Audit</button>
+      </div>
+
+      <!-- Tab: Admin Inventory -->
+      <div id="adminFashionInventoryTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title" id="adminFashionFormTitle">Add New Fashion Item</h3>
+            <form id="adminFashionItemForm">
+              <input type="hidden" id="editFashionId">
+              <div class="form-group">
+                <label class="form-label">Product Name</label>
+                <input type="text" id="fItemName" class="form-control" required placeholder="e.g. Italian Wool Slim Blazer">
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Department</label>
+                  <select id="fItemGender" class="form-select">
+                    <option value="Men">Men</option>
+                    <option value="Women">Women</option>
+                    <option value="Kids">Kids</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Category</label>
+                  <select id="fItemCategory" class="form-select">
+                    <option value="Formal Attire">Formal Attire</option>
+                    <option value="Casual Wear">Casual Wear</option>
+                    <option value="Footwear">Footwear</option>
+                    <option value="Accessories">Accessories</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Price (₹)</label>
+                  <input type="number" id="fItemPrice" class="form-control" required value="3499">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Stock Units</label>
+                  <input type="number" id="fItemStock" class="form-control" required value="20">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Description & Fabric</label>
+                <textarea id="fItemDesc" class="form-control" rows="2" placeholder="100% fine wool with breathable satin lining..."></textarea>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn btn-primary" id="saveFashionBtn">Save Product</button>
+                <button type="button" class="btn btn-secondary" id="cancelFashionEditBtn" style="display: none;">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Catalog Controller</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="adminFashionInventoryBody">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Admin Customers -->
+      <div id="adminFashionCustomersTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Checkout Customer Audit Records</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer Name</th>
+                  <th>Email</th>
+                  <th>Purchased Fashion SKUs</th>
+                  <th>Total Spent</th>
+                  <th>Order Date</th>
+                </tr>
+              </thead>
+              <tbody id="adminFashionCustomersBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

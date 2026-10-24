@@ -1,0 +1,658 @@
+/* Gourmet Haven Fine Dining Styles */
+:root {
+    --gold: #d4af37;
+    --gold-hover: #b89327;
+    --bg-dark: #0a0b0e;
+    --card-bg: #14161c;
+    --card-hover: #1b1e26;
+    --text-light: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border-color: #262933;
+    --success: #10b981;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-header {
+    background: rgba(14, 16, 22, 0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.back-link {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.back-link:hover { color: var(--gold); }
+
+.logo-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, #d4af37, #856d20);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #000;
+}
+
+.brand h1 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--gold);
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.role-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.role-selector select {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+    cursor: pointer;
+}
+
+.role-selector select option { background: #14161c; }
+
+.sub-nav {
+    background: #0e1015;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 0 24px;
+    overflow-x: auto;
+}
+
+.nav-tab {
+    padding: 12px 18px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.nav-tab:hover { color: #fff; }
+
+.nav-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+}
+
+.main-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 36px 24px;
+    flex: 1;
+    width: 100%;
+}
+
+.content-tab { display: none; }
+.content-tab.active {
+    display: block;
+    animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero Carousel */
+.hero-carousel {
+    position: relative;
+    background: radial-gradient(circle at top right, #222633, #14161c);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 48px;
+}
+
+.carousel-slide {
+    display: none;
+    padding: 60px 48px;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 380px;
+}
+
+.carousel-slide.active { display: flex; }
+
+.slide-content { max-width: 720px; }
+
+.gold-pill {
+    background: rgba(212, 175, 55, 0.15);
+    color: var(--gold);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.slide-content h2 {
+    font-size: 2.5rem;
+    line-height: 1.2;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+}
+
+.slide-desc {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
+
+.slide-actions { display: flex; gap: 16px; }
+
+.slide-badge-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba(212, 175, 55, 0.08);
+    border: 2px dashed rgba(212, 175, 55, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 40px;
+}
+
+.carousel-controls {
+    position: absolute;
+    bottom: 20px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.carousel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.carousel-dots { display: flex; gap: 6px; }
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
+
+.dot.active {
+    background: var(--gold);
+    width: 18px;
+    border-radius: 4px;
+}
+
+/* Highlights */
+.highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.highlight-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 28px;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.highlight-card i { color: var(--gold); margin-bottom: 14px; }
+.highlight-card h3 { font-size: 1.2rem; margin-bottom: 10px; }
+.highlight-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+/* Menu Center */
+.content-header-center {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 36px;
+}
+
+.content-header-center h2 {
+    font-size: 2.2rem;
+    margin: 10px 0 8px;
+}
+
+.content-header-center p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.menu-filter-chips {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.chip.active, .chip:hover {
+    background: var(--gold);
+    color: #000;
+    border-color: var(--gold);
+    font-weight: 600;
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+}
+
+.menu-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.menu-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+}
+
+.menu-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.dish-name { font-size: 1.15rem; font-weight: 600; }
+.dish-price { font-size: 1.15rem; font-weight: 700; color: var(--gold); }
+.dish-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.5; margin-bottom: 16px; flex: 1; }
+
+.dish-diet-pills { display: flex; gap: 6px; }
+
+.diet-pill {
+    font-size: 0.72rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.diet-veg { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.diet-nonveg { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+.diet-gf { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+
+/* Reservations */
+.reservation-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 36px;
+}
+
+.reserve-form-panel, .reserve-info-panel {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 36px;
+}
+
+.reserve-form-panel h2 { font-size: 1.6rem; margin-bottom: 6px; }
+.subtitle-text { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+
+.rule-box {
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--gold);
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 16px;
+}
+
+.rule-box i { color: var(--gold); font-size: 1.3rem; margin-top: 2px; }
+.rule-box h4 { margin-bottom: 4px; font-size: 0.95rem; }
+.rule-box p { color: var(--text-muted); font-size: 0.85rem; line-height: 1.4; }
+
+/* About Story */
+.about-story-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.story-header { text-align: center; margin-bottom: 40px; }
+.story-header h2 { font-size: 2rem; margin: 10px 0; }
+.story-lead { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+
+.chef-cards-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+.chef-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+}
+
+.chef-icon { color: var(--gold); margin-bottom: 16px; }
+.chef-card h3 { font-size: 1.3rem; margin-bottom: 4px; }
+.chef-role { color: var(--gold); font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; }
+.chef-bio { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }
+
+/* Gallery */
+.ambiance-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.gallery-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    overflow: hidden;
+    text-align: center;
+    padding: 20px;
+}
+
+.gallery-thumb {
+    height: 160px;
+    background: #090a0d;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gold);
+    margin-bottom: 14px;
+}
+
+.gallery-item h4 { font-size: 0.95rem; }
+
+/* Reviews */
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.rating-badge-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px 20px;
+    border-radius: 12px;
+}
+
+.score-num { font-size: 2rem; font-weight: 700; color: var(--gold); }
+.stars-gold { color: var(--gold); font-size: 0.9rem; margin-bottom: 2px; }
+
+.reviews-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.review-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    border-radius: 12px;
+}
+
+.review-box p { font-style: italic; color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; margin: 10px 0; }
+.review-diner { font-weight: 600; font-size: 0.85rem; color: var(--gold); }
+
+/* Contact Deck */
+.contact-deck {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+}
+
+.contact-details-box, .map-simulator-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 36px;
+}
+
+.contact-line {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.contact-line i { color: var(--gold); }
+
+.map-display {
+    height: 100%;
+    min-height: 220px;
+    background: #090a0d;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+}
+
+.map-display h4 { margin-top: 10px; font-size: 1.1rem; }
+.map-display p { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+
+/* Admin Data Table */
+.table-manifest-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.9rem;
+}
+
+.data-table th { background: #0e1015; color: var(--gold); font-weight: 600; }
+
+/* Form Components & Buttons */
+.form-group { margin-bottom: 16px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 0.85rem; color: var(--text-muted); }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    background: #0a0b0e;
+    border: 1px solid var(--border-color);
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #fff;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--gold);
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-gold { background: var(--gold); color: #000; font-weight: 600; }
+.btn-gold:hover { background: var(--gold-hover); }
+.btn-secondary { background: rgba(255, 255, 255, 0.08); color: #fff; }
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
+.btn-block { width: 100%; justify-content: center; }
+.btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(6px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active { display: flex; }
+
+.modal-dialog {
+    background: var(--card-bg);
+    border: 1px solid var(--gold);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 600px;
+    padding: 32px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.app-footer {
+    background: #070709;
+    border-top: 1px solid var(--border-color);
+    padding: 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 40px;
+}
+
+@media (max-width: 900px) {
+    .reservation-layout, .highlights-grid, .chef-cards-row, .contact-deck {
+        grid-template-columns: 1fr;
+    }
+}

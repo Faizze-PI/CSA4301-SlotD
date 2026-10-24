@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 45 - Income Tax Calculation Webpage</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>🏛️ TaxEase - Income Tax Assessment Engine</span>
+      <span class="brand-badge">Exp 45</span>
+    </div>
+    <div class="role-switcher">
+      <label for="taxRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="taxRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="employee">Salaried Employee View</option>
+        <option value="admin">Tax Authority Admin View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- EMPLOYEE TAX COMPUTATION VIEW -->
+    <div id="taxEmployeeSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="taxCalcTab">Tax Assessment & Slabs</button>
+        <button class="tab-btn" data-tab="taxTipsTab">Tax Optimization & Savings</button>
+        <button class="tab-btn" data-tab="taxReportsTab">Past Tax Returns & Filing</button>
+      </div>
+
+      <!-- Tab: Tax Calculator -->
+      <div id="taxCalcTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <!-- Form Inputs -->
+          <div class="card">
+            <h2 class="card-title">Salary & Exemption Details</h2>
+            <form id="taxInputForm">
+              <div class="form-group">
+                <label class="form-label">Employee Name & PAN</label>
+                <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                  <input type="text" id="empName" class="form-control" value="Faizze A." required>
+                  <input type="text" id="empPan" class="form-control" value="ABCDE1234F" maxlength="10" required>
+                </div>
+              </div>
+
+              <h4 style="margin: 1rem 0 0.5rem 0; color: var(--primary);">Monthly Earnings (₹)</h4>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Monthly Gross Pay (₹)</label>
+                  <input type="number" id="monthlyGross" class="form-control" value="85000" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Monthly HRA (₹)</label>
+                  <input type="number" id="monthlyHra" class="form-control" value="15000" required>
+                </div>
+              </div>
+
+              <h4 style="margin: 1rem 0 0.5rem 0; color: var(--primary);">Exemptions & Deductions (₹)</h4>
+              <div class="form-group">
+                <label class="form-label">Standard Deduction (Fixed by Gov)</label>
+                <input type="text" id="standardDeductionDisplay" class="form-control" value="₹50,000" readonly style="background: #f1f5f9;">
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Monthly Pension / PF (₹)</label>
+                  <input type="number" id="monthlyPension" class="form-control" value="10000" placeholder="Sec 80C">
+                  <small style="color: var(--text-muted);">Max ₹1,50,000 / year</small>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Monthly Health Insurance (₹)</label>
+                  <input type="number" id="monthlyInsurance" class="form-control" value="2000" placeholder="Sec 80D">
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="computeTaxAssessment()">
+                Calculate Annual Income Tax
+              </button>
+            </form>
+          </div>
+
+          <!-- Tax Calculation Breakdown Display -->
+          <div class="card" id="taxResultCard">
+            <h2 class="card-title">Detailed Tax Computation Breakdown</h2>
+            <div style="font-size: 0.95rem; line-height: 2;">
+              <div style="display: flex; justify-content: space-between;">
+                <span>Annual Gross Income (Gross x 12):</span>
+                <strong id="annGrossDisplay">₹10,20,000</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
+                <span>Less: Annual HRA Exemption (HRA x 12):</span>
+                <span id="annHraDisplay">- ₹1,80,000</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
+                <span>Less: Standard Deduction:</span>
+                <span id="stdDedDisplay">- ₹50,000</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
+                <span>Less: Pension / 80C (Capped @ ₹1.5L):</span>
+                <span id="annPensionDisplay">- ₹1,20,000</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: var(--text-muted);">
+                <span>Less: Health Insurance (Sec 80D x 12):</span>
+                <span id="annInsuranceDisplay">- ₹24,000</span>
+              </div>
+              <div style="border-top: 1px solid var(--border-color); margin: 0.5rem 0; padding-top: 0.5rem; display: flex; justify-content: space-between; font-weight: 700;">
+                <span>Net Taxable Income (NTI):</span>
+                <span id="ntiDisplay" style="color: var(--primary);">₹6,46,000</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 6px;">
+              <h4 style="margin-bottom: 0.5rem;">Slab-by-Slab Calculation:</h4>
+              <div id="slabMathDisplay" style="font-size: 0.85rem; line-height: 1.8;">
+                <!-- Dynamically populated -->
+              </div>
+              <div id="rebateNotice" style="display: none; color: #059669; font-weight: 700; margin-top: 0.5rem;">
+                🎉 Full Tax Rebate Applied: Net Taxable Income &le; ₹5,00,000 &rarr; Tax is NIL (₹0)!
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem; border-top: 2px solid var(--border-color); padding-top: 0.75rem; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Total Tax Liability:</span>
+                <div id="totalTaxLiabilityDisplay" style="font-size: 1.6rem; font-weight: 800; color: #dc2626;">₹41,700</div>
+              </div>
+              <div>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Net Take-Home Pay:</span>
+                <div id="netTakeHomeDisplay" style="font-size: 1.3rem; font-weight: 700; color: var(--success);">₹9,78,300</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.25rem; display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" onclick="printTaxSummaryReport()" style="flex: 1;">Download PDF Report</button>
+              <button class="btn btn-success btn-sm" onclick="saveTaxReturnRecord()" style="flex: 1;">Save Assessment Record</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Tax Optimization Tips -->
+      <div id="taxTipsTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Personalized Tax Saving Suggestions</h2>
+          <div class="grid grid-cols-3" style="gap: 1rem; margin-top: 1rem;">
+            <div class="card" style="background: #f8fafc; margin: 0;">
+              <h4>Section 80C Optimization</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                Invest up to ₹1,50,000 in PPF, ELSS mutual funds, or National Pension System (NPS) to exhaust your full Section 80C rebate.
+              </p>
+            </div>
+            <div class="card" style="background: #f8fafc; margin: 0;">
+              <h4>Section 80D Health Cover</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                Claim up to ₹25,000 for self/family medical insurance and an additional ₹50,000 for senior citizen parents.
+              </p>
+            </div>
+            <div class="card" style="background: #f8fafc; margin: 0;">
+              <h4>Section 87A Full Rebate</h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">
+                If your Net Taxable Income is managed to stay at or below ₹5,00,000, your final payable income tax becomes exactly ₹0!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Past Returns -->
+      <div id="taxReportsTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Saved Tax Assessment Filings</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Filing ID</th>
+                  <th>Assessment Year</th>
+                  <th>Gross Salary</th>
+                  <th>Deductions</th>
+                  <th>Taxable Income</th>
+                  <th>Tax Paid</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="savedTaxReturnsBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAX AUTHORITY ADMIN VIEW -->
+    <div id="taxAdminSection" style="display: none;">
+      <div class="card" style="max-width: 650px; margin: 0 auto;">
+        <h2 class="card-title">Government Norms & Slab Bracket Configurations</h2>
+        <form id="adminGovNormsForm">
+          <div class="form-group">
+            <label class="form-label">Standard Deduction Amount (₹)</label>
+            <input type="number" id="govStdDed" class="form-control" value="50000" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Maximum Pension / 80C Deduction Cap (₹)</label>
+            <input type="number" id="govPensionCap" class="form-control" value="150000" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Zero-Tax Threshold Rebate Limit (₹)</label>
+            <input type="number" id="govRebateLimit" class="form-control" value="500000" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Publish Government Tax Norms</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,353 @@
+/* ArtistryHub - Emily Harris Scoped Styles */
+
+.artist-hero-card {
+  background: radial-gradient(circle at top left, rgba(168, 85, 247, 0.25), rgba(15, 23, 42, 0.95));
+  border: 1px solid rgba(168, 85, 247, 0.35);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.hero-content {
+  flex: 1;
+  min-width: 300px;
+}
+
+.hero-tag {
+  color: #c084fc;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #ffffff, #d8b4fe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-desc {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.hero-portrait-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.portrait-avatar {
+  font-size: 4.5rem;
+  background: rgba(168, 85, 247, 0.15);
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  border-radius: 50%;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.65rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  color: #c084fc;
+  border-bottom: 2px solid #c084fc;
+  font-weight: 600;
+  background: rgba(168, 85, 247, 0.08);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Artworks Grid */
+.artworks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.artwork-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.artwork-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(192, 132, 252, 0.5);
+}
+
+.art-canvas-preview {
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.art-canvas-preview.oil {
+  background: linear-gradient(135deg, #4c1d95, #1e1b4b);
+}
+
+.art-canvas-preview.abstract {
+  background: linear-gradient(135deg, #831843, #1e293b);
+}
+
+.art-canvas-preview.ink {
+  background: linear-gradient(135deg, #18181b, #27272a);
+}
+
+.art-badge-tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.art-info-body {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Audio Player */
+.audio-player-container {
+  background: #090d16;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.now-playing-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.track-disc-icon {
+  font-size: 2.5rem;
+  animation: rotateDisc 10s linear infinite;
+  display: inline-block;
+}
+
+@keyframes rotateDisc {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.audio-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.audio-progress-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.audio-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c084fc, #3b82f6);
+  border-radius: 4px;
+}
+
+.tracklist-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.track-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.track-item-row:hover {
+  background: rgba(168, 85, 247, 0.15);
+}
+
+.track-item-row.active-track {
+  background: rgba(168, 85, 247, 0.2);
+  border-left: 4px solid #c084fc;
+}
+
+/* Store */
+.cart-summary-badge {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.store-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.store-product-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Timeline & Media */
+.timeline-event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.timeline-event-card {
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  border-left: 4px solid #c084fc;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.media-video-placeholder {
+  background: #090d16;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: center;
+}
+
+.press-quotes-box blockquote {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-left: 2px solid #c084fc;
+  padding-left: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.artist-theme {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(15, 23, 42, 0.95));
+  border-color: rgba(168, 85, 247, 0.35);
+}
+
+.bio-header-badge {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.bio-portrait-box {
+  font-size: 3.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+}
+
+.milestones-timeline {
+  padding-left: 1.25rem;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+.max-w-800 {
+  max-width: 800px;
+}
+
+.max-w-700 {
+  max-width: 700px;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.my-3 {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlacementPro - Online Campus Placement Examination</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-user-graduate"></i></div>
+                <div>
+                    <h1>PlacementPro</h1>
+                    <p class="subtitle">Online Campus Placement & Technical Assessment System</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-id-badge"></i> Role:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="student">Candidate: Alex Kumar (REG: 2026-CS-042)</option>
+                        <option value="admin">Placement Officer (Admin)</option>
+                    </select>
+                </div>
+                <div class="exam-status-pill" id="headerExamStatus">
+                    <i class="fas fa-shield-alt"></i> Secure CBT Environment
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="instructions" onclick="showTab('instructions')"><i class="fas fa-clipboard-list"></i> Hall Ticket & Rules</button>
+            <button class="nav-tab" data-tab="console" id="tabConsole" onclick="showTab('console')"><i class="fas fa-desktop"></i> Examination Console</button>
+            <button class="nav-tab" data-tab="scorecard" id="tabScorecard" onclick="showTab('scorecard')"><i class="fas fa-award"></i> My Scorecard</button>
+            <button class="nav-tab" data-tab="merit" onclick="showTab('merit')"><i class="fas fa-list-ol"></i> Merit Pass List</button>
+            <button class="nav-tab" data-tab="reeval" onclick="showTab('reeval')"><i class="fas fa-sync-alt"></i> Re-evaluation Desk</button>
+            <button class="nav-tab" data-tab="admin" id="tabAdmin" style="display:none;" onclick="showTab('admin')"><i class="fas fa-tools"></i> Exam Admin Panel</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: INSTRUCTIONS & HALL TICKET -->
+        <section id="tab-instructions" class="content-tab active">
+            <div class="instructions-layout">
+                <div class="hall-ticket-card">
+                    <div class="ticket-header">
+                        <div>
+                            <span class="badge badge-ticket">VERIFIED CANDIDATE</span>
+                            <h3>National Campus Recruitment Test (NCRT 2026)</h3>
+                            <p class="text-muted">Conducted by Department of Training & Placement</p>
+                        </div>
+                        <i class="fas fa-qrcode fa-4x text-muted"></i>
+                    </div>
+
+                    <div class="ticket-details-grid">
+                        <div><strong>Candidate Name:</strong> Alex Kumar</div>
+                        <div><strong>Registration No:</strong> 2026-CS-042</div>
+                        <div><strong>Department:</strong> B.Tech Computer Science</div>
+                        <div><strong>Exam Date:</strong> October 6, 2026</div>
+                        <div><strong>Total Questions:</strong> 10 MCQs</div>
+                        <div><strong>Duration:</strong> 15 Minutes</div>
+                    </div>
+
+                    <div class="ticket-footer-action">
+                        <button class="btn btn-primary btn-lg" onclick="startExamination()"><i class="fas fa-play-circle"></i> Launch Exam Console Now</button>
+                    </div>
+                </div>
+
+                <div class="rules-card">
+                    <h3><i class="fas fa-exclamation-triangle" style="color:var(--amber);"></i> Assessment Regulations</h3>
+                    <ul class="rules-list">
+                        <li>Each question carries <strong>1 mark</strong>. There is <strong>no negative marking</strong>.</li>
+                        <li>You may navigate freely between questions using the question palette on the right.</li>
+                        <li><strong>Color Coding Scheme:</strong>
+                            <div class="legend-row">
+                                <span class="legend-dot green"></span> Answered
+                                <span class="legend-dot orange"></span> Marked for Review
+                                <span class="legend-dot gray"></span> Not Visited
+                            </div>
+                        </li>
+                        <li>The system auto-submits once the 15-minute countdown clock reaches 00:00.</li>
+                        <li>Cutoff score for corporate interview shortlisting is set to <strong>60% (6/10)</strong>.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: LIVE EXAMINATION CONSOLE -->
+        <section id="tab-console" class="content-tab">
+            <div class="exam-console-layout">
+                <div class="question-main-pane">
+                    <div class="exam-top-bar">
+                        <div class="section-tag" id="currentSectionName">Section: Quantitative & Technical Core</div>
+                        <div class="timer-display">
+                            <i class="fas fa-stopwatch"></i> Time Remaining: <strong id="examClock">15:00</strong>
+                        </div>
+                    </div>
+
+                    <div class="question-container-card">
+                        <div class="question-index-badge" id="qNumberBadge">Question 1 of 10</div>
+                        <h3 class="question-title" id="qTitleText">Loading question content...</h3>
+
+                        <div class="options-group" id="optionsGroupContainer">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <div class="console-actions-row">
+                            <div>
+                                <button class="btn btn-secondary btn-sm" onclick="markForReview()"><i class="fas fa-flag"></i> Mark for Review</button>
+                                <button class="btn btn-secondary btn-sm" onclick="clearResponse()"><i class="fas fa-eraser"></i> Clear Choice</button>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="btn btn-secondary btn-sm" id="btnPrevQ" onclick="prevQuestion()"><i class="fas fa-arrow-left"></i> Previous</button>
+                                <button class="btn btn-primary btn-sm" id="btnNextQ" onclick="nextQuestion()">Next <i class="fas fa-arrow-right"></i></button>
+                                <button class="btn btn-success btn-sm" onclick="confirmSubmitExam()"><i class="fas fa-check-double"></i> Submit Test</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-palette-pane">
+                    <h4>Question Navigation Palette</h4>
+                    <div class="palette-grid" id="paletteGrid">
+                        <!-- Populated dynamically (1 to 10 buttons) -->
+                    </div>
+
+                    <div class="palette-summary-stats">
+                        <div class="stat-line"><span class="badge-dot green"></span> Answered: <strong id="statAnswered">0</strong></div>
+                        <div class="stat-line"><span class="badge-dot orange"></span> Marked for Review: <strong id="statReview">0</strong></div>
+                        <div class="stat-line"><span class="badge-dot gray"></span> Not Visited: <strong id="statUnvisited">10</strong></div>
+                    </div>
+
+                    <button class="btn btn-danger btn-block" style="margin-top:20px;" onclick="confirmSubmitExam()"><i class="fas fa-paper-plane"></i> Final Submission</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: SCORECARD -->
+        <section id="tab-scorecard" class="content-tab">
+            <div class="scorecard-container">
+                <div class="scorecard-card" id="scorecardCard">
+                    <div class="scorecard-header">
+                        <div>
+                            <span class="badge badge-ticket">OFFICIAL PLACEMENT RESULT</span>
+                            <h2>Candidate Merit Scorecard</h2>
+                            <p class="text-muted">SIMATS Centre for Campus Recruitment & Corporate Relations</p>
+                        </div>
+                        <div class="score-circular-badge" id="scoreCircBadge">
+                            <span id="finalScorePct">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="candidate-meta-row">
+                        <div><strong>Candidate:</strong> Alex Kumar</div>
+                        <div><strong>Reg No:</strong> 2026-CS-042</div>
+                        <div><strong>Test Date:</strong> October 6, 2026</div>
+                        <div><strong>Total Raw Score:</strong> <span id="finalScoreRaw">0 / 10</span></div>
+                        <div><strong>Merit Rank:</strong> <span id="finalRankDisplay">#4</span></div>
+                        <div><strong>Placement Status:</strong> <span id="finalStatusDisplay" class="status-pass">QUALIFIED</span></div>
+                    </div>
+
+                    <div class="section-analysis-block">
+                        <h4>Section-Wise Breakdown & Competency Assessment</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Section Domain</th>
+                                    <th>Total Questions</th>
+                                    <th>Correct</th>
+                                    <th>Accuracy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sectionBreakdownTable">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="scorecard-actions">
+                        <button class="btn btn-primary" onclick="window.print()"><i class="fas fa-print"></i> Download / Print Official Scorecard</button>
+                        <button class="btn btn-secondary" onclick="showTab('reeval')"><i class="fas fa-question-circle"></i> Apply for Re-evaluation</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: MERIT LIST -->
+        <section id="tab-merit" class="content-tab">
+            <div class="content-header-between">
+                <div>
+                    <h2>NCRT 2026 Corporate Merit Pass List</h2>
+                    <p>Official candidate rankings shortlisted for technical corporate interviews.</p>
+                </div>
+                <div class="merit-filter-box">
+                    <label>Filter Status:</label>
+                    <select id="meritStatusFilter" onchange="filterMeritList()">
+                        <option value="All">All Candidates</option>
+                        <option value="Shortlisted" selected>Shortlisted Only (>= Cutoff)</option>
+                        <option value="Needs Improvement">Needs Improvement</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="merit-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Reg Number</th>
+                            <th>Candidate Name</th>
+                            <th>Department</th>
+                            <th>Score (out of 10)</th>
+                            <th>Percentile</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="meritTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 5: RE-EVALUATION DESK -->
+        <section id="tab-reeval" class="content-tab">
+            <div class="reeval-layout">
+                <div class="form-card">
+                    <h2><i class="fas fa-file-signature"></i> Application for Answer Key Re-Evaluation</h2>
+                    <p class="subtitle-text">Candidates may challenge question ambiguity or request manual score audit within 7 working days.</p>
+                    <form onsubmit="handleReevaluationSubmit(event)">
+                        <div class="form-group">
+                            <label>Candidate Name & Reg No:</label>
+                            <input type="text" value="Alex Kumar (2026-CS-042)" readonly style="background:#090d16;">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Subject / Question Challenge:</label>
+                                <select id="reevalQSelect">
+                                    <option value="Question 3: Dijkstra Algorithm Complexity">Question 3: Dijkstra Algorithm Complexity</option>
+                                    <option value="Question 7: TCP 3-Way Handshake SYN-ACK">Question 7: TCP 3-Way Handshake SYN-ACK</option>
+                                    <option value="Question 9: Raft Leader Heartbeat Interval">Question 9: Raft Leader Heartbeat Interval</option>
+                                    <option value="General Recounting of All Sections">General Recounting of All Sections</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Grievance Type:</label>
+                                <select id="reevalType">
+                                    <option value="Disputed Official Key">Disputed Official Answer Key</option>
+                                    <option value="System Timer Discrepancy">System Timer Discrepancy</option>
+                                    <option value="Total Score Calculation Check">Total Score Calculation Check</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Detailed Technical Justification & Academic Citations:</label>
+                            <textarea id="reevalJustification" rows="4" required placeholder="State your rationale and reference standard textbooks (e.g., Cormen CLRS, Tanenbaum)..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Submit Re-Evaluation Challenge</button>
+                    </form>
+                </div>
+
+                <div class="reeval-history-card">
+                    <h3>Recent Re-Evaluation Petitions</h3>
+                    <div id="reevalHistoryContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: ADMIN PANEL -->
+        <section id="tab-admin" class="content-tab">
+            <div class="content-header">
+                <h2>Placement Directorate Administration</h2>
+                <p>Configure qualifying cutoffs, manage question bank items, and export merit logs.</p>
+            </div>
+
+            <div class="admin-controls-grid">
+                <div class="form-card">
+                    <h3><i class="fas fa-sliders-h"></i> Cutoff Configuration</h3>
+                    <div class="form-group">
+                        <label>Current Interview Shortlist Cutoff (Score):</label>
+                        <input type="number" id="adminCutoffInput" value="6" min="1" max="10">
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="updateCutoff()"><i class="fas fa-save"></i> Update Cutoff Threshold</button>
+                </div>
+
+                <div class="form-card">
+                    <h3><i class="fas fa-file-export"></i> Merit Export</h3>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:16px;">Download shortlisted candidate roster formatted for corporate HR recruiters (TCS, Infosys, Cognizant, Zoho).</p>
+                    <button class="btn btn-secondary btn-sm" onclick="exportMeritCSV()"><i class="fas fa-download"></i> Export Roster (CSV)</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 PlacementPro Assessment Portal | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

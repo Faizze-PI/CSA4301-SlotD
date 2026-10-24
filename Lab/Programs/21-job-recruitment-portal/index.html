@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalentBridge - Online Job Recruitment & ATS Portal</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">💼</span>
+      <div class="brand-text">
+        <span class="brand-title">TalentBridge</span>
+        <span class="brand-sub">Enterprise Job Recruitment & ATS Talent Pipeline</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="applicant" onclick="switchRole('applicant')">👤 Job Applicant</button>
+      <button class="role-pill" data-role="director" onclick="switchRole('director')">👔 Hiring Director / Recruiter</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ System Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- APPLICANT VIEW -->
+    <section id="applicantSection" class="role-view">
+      <div class="dashboard-header-card">
+        <div class="user-profile-badge">
+          <div class="avatar">👨‍💻</div>
+          <div>
+            <h3>Siddharth Verma (B.E. Computer Science)</h3>
+            <p class="muted">Profile: Full Stack Web Developer | Experience: 2 Years | Status: Actively Looking</p>
+          </div>
+        </div>
+        <div class="header-action-group">
+          <span class="badge badge-success">Verified Resume Active</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchApplicantTab('search')">🔍 Search & Apply Vacancies</button>
+        <button class="tab-btn" onclick="switchApplicantTab('applied')">📑 My Applications (<span id="myAppsCount">0</span>)</button>
+        <button class="tab-btn" onclick="switchApplicantTab('saved')">⭐ Saved Vacancies</button>
+        <button class="tab-btn" onclick="switchApplicantTab('profile')">⚙️ Resume & Privacy Settings</button>
+      </div>
+
+      <!-- Tab: Search & Apply -->
+      <div id="appTabSearch" class="tab-pane active">
+        <!-- Search and Filters -->
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Role, Keyword or Skill</label>
+              <input type="text" id="jobSearchKeyword" class="input" placeholder="e.g. Frontend Developer, Python, AWS..." oninput="filterJobs()">
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <select id="jobLocationFilter" class="input" onchange="filterJobs()">
+                <option value="All">All Locations</option>
+                <option value="Chennai">Chennai, TN</option>
+                <option value="Bengaluru">Bengaluru, KA</option>
+                <option value="Hyderabad">Hyderabad, TS</option>
+                <option value="Remote">Remote / Work from Home</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="jobCategoryFilter" class="input" onchange="filterJobs()">
+                <option value="All">All Categories</option>
+                <option value="Engineering & IT">Engineering & IT</option>
+                <option value="Data Science & AI">Data Science & AI</option>
+                <option value="Product & Design">Product & Design</option>
+                <option value="Operations & Sales">Operations & Sales</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="jobListingsGrid" class="jobs-grid">
+          <!-- Dynamically populated job cards -->
+        </div>
+      </div>
+
+      <!-- Tab: Applied Jobs -->
+      <div id="appTabApplied" class="tab-pane">
+        <div class="card">
+          <h3>Submitted Job Applications & ATS Status</h3>
+          <p class="muted">Track interview scheduling, technical screening, and shortlist outcomes.</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Job Title & Company</th>
+                  <th>Location</th>
+                  <th>Applied On</th>
+                  <th>Expected CTC</th>
+                  <th>ATS Screening Status</th>
+                  <th>Recruiter Notes</th>
+                </tr>
+              </thead>
+              <tbody id="applicantApplicationsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Saved Jobs -->
+      <div id="appTabSaved" class="tab-pane">
+        <div class="card">
+          <h3>Saved Opportunities</h3>
+          <div id="savedJobsGrid" class="jobs-grid mt-3">
+            <!-- Dynamically populated saved jobs -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Profile & Privacy -->
+      <div id="appTabProfile" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Applicant Resume & Company Privacy Control</h3>
+          <p class="muted">Configure which categories of enterprise recruiters can view your profile.</p>
+          <form onsubmit="handleSaveApplicantProfile(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="appFullName" class="input" value="Siddharth Verma" required>
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="appEmail" class="input" value="siddharth.verma@example.com" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Key Skills (Comma Separated)</label>
+              <input type="text" id="appSkills" class="input" value="JavaScript, React, Node.js, SQL, REST APIs, Git" required>
+            </div>
+
+            <div class="form-group">
+              <label>Hosted Resume Portfolio URL</label>
+              <input type="text" id="appResumeUrl" class="input" value="https://linkedin.com/in/siddharth-verma-demo" required>
+            </div>
+
+            <div class="form-group">
+              <label>Recruiter Privacy Level</label>
+              <select id="appPrivacyLevel" class="input">
+                <option value="Public">Public (Discoverable by all verified enterprise directors)</option>
+                <option value="Restricted">Restricted (Hide contact info until shortlist invitation)</option>
+                <option value="Confidential">Confidential (Hide current employer from search results)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Save Profile Settings</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- HIRING DIRECTOR VIEW -->
+    <section id="directorSection" class="role-view hidden">
+      <div class="dashboard-header-card director-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👔</div>
+          <div>
+            <h3>Elena Rostova (HR Director)</h3>
+            <p class="muted">Company: NexaWave Innovations Ltd | Approval: <span class="badge badge-success" id="directorApprovalStatus">Approved Director</span></p>
+          </div>
+        </div>
+        <div class="director-metrics">
+          <div class="metric-pill">
+            <span class="muted text-xs">Active Postings:</span>
+            <strong id="dirActivePostings">4 Jobs</strong>
+          </div>
+          <div class="metric-pill">
+            <span class="muted text-xs">Total Resumes Received:</span>
+            <strong id="dirTotalResumes">8 Applicants</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Director Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchDirectorTab('applicants')">👥 Candidate Resumes & ATS Screening</button>
+        <button class="tab-btn" onclick="switchDirectorTab('myVacancies')">📋 Manage Vacancies</button>
+        <button class="tab-btn" onclick="switchDirectorTab('postJob')">➕ Post New Job Vacancy</button>
+      </div>
+
+      <!-- Director Tab: Applicants -->
+      <div id="dirTabApplicants" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Candidate Resume Review Queue</h3>
+              <p class="muted">Screen applicant skills, download portfolios, and update hiring pipeline status.</p>
+            </div>
+            <select id="dirFilterAppStatus" class="input input-sm" onchange="renderDirectorApplicants()">
+              <option value="all">All Applicants</option>
+              <option value="Applied">New Applications</option>
+              <option value="Shortlisted">Shortlisted</option>
+              <option value="Interview Scheduled">Interview Scheduled</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Applicant Name</th>
+                  <th>Applied For</th>
+                  <th>Skills / Stack</th>
+                  <th>Resume</th>
+                  <th>Current ATS Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="directorApplicantsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Director Tab: My Vacancies -->
+      <div id="dirTabMyVacancies" class="tab-pane">
+        <div class="card">
+          <h3>Active Enterprise Job Postings</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Job Title</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Salary Range</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="directorVacanciesTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Director Tab: Post Job -->
+      <div id="dirTabPostJob" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Create New Enterprise Job Vacancy</h3>
+          <p class="muted">Post opening to the public applicant board with detailed requirements.</p>
+          <form id="postJobForm" onsubmit="handleDirectorPostJob(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" id="newJobTitle" class="input" placeholder="e.g. Senior Backend Engineer (Node/Postgres)" required>
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="newJobCategory" class="input">
+                  <option value="Engineering & IT">Engineering & IT</option>
+                  <option value="Data Science & AI">Data Science & AI</option>
+                  <option value="Product & Design">Product & Design</option>
+                  <option value="Operations & Sales">Operations & Sales</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Job Location</label>
+                <select id="newJobLocation" class="input">
+                  <option value="Chennai">Chennai, TN</option>
+                  <option value="Bengaluru">Bengaluru, KA</option>
+                  <option value="Hyderabad">Hyderabad, TS</option>
+                  <option value="Remote">Remote / Work from Home</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Compensation Package (LPA)</label>
+                <input type="text" id="newJobSalary" class="input" placeholder="e.g. ₹12 - 18 LPA" value="₹14 - 20 LPA" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Company Logo URL</label>
+              <input type="text" id="newJobLogo" class="input" value="https://images.unsplash.com/photo-1549923746-c502d488b3ea?w=100">
+            </div>
+
+            <div class="form-group">
+              <label>Job Description & Responsibilities</label>
+              <textarea id="newJobDesc" class="input" rows="3" placeholder="Design scalable microservices, collaborate with frontend teams, mentor junior engineers..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Publish Job Vacancy</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- SYSTEM ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">👔</span>
+          <div>
+            <div class="metric-value" id="adminTotalDirectors">3</div>
+            <div class="metric-label">Registered Hiring Directors</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💼</span>
+          <div>
+            <div class="metric-value" id="adminTotalJobs">6</div>
+            <div class="metric-label">Live Job Postings</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">👥</span>
+          <div>
+            <div class="metric-value" id="adminTotalCandidates">12</div>
+            <div class="metric-label">Enrolled Candidates</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('directors')">🏢 Director Approvals</button>
+        <button class="tab-btn" onclick="switchAdminTab('allUsers')">👥 Candidate Registry</button>
+        <button class="tab-btn" onclick="switchAdminTab('reports')">📊 Recruitment Analytics Report</button>
+      </div>
+
+      <!-- Admin Tab: Directors -->
+      <div id="adminTabDirectors" class="tab-pane active">
+        <div class="card">
+          <h3>Hiring Director Verification Queue</h3>
+          <p class="muted">Authorize company corporate credentials before enabling job posting privileges.</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Director Name</th>
+                  <th>Company</th>
+                  <th>Official Corporate Email</th>
+                  <th>Verification Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminDirectorsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Candidate Registry -->
+      <div id="adminTabAllUsers" class="tab-pane">
+        <div class="card">
+          <h3>Registered Job Seekers</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Candidate Name</th>
+                  <th>Email</th>
+                  <th>Primary Skillset</th>
+                  <th>Privacy Status</th>
+                  <th>Applications Filed</th>
+                </tr>
+              </thead>
+              <tbody id="adminUsersTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Reports -->
+      <div id="adminTabReports" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Quarterly Recruitment Analytics Report</h3>
+              <p class="muted">Hiring funnels, candidate acceptance rates, and active vacancies.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Export PDF Audit</button>
+          </div>
+          <div class="report-summary-box mt-3" id="adminReportMetricsBox">
+            <!-- Dynamic report stats -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Job Application Modal -->
+  <div id="applyJobModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Submit Job Application</h3>
+        <button class="modal-close" onclick="closeApplyJobModal()">&times;</button>
+      </div>
+      <form onsubmit="handleConfirmJobApplication(event)">
+        <input type="hidden" id="applyJobId">
+        <div class="form-group">
+          <label>Target Role</label>
+          <input type="text" id="applyJobTitleDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Current Experience (Years)</label>
+            <input type="number" id="applyExpYears" class="input" value="2" min="0" required>
+          </div>
+          <div class="form-group">
+            <label>Expected CTC (LPA)</label>
+            <input type="text" id="applyExpectedCtc" class="input" value="₹12 LPA" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cover Letter / Elevator Pitch</label>
+          <textarea id="applyCoverLetter" class="input" rows="3" placeholder="Explain why you are an ideal fit for this engineering team..." required>I have 2 years of hands-on experience developing responsive web architectures, designing RESTful APIs, and optimizing database queries.</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Portfolio / Github Link</label>
+          <input type="text" id="applyPortfolioLink" class="input" value="https://github.com/siddharth-dev-showcase" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeApplyJobModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Transmit Application & Resume</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 21: Online Job Recruitment Portal | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

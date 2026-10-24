@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traffic Squad - E-Challan FIR & Penalty Collection Portal</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">🚔</span>
+      <div class="brand-text">
+        <span class="brand-title">Traffic Squad</span>
+        <span class="brand-sub">Metropolitan E-Challan FIR & Digital Penalty Enforcement Portal</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="citizen" onclick="switchRole('citizen')">🚗 Citizen / Vehicle Owner</button>
+      <button class="role-pill" data-role="police" onclick="switchRole('police')">👮 Traffic Police Officer</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Department Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- CITIZEN / VEHICLE OWNER VIEW -->
+    <section id="citizenSection" class="role-view">
+      <div class="dashboard-header-card citizen-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🔍</div>
+          <div>
+            <h3>Citizen E-Challan Search & Payment Gateway</h3>
+            <p class="muted">Search pending traffic FIR cases by Vehicle Registration or Challan ID, review photographic evidence, and clear dues.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Search Card -->
+      <div class="card mb-4">
+        <h3>Search Traffic Violation Notice</h3>
+        <div class="search-flex-row mt-3">
+          <div class="form-group flex-2">
+            <label>Search by Vehicle Registration No (e.g., TN 09 BK 4521) or Challan ID</label>
+            <input type="text" id="citizenSearchQuery" class="input uppercase font-mono" placeholder="Enter Registration No (e.g. TN 09 BK 4521) or CHL-XXXX" value="TN 09 BK 4521">
+          </div>
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary btn-block" onclick="handleCitizenSearch()">Search Records</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Container -->
+      <div id="citizenResultsContainer">
+        <!-- Dynamically populated challans list -->
+      </div>
+    </section>
+
+    <!-- TRAFFIC POLICE OFFICER VIEW -->
+    <section id="policeSection" class="role-view hidden">
+      <div class="dashboard-header-card police-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">👮‍♂️</div>
+          <div>
+            <h3>Officer: Sub-Inspector R. Manickam (Badge #TP-4091)</h3>
+            <p class="muted">Sector: Anna Salai & Kathipara Traffic Control Division | Status: <span class="badge badge-success">On Active Patrol</span></p>
+          </div>
+        </div>
+        <div>
+          <button class="btn btn-primary btn-sm" onclick="openCreateCaseModal()">➕ File New E-Challan FIR</button>
+        </div>
+      </div>
+
+      <!-- Police Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchPoliceTab('filedCases')">📋 My Registered FIRs</button>
+        <button class="tab-btn" onclick="switchPoliceTab('penaltyChart')">📜 Penalty & Fine Rules Chart</button>
+        <button class="tab-btn" onclick="switchPoliceTab('liveTraffic')">🚨 Live Traffic Alerts & Map</button>
+      </div>
+
+      <!-- Tab: Filed Cases -->
+      <div id="policeTabCases" class="tab-pane active">
+        <div class="card">
+          <div class="card-header-flex">
+            <h3>Recent Traffic Violation Cases Filed</h3>
+            <span class="badge badge-primary" id="policeTotalCasesBadge">0 Cases</span>
+          </div>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Challan ID</th>
+                  <th>Vehicle No</th>
+                  <th>Violation Type</th>
+                  <th>Location Junction</th>
+                  <th>Fine (₹)</th>
+                  <th>Photo Proof</th>
+                  <th>Status</th>
+                  <th>Date/Time</th>
+                </tr>
+              </thead>
+              <tbody id="policeCasesTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Penalty Chart -->
+      <div id="policeTabRules" class="tab-pane">
+        <div class="card">
+          <h3>Statutory Motor Vehicles Act 2019 - Penalty Matrix</h3>
+          <p class="muted">Standardized fines and offense sections as mandated by the Transport Authority.</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Offense Section</th>
+                  <th>Violation Description</th>
+                  <th>First Offense Fine</th>
+                  <th>Vehicle Seizure</th>
+                </tr>
+              </thead>
+              <tbody id="penaltyRulesTableBody">
+                <!-- Dynamically populated from rules array -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Live Traffic Reports & Map -->
+      <div id="policeTabTraffic" class="tab-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Broadcast Live Traffic Alert / Road Advisory</h3>
+            <form onsubmit="handlePostTrafficAlert(event)" class="mt-3">
+              <div class="form-group">
+                <label>Corridor / Road Junction</label>
+                <input type="text" id="alertJunction" class="input" placeholder="e.g. Kathipara Junction - Heavy Congestion" required>
+              </div>
+              <div class="form-group">
+                <label>Severity Level</label>
+                <select id="alertSeverity" class="input">
+                  <option value="Congestion">🟠 Moderate Delay / High Volume</option>
+                  <option value="Accident">🔴 Major Accident / Road Diversion</option>
+                  <option value="Roadwork">🟡 Water Pipeline Repair / Flyover Construction</option>
+                  <option value="Normal">🟢 Traffic Moving Smoothly</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Advisory Details</label>
+                <textarea id="alertDetails" class="input" rows="3" placeholder="Heavy tailback up to Guindy racecourse. Vehicles advised to take inner ring road..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-warning btn-block">Publish Real-Time Road Advisory</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Live Highway Traffic Bulletins</h3>
+            <div id="trafficBulletinsList" class="bulletin-list mt-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPARTMENT ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div>
+            <div class="metric-value" id="adminTotalCases">0</div>
+            <div class="metric-label">Total E-Challans Logged</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <div>
+            <div class="metric-value text-success" id="adminCollectedRevenue">₹0</div>
+            <div class="metric-label">Penalties Collected</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">⏳</span>
+          <div>
+            <div class="metric-value text-danger" id="adminPendingRevenue">₹0</div>
+            <div class="metric-label">Pending Fine Recovery</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Manage Police Officers -->
+        <div class="card">
+          <h3>Traffic Squad Officers Directory</h3>
+          <p class="muted">Active on-field enforcement officers and squad patrol units.</p>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Badge No</th>
+                  <th>Officer Name</th>
+                  <th>Assigned Junction</th>
+                  <th>Cases Filed</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminOfficersTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Daily Penalty Collection Report -->
+        <div class="card">
+          <h3>Daily Violation Analytics & Category Split</h3>
+          <p class="muted">Violation types distribution for enforcement strategy.</p>
+          <div id="adminCategoryReport" class="mt-3">
+            <!-- Dynamically populated breakdown bars -->
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Create Case Modal -->
+  <div id="createCaseModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>File New Traffic Violation E-Challan FIR</h3>
+        <button class="modal-close" onclick="closeCreateCaseModal()">&times;</button>
+      </div>
+      <form onsubmit="handleCreateChallanSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Vehicle Registration Number</label>
+            <input type="text" id="newVehNo" class="input uppercase font-mono font-bold" placeholder="e.g. TN 09 BK 4521" required>
+          </div>
+          <div class="form-group">
+            <label>Vehicle Category</label>
+            <select id="newVehCategory" class="input">
+              <option value="Two-Wheeler (Motorcycle/Scooter)">Two-Wheeler (Motorcycle/Scooter)</option>
+              <option value="Four-Wheeler (Car/Sedan/SUV)">Four-Wheeler (Car/Sedan/SUV)</option>
+              <option value="Commercial Truck / Heavy Vehicle">Commercial Truck / Heavy Vehicle</option>
+              <option value="Auto Rickshaw / Taxi">Auto Rickshaw / Taxi</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Registered Owner Name</label>
+            <input type="text" id="newOwnerName" class="input" placeholder="e.g. Ramesh Krishnan" required>
+          </div>
+          <div class="form-group">
+            <label>Owner Contact Mobile</label>
+            <input type="tel" id="newOwnerMobile" class="input font-mono" placeholder="e.g. +91 98401 22334" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Specific Violation Offense</label>
+            <select id="newViolationSelect" class="input" onchange="updateChallanFineAmount()" required>
+              <option value="Helmet Not Worn" data-fine="1000">Section 194D: Riding without Helmet (₹1,000)</option>
+              <option value="Red Light Signal Jumping" data-fine="1000">Section 184: Red Light Signal Jumping (₹1,000)</option>
+              <option value="Triple Riding on Two-Wheeler" data-fine="1000">Section 194C: Triple Riding on Two-Wheeler (₹1,000)</option>
+              <option value="Over-Speeding (Radar Detected)" data-fine="2000">Section 183: Exceeding Permissible Speed Limit (₹2,000)</option>
+              <option value="Using Mobile Phone while Driving" data-fine="1500">Section 184(c): Using Handheld Mobile Phone (₹1,500)</option>
+              <option value="Seat Belt Not Fastened" data-fine="1000">Section 194B: Driving without Seat Belt (₹1,000)</option>
+              <option value="Driving Under Influence (DUI)" data-fine="10000">Section 185: Drunk Driving / Breathalyzer Positive (₹10,000)</option>
+              <option value="Wrong Side / Dangerous Driving" data-fine="5000">Section 184: One-way Violation / Reckless Maneuver (₹5,000)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Statutory Fine Amount (₹)</label>
+            <input type="number" id="newFineAmount" class="input font-mono font-bold text-danger" value="1000" readonly>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Intersection / Junction Location</label>
+          <input type="text" id="newLocation" class="input" placeholder="e.g. Kathipara Junction - Pillar 14" required>
+        </div>
+
+        <div class="form-group">
+          <label>Proof Photo Evidence (Select camera snapshot or ANPR camera feed)</label>
+          <select id="newPhotoProofSelect" class="input">
+            <option value="camera_speed_radar.jpg">📷 ANPR Radar Snapshot - Over Speeding [Camera Feed #04]</option>
+            <option value="camera_no_helmet.jpg">📷 High-Res Junction Lens - No Helmet Evidence [Camera Feed #11]</option>
+            <option value="camera_signal_jump.jpg">📷 Stop Line CCTV - Red Light Signal Violation [Camera Feed #08]</option>
+            <option value="camera_triple_riding.jpg">📷 Patrol Bodycam - Triple Riding Captured [Bodycam #TP-4091]</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeCreateCaseModal()">Cancel</button>
+          <button type="submit" class="btn btn-danger">🚨 Issue Official FIR & Challan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pay Challan Modal -->
+  <div id="payModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>E-Challan Digital Payment Gateway</h3>
+        <button class="modal-close" onclick="closePayModal()">&times;</button>
+      </div>
+      <form onsubmit="handleExecutePayment(event)">
+        <input type="hidden" id="payChallanId">
+        <div class="form-group">
+          <label>Challan Notice Reference</label>
+          <input type="text" id="payChallanIdDisplay" class="input font-mono font-bold" readonly>
+        </div>
+        <div class="form-group">
+          <label>Vehicle & Offense</label>
+          <input type="text" id="payOffenseDisplay" class="input" readonly>
+        </div>
+        <div class="form-group">
+          <label>Penal Amount Payable</label>
+          <input type="text" id="payAmountDisplay" class="input font-mono font-bold text-danger" readonly>
+        </div>
+        <div class="form-group">
+          <label>Select Payment Mode</label>
+          <select class="input">
+            <option>UPI / GooglePay / PhonePe / Paytm</option>
+            <option>Net Banking (State Bank of India / HDFC / ICICI)</option>
+            <option>Debit / Credit Card (RuPay / Visa / MasterCard)</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closePayModal()">Cancel</button>
+          <button type="submit" class="btn btn-success">✅ Confirm & Pay Online</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Receipt Printable Modal -->
+  <div id="receiptModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Official Government E-Challan Payment Receipt</h3>
+        <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
+      </div>
+      <div id="receiptContent" class="receipt-printable-box">
+        <!-- Dynamically generated receipt -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ Print Tax Receipt</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 26: Traffic Squad Penalty Collection & Management-based Web Application | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

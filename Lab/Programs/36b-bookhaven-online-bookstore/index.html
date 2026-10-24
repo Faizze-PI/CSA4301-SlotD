@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHaven - Your Literary Sanctuary</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-book-reader"></i></div>
+                <div>
+                    <h1>BookHaven</h1>
+                    <p class="subtitle">Curated Literary Collections & Bookstore</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-user-circle"></i> Role:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="customer">Customer (Reader)</option>
+                        <option value="manager">Store Manager (Admin)</option>
+                    </select>
+                </div>
+                <button class="cart-btn" onclick="showTab('cart')">
+                    <i class="fas fa-shopping-bag"></i> Cart
+                    <span class="cart-badge" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="home" onclick="showTab('home')"><i class="fas fa-home"></i> Home</button>
+            <button class="nav-tab" data-tab="catalog" onclick="showTab('catalog')"><i class="fas fa-books"></i> Books Catalog</button>
+            <button class="nav-tab" data-tab="blog" onclick="showTab('blog')"><i class="fas fa-feather-alt"></i> Literary Blog</button>
+            <button class="nav-tab" data-tab="about" onclick="showTab('about')"><i class="fas fa-info-circle"></i> About Us</button>
+            <button class="nav-tab" data-tab="contact" onclick="showTab('contact')"><i class="fas fa-envelope"></i> Contact Us</button>
+            <button class="nav-tab" data-tab="faq" onclick="showTab('faq')"><i class="fas fa-question-circle"></i> FAQ & Policies</button>
+            <button class="nav-tab" data-tab="cart" onclick="showTab('cart')"><i class="fas fa-shopping-cart"></i> Cart & Checkout</button>
+            <button class="nav-tab" data-tab="admin" id="tabAdmin" style="display:none;" onclick="showTab('admin')"><i class="fas fa-cogs"></i> Inventory Desk</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: HOME PAGE -->
+        <section id="tab-home" class="content-tab active">
+            <!-- Carousel Hero -->
+            <div class="hero-carousel">
+                <div class="carousel-slide active" id="slide1">
+                    <div class="slide-content">
+                        <span class="slide-badge">Bestseller of the Month</span>
+                        <h2>The Midnight Library</h2>
+                        <p class="slide-author">By Matt Haig | Fiction & Magical Realism</p>
+                        <p class="slide-desc">Between life and death there is a library with infinite shelves of what might have been. Nora Seed finds herself faced with the possibility of changing her life for a new one.</p>
+                        <div class="slide-actions">
+                            <button class="btn btn-primary" onclick="quickAddToCart('B101')"><i class="fas fa-cart-plus"></i> Add to Bag - ₹499</button>
+                            <button class="btn btn-secondary" onclick="openBookModal('B101')"><i class="fas fa-eye"></i> Read Synopsis</button>
+                        </div>
+                    </div>
+                    <div class="slide-cover">
+                        <i class="fas fa-book fa-6x" style="color:#d97706"></i>
+                    </div>
+                </div>
+
+                <div class="carousel-slide" id="slide2">
+                    <div class="slide-content">
+                        <span class="slide-badge">Academic Spotlight</span>
+                        <h2>Clean Code & Software Architecture</h2>
+                        <p class="slide-author">By Robert C. Martin | Engineering</p>
+                        <p class="slide-desc">Even bad code can function. But if code isn't clean, it can bring a development organization to its knees. Master clean craftsmanship principles.</p>
+                        <div class="slide-actions">
+                            <button class="btn btn-primary" onclick="quickAddToCart('B104')"><i class="fas fa-cart-plus"></i> Add to Bag - ₹850</button>
+                            <button class="btn btn-secondary" onclick="openBookModal('B104')"><i class="fas fa-eye"></i> Read Synopsis</button>
+                        </div>
+                    </div>
+                    <div class="slide-cover">
+                        <i class="fas fa-laptop-code fa-6x" style="color:#2563eb"></i>
+                    </div>
+                </div>
+
+                <div class="carousel-controls">
+                    <button class="carousel-arrow" onclick="prevSlide()"><i class="fas fa-chevron-left"></i></button>
+                    <div class="carousel-dots">
+                        <span class="dot active" onclick="setSlide(0)"></span>
+                        <span class="dot" onclick="setSlide(1)"></span>
+                    </div>
+                    <button class="carousel-arrow" onclick="nextSlide()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Featured Categories -->
+            <div class="categories-section">
+                <h3>Browse by Literary Genre</h3>
+                <div class="genre-cards">
+                    <div class="genre-card" onclick="filterByGenre('Fiction')">
+                        <i class="fas fa-feather"></i>
+                        <h4>Fiction</h4>
+                        <p>1,240 Titles</p>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('Science Fiction')">
+                        <i class="fas fa-rocket"></i>
+                        <h4>Sci-Fi & Fantasy</h4>
+                        <p>890 Titles</p>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('Academic')">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h4>Academic & Tech</h4>
+                        <p>650 Titles</p>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('Self-Help')">
+                        <i class="fas fa-brain"></i>
+                        <h4>Self-Growth</h4>
+                        <p>420 Titles</p>
+                    </div>
+                    <div class="genre-card" onclick="filterByGenre('Mystery')">
+                        <i class="fas fa-user-secret"></i>
+                        <h4>Mystery & Crime</h4>
+                        <p>510 Titles</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Arrivals Grid -->
+            <div class="section-block">
+                <div class="section-title-row">
+                    <h3>Curated New Arrivals & Editor's Picks</h3>
+                    <button class="btn btn-link" onclick="showTab('catalog')">View All Books <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="books-grid" id="homeBooksGrid">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CATALOG -->
+        <section id="tab-catalog" class="content-tab">
+            <div class="catalog-layout">
+                <aside class="catalog-sidebar">
+                    <h3><i class="fas fa-filter"></i> Refine Catalog</h3>
+                    <div class="filter-group">
+                        <label>Search Title / Author:</label>
+                        <div class="search-input-wrap">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="catalogSearchInput" placeholder="e.g. Orwell, Clean Code..." onkeyup="filterCatalog()">
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Genre:</label>
+                        <select id="genreSelect" onchange="filterCatalog()">
+                            <option value="All">All Genres</option>
+                            <option value="Fiction">Fiction</option>
+                            <option value="Science Fiction">Science Fiction</option>
+                            <option value="Academic">Academic & Computing</option>
+                            <option value="Self-Help">Self-Help & Psychology</option>
+                            <option value="Mystery">Mystery & Thriller</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Max Price (₹): <span id="priceLabel">₹1500</span></label>
+                        <input type="range" id="priceRange" min="200" max="1500" step="50" value="1500" oninput="updatePriceFilter(this.value)">
+                    </div>
+                    <div class="filter-group">
+                        <label>Sort By:</label>
+                        <select id="sortSelect" onchange="filterCatalog()">
+                            <option value="featured">Featured / Bestselling</option>
+                            <option value="price-asc">Price: Low to High</option>
+                            <option value="price-desc">Price: High to Low</option>
+                            <option value="rating-desc">Highest Customer Rating</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <div class="catalog-results">
+                    <div class="results-header">
+                        <span id="resultsCount">Showing all titles</span>
+                    </div>
+                    <div class="books-grid" id="catalogGrid">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: LITERARY BLOG -->
+        <section id="tab-blog" class="content-tab">
+            <div class="content-header">
+                <h2>The BookHaven Literary Journal</h2>
+                <p>Book essays, author spotlights, critical reviews, and curated reading roadmaps.</p>
+            </div>
+            <div class="blog-grid" id="blogGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 4: ABOUT US -->
+        <section id="tab-about" class="content-tab">
+            <div class="about-hero">
+                <h2>Our Mission & Heritage</h2>
+                <p class="lead-text">Established in 2018, BookHaven was founded on the fundamental belief that books cultivate deep empathy, critical thought, and lifelong intellectual curiosity.</p>
+            </div>
+            <div class="about-values">
+                <div class="value-card">
+                    <i class="fas fa-hand-holding-heart fa-2x"></i>
+                    <h3>Independent Curatorship</h3>
+                    <p>Every book on our shelf is handpicked by voracious readers, academics, and literary critics to guarantee quality.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-leaf fa-2x"></i>
+                    <h3>Sustainable Printing</h3>
+                    <p>We partner with publishers using FSC-certified recycled paper and vegetable-based biodegradable inks.</p>
+                </div>
+                <div class="value-card">
+                    <i class="fas fa-users fa-2x"></i>
+                    <h3>Literary Communities</h3>
+                    <p>Hosting weekly book discussion circles, author webinars, and open mic readings across university chapters.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: CONTACT US -->
+        <section id="tab-contact" class="content-tab">
+            <div class="contact-grid">
+                <div class="contact-info-card">
+                    <h3>Get in Touch with Our Curators</h3>
+                    <p>Whether you're looking for a rare out-of-print edition or want bulk academic discounts for your institution, we're here to assist.</p>
+                    <div class="info-list">
+                        <div class="info-item"><i class="fas fa-map-marker-alt"></i> 124 Heritage Lane, Cathedral Road, Chennai - 600086</div>
+                        <div class="info-item"><i class="fas fa-phone"></i> +91 (044) 2811-9040</div>
+                        <div class="info-item"><i class="fas fa-envelope"></i> support@bookhaven-simats.edu</div>
+                        <div class="info-item"><i class="fas fa-clock"></i> Monday – Saturday: 9:00 AM – 8:00 PM IST</div>
+                    </div>
+                </div>
+
+                <div class="contact-form-card">
+                    <h3>Send Us an Inquiry</h3>
+                    <form onsubmit="handleContactSubmit(event)">
+                        <div class="form-group">
+                            <label>Full Name:</label>
+                            <input type="text" id="contactName" required placeholder="e.g. Ramesh Krishnan">
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address:</label>
+                            <input type="email" id="contactEmail" required placeholder="e.g. ramesh@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Message / Special Request:</label>
+                            <textarea id="contactMsg" rows="4" required placeholder="Inquire about book availability or shipping..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 6: FAQ & POLICIES -->
+        <section id="tab-faq" class="content-tab">
+            <div class="faq-container">
+                <h2>Frequently Asked Questions & Store Policies</h2>
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleFaq(this)">
+                            <span>How fast is delivery within India?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            Standard shipping takes 2-4 business days across metropolitan areas and 4-6 business days for rural locations. Express 24-hour delivery is available for orders placed before 1:00 PM IST.
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleFaq(this)">
+                            <span>What is BookHaven's return and replacement policy?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            We accept hassle-free returns within 14 days of delivery if the book arrives damaged, has missing pages, or differs from your order. Reverse pick-up is arranged at zero customer cost.
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleFaq(this)">
+                            <span>Can educational institutions order in bulk with tax invoices?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            Yes! College libraries and research institutions are eligible for up to 25% institutional discounts with standard GST tax invoices.
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleFaq(this)">
+                            <span>Privacy Policy & Data Protection</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-body">
+                            BookHaven does not sell or share customer personal information with third-party advertisers. All checkout transactions are secured using 256-bit SSL encryption.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 7: CART & CHECKOUT -->
+        <section id="tab-cart" class="content-tab">
+            <div class="cart-layout">
+                <div class="cart-items-panel">
+                    <h2><i class="fas fa-shopping-bag"></i> Your Book Bag</h2>
+                    <div id="cartItemsContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="cart-summary-panel">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Items Subtotal:</span>
+                        <span id="summarySubtotal">₹0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery Fee:</span>
+                        <span id="summaryDelivery">FREE</span>
+                    </div>
+                    <div class="summary-row" id="discountRow" style="display:none; color:#10b981;">
+                        <span>Coupon Discount (10%):</span>
+                        <span id="summaryDiscount">-₹0</span>
+                    </div>
+                    <div class="summary-divider"></div>
+                    <div class="summary-total">
+                        <span>Total Payable:</span>
+                        <span id="summaryTotal">₹0</span>
+                    </div>
+
+                    <div class="coupon-box">
+                        <input type="text" id="couponInput" placeholder="Try 'BOOKWORM10'">
+                        <button class="btn btn-secondary btn-sm" onclick="applyCoupon()">Apply</button>
+                    </div>
+
+                    <div class="checkout-form">
+                        <h4>Shipping Destination</h4>
+                        <div class="form-group">
+                            <input type="text" id="shipName" placeholder="Recipient Name" value="Alex Kumar">
+                        </div>
+                        <div class="form-group">
+                            <textarea id="shipAddress" rows="2" placeholder="Full Delivery Address">Apartment 4B, Green Meadows, Anna Nagar, Chennai</textarea>
+                        </div>
+                        <button class="btn btn-primary btn-block" onclick="processOrder()"><i class="fas fa-lock"></i> Complete Order</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 8: ADMIN INVENTORY DESK -->
+        <section id="tab-admin" class="content-tab">
+            <div class="content-header">
+                <h2>Store Manager - Book Inventory & Orders</h2>
+                <p>Add new titles to catalog and inspect recent reader purchases.</p>
+            </div>
+            <div class="admin-grid">
+                <div class="form-card">
+                    <h3><i class="fas fa-plus"></i> Add New Book Title</h3>
+                    <form onsubmit="handleAddNewBook(event)">
+                        <div class="form-group">
+                            <label>Book Title:</label>
+                            <input type="text" id="newBookTitle" required placeholder="e.g. Sapiens: A Brief History">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Author:</label>
+                                <input type="text" id="newBookAuthor" required placeholder="e.g. Yuval Noah Harari">
+                            </div>
+                            <div class="form-group">
+                                <label>Genre:</label>
+                                <select id="newBookGenre">
+                                    <option value="Fiction">Fiction</option>
+                                    <option value="Science Fiction">Science Fiction</option>
+                                    <option value="Academic">Academic</option>
+                                    <option value="Self-Help">Self-Help</option>
+                                    <option value="Mystery">Mystery</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Price (₹):</label>
+                                <input type="number" id="newBookPrice" required value="499" min="50">
+                            </div>
+                            <div class="form-group">
+                                <label>Initial Stock:</label>
+                                <input type="number" id="newBookStock" required value="25" min="1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Synopsis:</label>
+                            <textarea id="newBookSynopsis" rows="3" required placeholder="Enter brief overview..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Add to Storefront</button>
+                    </form>
+                </div>
+
+                <div class="orders-card">
+                    <h3><i class="fas fa-receipt"></i> Recent Orders</h3>
+                    <div id="recentOrdersContainer">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Book Detail Modal -->
+    <div class="modal" id="bookModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeBookModal()">&times;</button>
+            <div class="modal-content" id="modalBookContent">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Receipt Modal -->
+    <div class="modal" id="receiptModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
+            <div class="modal-content" id="receiptModalContent">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 BookHaven Online Bookstore | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

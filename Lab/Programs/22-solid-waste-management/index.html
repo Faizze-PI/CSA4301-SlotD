@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoClean - Smart Municipal Solid Waste Management & Route Optimization</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">♻️</span>
+      <div class="brand-text">
+        <span class="brand-title">EcoClean</span>
+        <span class="brand-sub">Smart Solid Waste Tracking & Garbage Fleet Optimization</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="public" onclick="switchRole('public')">👥 General Public</button>
+      <button class="role-pill" data-role="driver" onclick="switchRole('driver')">🚛 Compactor Truck Driver</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏛️ Municipal Waste Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- GENERAL PUBLIC VIEW -->
+    <section id="publicSection" class="role-view">
+      <div class="dashboard-header-card public-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🏘️</div>
+          <div>
+            <h3>Resident Citizen: R. Vasanthi</h3>
+            <p class="muted">Ward 14 (T. Nagar West Zone) | Active Citizen Reporter | Clean City Champion</p>
+          </div>
+        </div>
+        <div class="header-action-group">
+          <span class="badge badge-success">Zero Litter Initiative Active</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchPublicTab('report')">🚨 Report Waste / Overflowing Bin</button>
+        <button class="tab-btn" onclick="switchPublicTab('track')">📋 My Waste Complaints & Status</button>
+        <button class="tab-btn" onclick="switchPublicTab('bins')">🗑️ Nearby Public Dustbins Map</button>
+      </div>
+
+      <!-- Tab: Report Complaint -->
+      <div id="pubTabReport" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Lodge Civic Waste Complaint</h3>
+            <p class="muted">Report uncollected garbage, hazardous disposal, or overflowing municipal bins.</p>
+            <form id="publicComplaintForm" onsubmit="handlePublicSubmitComplaint(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Waste Incident Category</label>
+                  <select id="wasteCategory" class="input" required>
+                    <option value="Overflowing Dustbin">Overflowing Municipal Dustbin</option>
+                    <option value="Illegal Street Littering">Illegal Street Dumping / Debris</option>
+                    <option value="Drainage Blockage by Plastic">Drainage Choked with Plastic</option>
+                    <option value="Hazardous / Medical Waste">Hazardous / Medical Bio-Waste</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Severity Level</label>
+                  <select id="wasteSeverity" class="input">
+                    <option value="High">High (Impacting pedestrian road passage)</option>
+                    <option value="Medium">Medium (Bin 90% full)</option>
+                    <option value="Critical">Critical (Health hazard / Stagnant water)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Exact Location / Landmark</label>
+                <input type="text" id="wasteLocation" class="input" placeholder="e.g. Corner of 2nd Cross St & Usman Rd, near Bus Depot" required>
+              </div>
+
+              <div class="form-group">
+                <label>Incident Photo Proof URL</label>
+                <input type="text" id="wastePhotoUrl" class="input" placeholder="https://images.unsplash.com/... or bin.jpg" value="https://images.unsplash.com/photo-1605600659908-0ef719419d41?w=500">
+              </div>
+
+              <div class="form-group">
+                <label>Detailed Observation</label>
+                <textarea id="wasteRemarks" class="input" rows="3" placeholder="Garbage spilling onto the pavement, stray animals scattering plastic..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">🚀 Submit Report & Dispatch Truck</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3>Recent Complaint Ticket</h3>
+            <div id="latestWasteTicketDisplay" class="ticket-preview-box">
+              <div class="empty-state-box">
+                <span class="empty-icon">🗑️</span>
+                <p class="muted">No reports filed in this session. Lodge a complaint on the left to track sanitation crew dispatch.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Track Status -->
+      <div id="pubTabTrack" class="tab-pane">
+        <div class="card">
+          <h3>Citizen Waste Grievance History</h3>
+          <div id="publicComplaintsList" class="complaints-timeline-container mt-3">
+            <!-- Dynamically populated complaints -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Nearby Dustbins -->
+      <div id="pubTabBins" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Ward 14 Smart Dustbin Sensor Roster</h3>
+              <p class="muted">Real-time ultrasonic fill level monitoring across public waste disposal stations.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="renderDustbinsGrid()">🔄 Refresh Sensor Feeds</button>
+          </div>
+          <div id="publicBinsGrid" class="bins-grid mt-4">
+            <!-- Dynamically populated bin cards -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPACTOR TRUCK DRIVER VIEW -->
+    <section id="driverSection" class="role-view hidden">
+      <div class="dashboard-header-card driver-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🚛</div>
+          <div>
+            <h3>Driver K. Murugesan (Vehicle: TN-01-G-4491)</h3>
+            <p class="muted">Compactor Truck #04 | Capacity: 5.0 Metric Tons | Current Load: <strong id="driverCurrentLoadText">2.8 Tons</strong></p>
+          </div>
+        </div>
+        <div class="driver-controls">
+          <button class="btn btn-secondary btn-sm" onclick="dumpAtLandfill()">🏭 Offload at Landfill</button>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-4">
+        <!-- Route Navigation Box -->
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>🗺️ Optimized Multi-Point Waste Collection Route</h3>
+              <p class="muted">Shortest path sequence generated via municipal waypoint routing.</p>
+            </div>
+            <span class="badge badge-success">Optimized Route Active</span>
+          </div>
+
+          <div class="simulated-map-route-box mt-3" id="simulatedMapBox">
+            <div class="route-svg-container">
+              <svg viewBox="0 0 400 240" class="route-map-svg">
+                <!-- Roads -->
+                <path d="M 40 40 L 360 40 L 360 200 L 40 200 Z" fill="none" stroke="#334155" stroke-width="8" />
+                <path d="M 40 120 L 360 120" fill="none" stroke="#334155" stroke-width="6" />
+                <path d="M 200 40 L 200 200" fill="none" stroke="#334155" stroke-width="6" />
+                <!-- Truck Route Polyline -->
+                <polyline id="truckRoutePath" points="50,50 190,50 190,130 350,130 350,210" fill="none" stroke="#22c55e" stroke-width="4" stroke-dasharray="6" />
+                <!-- Waypoint Nodes -->
+                <circle cx="50" cy="50" r="10" fill="#3b82f6" />
+                <text x="65" y="55" fill="#94a3b8" font-size="10">Depot (Start)</text>
+
+                <circle cx="190" cy="50" r="10" fill="#ef4444" />
+                <text x="205" y="55" fill="#ef4444" font-size="10">Bin #01 (Full)</text>
+
+                <circle cx="190" cy="130" r="10" fill="#f59e0b" />
+                <text x="205" y="135" fill="#f59e0b" font-size="10">Bin #03 (80%)</text>
+
+                <circle cx="350" cy="210" r="12" fill="#10b981" />
+                <text x="260" y="215" fill="#10b981" font-size="10">Landfill (End)</text>
+              </svg>
+            </div>
+            <div class="map-status-caption">Real-Time GPS Waypoint Navigation: Next Stop -> <strong>Bin #01 (Usman Road Junction)</strong></div>
+          </div>
+
+          <div class="waypoint-steps-list mt-3" id="waypointStepsContainer">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Bin Clearance Action Console -->
+        <div class="card">
+          <h3>Bin Collection & Clearance Console</h3>
+          <p class="muted">Arrived at target dustbin? Lift compactor arm, record weight, and mark cleared.</p>
+          
+          <form onsubmit="handleDriverClearBin(event)" class="mt-3">
+            <div class="form-group">
+              <label>Select Dustbin to Clear</label>
+              <select id="driverTargetBinSelect" class="input" onchange="updateDriverBinPreview()" required>
+                <!-- Dynamically populated with non-empty bins -->
+              </select>
+            </div>
+
+            <div class="bin-clearance-preview-box p-3 my-3" id="driverBinPreviewBox">
+              <!-- Populated dynamically -->
+            </div>
+
+            <div class="form-group">
+              <label>Waste Weight Loaded into Truck (Tons)</label>
+              <input type="number" id="driverCollectedWeight" class="input font-bold" value="0.75" step="0.05" min="0.1" max="2.0" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">🚜 Lift & Empty Dustbin (Reset Fill Level to 0%)</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- MUNICIPAL WASTE ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🗑️</span>
+          <div>
+            <div class="metric-value" id="adminTotalBinsCount">6</div>
+            <div class="metric-label">Municipal Smart Bins Installed</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">🚨</span>
+          <div>
+            <div class="metric-value" id="adminCriticalBinsCount" style="color: #ef4444;">2</div>
+            <div class="metric-label">Bins Needing Urgent Evacuation</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">⚖️</span>
+          <div>
+            <div class="metric-value" id="adminTotalWasteTonnage">18.4 Tons</div>
+            <div class="metric-label">Total Waste Transported Today</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('bins')">🗑️ Manage Smart Bins</button>
+        <button class="tab-btn" onclick="switchAdminTab('complaints')">📢 Public Complaints</button>
+        <button class="tab-btn" onclick="switchAdminTab('drivers')">🚛 Drivers & Fleets</button>
+      </div>
+
+      <!-- Admin Tab: Smart Bins -->
+      <div id="adminTabBins" class="tab-pane active">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Registered Municipal Dustbins</h3>
+            <div class="table-responsive mt-3">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Bin ID</th>
+                    <th>Location</th>
+                    <th>Waste Type</th>
+                    <th>Fill Level</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="adminBinsTable">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Register New Smart Dustbin</h3>
+            <form onsubmit="handleAdminCreateBin(event)">
+              <div class="form-group">
+                <label>Bin Identification Tag</label>
+                <input type="text" id="newBinId" class="input font-mono uppercase" placeholder="e.g. BIN-W14-07" required>
+              </div>
+              <div class="form-group">
+                <label>Location & Ward Sector</label>
+                <input type="text" id="newBinLocation" class="input" placeholder="e.g. Panagal Park North Entrance, Ward 14" required>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Segregated Waste Type</label>
+                  <select id="newBinType" class="input">
+                    <option value="Biodegradable (Wet)">Biodegradable (Wet / Organic)</option>
+                    <option value="Recyclable (Dry)">Recyclable (Dry / Plastic / Paper)</option>
+                    <option value="Hazardous / E-Waste">Hazardous / Domestic E-Waste</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Capacity (Liters)</label>
+                  <input type="number" id="newBinCapacity" class="input" value="1100" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Initial Fill Level (%)</label>
+                <input type="number" id="newBinInitialFill" class="input" value="25" min="0" max="100" required>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">Deploy Smart Dustbin</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Complaints -->
+      <div id="adminTabComplaints" class="tab-pane">
+        <div class="card">
+          <h3>Public Waste Grievance Queue</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Reported By</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="adminComplaintsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Drivers -->
+      <div id="adminTabDrivers" class="tab-pane">
+        <div class="card">
+          <h3>Sanitation Compactor Drivers & Assigned Corridors</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Driver Name</th>
+                  <th>Truck Reg No</th>
+                  <th>Assigned Zone</th>
+                  <th>Current Route Load</th>
+                  <th>Daily Clearances</th>
+                </tr>
+              </thead>
+              <tbody id="adminDriversTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>Experiment 22: Solid Waste Management & Fleet Route Optimization | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

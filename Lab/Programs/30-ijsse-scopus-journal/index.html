@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IJSSE - International Journal of Scientific and Social Excellence (Scopus-Indexed)</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">📚</span>
+      <div class="brand-text">
+        <span class="brand-title">IJSSE Publishing</span>
+        <span class="brand-sub">International Journal of Scientific & Social Excellence • Scopus Indexed</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="author" onclick="switchRole('author')">✍️ Author Portal</button>
+      <button class="role-pill" data-role="reviewer" onclick="switchRole('reviewer')">🔍 Peer Reviewer</button>
+      <button class="role-pill" data-role="editor" onclick="switchRole('editor')">🏛️ Chief Editor / Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- JOURNAL HEADER BANNER -->
+    <div class="journal-masthead mb-4">
+      <div class="masthead-left">
+        <span class="journal-badge">Peer-Reviewed • Open Access • Monthly</span>
+        <h1 class="journal-title">International Journal of Scientific and Social Excellence</h1>
+        <div class="issn-tags">
+          <span class="issn-chip">Print ISSN: <strong>2395-1443</strong></span>
+          <span class="issn-chip">Online ISSN: <strong>2395-1451</strong></span>
+          <span class="issn-chip">Impact Factor: <strong>6.82 (Scopus Q2)</strong></span>
+        </div>
+      </div>
+      <div class="masthead-right">
+        <button class="btn btn-primary" onclick="openSubmitManuscriptModal()">📄 Submit Manuscript (Call for Papers)</button>
+      </div>
+    </div>
+
+    <!-- AUTHOR VIEW -->
+    <section id="authorSection" class="role-view">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAuthorTab('myPapers')">📑 My Submitted Manuscripts</button>
+        <button class="tab-btn" onclick="switchAuthorTab('currentIssue')">📖 Current Issue (Vol 12, Issue 4)</button>
+        <button class="tab-btn" onclick="switchAuthorTab('guidelines')">📋 Author Guidelines & Fees</button>
+        <button class="tab-btn" onclick="switchAuthorTab('about')">ℹ️ About Journal & Ethics</button>
+      </div>
+
+      <!-- Tab: My Papers -->
+      <div id="authorTabPapers" class="tab-pane active">
+        <div class="card-header-flex mb-3">
+          <div>
+            <h3>Author Tracking Ledger</h3>
+            <p class="muted">Monitor real-time editorial workflow, peer review feedback, and final publication status.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openSubmitManuscriptModal()">➕ Submit New Paper</button>
+        </div>
+
+        <div id="authorPapersList" class="papers-list">
+          <!-- Dynamically populated author submissions -->
+        </div>
+      </div>
+
+      <!-- Tab: Current Issue & Articles -->
+      <div id="authorTabIssue" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Volume 12, Issue 4 (October 2026) - Published Articles</h3>
+              <p class="muted">Peer-reviewed full open-access original research articles and state-of-the-art reviews.</p>
+            </div>
+            <span class="badge badge-success">Latest Issue</span>
+          </div>
+
+          <div id="publishedArticlesList" class="articles-directory mt-3">
+            <!-- Dynamically populated published articles -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Guidelines -->
+      <div id="authorTabGuidelines" class="tab-pane">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Author Instructions & Preparation Checklist</h3>
+            <ul class="guidelines-list mt-3">
+              <li><strong>Formatting:</strong> Manuscripts must follow the standard double-column IEEE/IJSSE format (max 10 pages).</li>
+              <li><strong>Originality & Plagiarism:</strong> Articles undergo mandatory Turnitin screening (Strictly &lt; 10% similarity index).</li>
+              <li><strong>References:</strong> Reference citations must be numbered in square brackets [1], [2] in APA/IEEE standard.</li>
+              <li><strong>Peer Review Process:</strong> Double-blind peer review by at least two independent international experts.</li>
+            </ul>
+
+            <div class="template-downloads-box mt-4">
+              <h4>Download Official Templates</h4>
+              <div style="display: flex; gap: 0.75rem; margin-top: 0.75rem;">
+                <button class="btn btn-outline btn-sm" onclick="downloadTemplateSimulated('Article_Template.docx')">📥 Article Word Template</button>
+                <button class="btn btn-outline btn-sm" onclick="downloadTemplateSimulated('Copyright_Transfer_Form.pdf')">📥 Copyright Transfer Form</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Article Processing Charges (APC)</h3>
+            <p class="muted">IJSSE operates on an author-subsidized Open Access model ensuring free worldwide accessibility.</p>
+            <div class="apc-pricing-box my-3">
+              <div class="fee-row">
+                <span>Indian Authors (Academic / Student):</span>
+                <strong class="font-mono text-success">₹3,000 INR</strong>
+              </div>
+              <div class="fee-row">
+                <span>International Authors (Global):</span>
+                <strong class="font-mono text-success">$50 USD</strong>
+              </div>
+              <div class="fee-row fee-total">
+                <span>Includes:</span>
+                <span class="text-xs muted">DOI Assignment, CrossRef indexing, Scopus metadata feed & digital certificates.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: About & Ethics -->
+      <div id="authorTabAbout" class="tab-pane">
+        <div class="card max-w-800 mx-auto">
+          <h3>About IJSSE & Publication Ethics</h3>
+          <p class="muted">Founded in 2014, the International Journal of Scientific and Social Excellence (IJSSE) provides an international forum for cutting-edge interdisciplinary breakthroughs in computer engineering, data science, bio-informatics, and social economics.</p>
+          
+          <h4 class="mt-4">COPE Code of Conduct & Ethics Statement</h4>
+          <p class="text-sm">IJSSE strictly follows the Committee on Publication Ethics (COPE) core practices. Authors, reviewers, and editors must adhere to zero tolerance on data falsification, duplicate submission, and author gift disputes. Authors retain copyright under Creative Commons Attribution 4.0 International (CC BY 4.0).</p>
+
+          <h4 class="mt-4">Editorial Committee Leaders</h4>
+          <p class="text-sm muted"><strong>Editor-in-Chief:</strong> Prof. Dr. A. Ramanujam, Ph.D. (SIMATS University)<br>
+          <strong>Associate Editor:</strong> Dr. Evelyn Thorne, Ph.D. (University of Edinburgh, UK)<br>
+          <strong>Technical Editor:</strong> Dr. Satoshi Tanaka, Ph.D. (Tokyo Institute of Technology, Japan)</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- REVIEWER VIEW -->
+    <section id="reviewerSection" class="role-view hidden">
+      <div class="dashboard-header-card reviewer-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🔍</div>
+          <div>
+            <h3>Reviewer: Dr. N. Balakrishnan</h3>
+            <p class="muted">Specialization: Machine Learning, Cloud Systems, & Cyber Security | Role: <span class="badge badge-primary">Senior Peer Reviewer</span></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Assigned Manuscripts for Peer Evaluation</h3>
+        <p class="muted">Provide objective double-blind academic reviews, methodological rigor scoring, and final recommendations.</p>
+
+        <div id="reviewerAssignmentsList" class="assigned-papers-grid mt-3">
+          <!-- Dynamically populated reviewer queue -->
+        </div>
+      </div>
+    </section>
+
+    <!-- CHIEF EDITOR / ADMIN VIEW -->
+    <section id="editorSection" class="role-view hidden">
+      <div class="dashboard-header-card editor-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🏛️</div>
+          <div>
+            <h3>Chief Editorial Management Console</h3>
+            <p class="muted">Coordinate double-blind peer reviews, assign referees, and make final acceptance determinations.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div>
+            <div class="metric-value" id="editorTotalManuscripts">0</div>
+            <div class="metric-label">Total Submissions</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">⏳</span>
+          <div>
+            <div class="metric-value text-warning" id="editorPendingReviews">0</div>
+            <div class="metric-label">Under Peer Review</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">✅</span>
+          <div>
+            <div class="metric-value text-success" id="editorPublishedCount">0</div>
+            <div class="metric-label">Published in Vol 12</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Manuscripts Review & Publishing Queue</h3>
+        <div class="table-responsive mt-3">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Paper ID</th>
+                <th>Title & Domain</th>
+                <th>Author</th>
+                <th>Assigned Reviewer</th>
+                <th>Reviewer Score</th>
+                <th>Status</th>
+                <th>Editorial Decision</th>
+              </tr>
+            </thead>
+            <tbody id="editorSubmissionsTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Submit Manuscript Modal -->
+  <div id="submitManuscriptModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Call for Papers: Submit Original Manuscript</h3>
+        <button class="modal-close" onclick="closeSubmitManuscriptModal()">&times;</button>
+      </div>
+      <form onsubmit="handleSubmitManuscript(event)">
+        <div class="form-group">
+          <label>Manuscript Title</label>
+          <input type="text" id="paperTitleInput" class="input font-bold" placeholder="e.g. Adaptive Reinforcement Learning for Edge Computing Offload" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Subject Domain / Track</label>
+            <select id="paperDomainSelect" class="input">
+              <option value="Computer Science & AI">Computer Science & Artificial Intelligence</option>
+              <option value="Cloud & Cyber Systems">Cloud Computing & Cybersecurity</option>
+              <option value="Biomedical Informatics">Biomedical Engineering & Informatics</option>
+              <option value="Social Sciences & Economics">Social Sciences & Applied Economics</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Primary Author Name</label>
+            <input type="text" id="paperAuthorInput" class="input" value="Dr. K. Vigneshwaran" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Affiliation / University</label>
+            <input type="text" id="paperAffiliationInput" class="input" value="Saveetha School of Engineering, SIMATS" required>
+          </div>
+          <div class="form-group">
+            <label>Author Contact Email</label>
+            <input type="email" id="paperEmailInput" class="input" value="vignesh@saveetha.ac.in" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Abstract (200 - 300 words)</label>
+          <textarea id="paperAbstractInput" class="input" rows="4" placeholder="Summarize the core hypothesis, methodology, empirical results, and technical contribution..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Keywords (Comma-separated)</label>
+          <input type="text" id="paperKeywordsInput" class="input" placeholder="e.g. Deep Learning, Multi-Agent Systems, Edge QoS" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeSubmitManuscriptModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit to Editorial Board</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div id="reviewModal" class="modal-backdrop hidden">
+    <div class="modal-card max-w-700">
+      <div class="modal-header">
+        <h3>Submit Double-Blind Peer Review Report</h3>
+        <button class="modal-close" onclick="closeReviewModal()">&times;</button>
+      </div>
+      <form onsubmit="handleSubmitReviewScore(event)">
+        <input type="hidden" id="reviewPaperId">
+        <div class="form-group">
+          <label>Evaluating Manuscript</label>
+          <input type="text" id="reviewPaperTitleDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Technical Rigor (1 to 10)</label>
+            <input type="number" id="reviewScoreRigor" class="input" min="1" max="10" value="8" required>
+          </div>
+          <div class="form-group">
+            <label>Originality & Novelty (1 to 10)</label>
+            <input type="number" id="reviewScoreNovelty" class="input" min="1" max="10" value="9" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Review Recommendation</label>
+          <select id="reviewRecommendation" class="input">
+            <option value="Accept as Published">Accept without Modifications</option>
+            <option value="Minor Revision Required">Accept with Minor Revisions</option>
+            <option value="Major Revision Required">Major Revisions Required</option>
+            <option value="Reject">Reject (Out of Scope / Insufficient Evidence)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Confidential Remarks to Editor & Authors</label>
+          <textarea id="reviewComments" class="input" rows="4" placeholder="State strengths of mathematical formulations, clarity of benchmarks, and required enhancements..." required></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeReviewModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Official Peer Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 30: International Journal of Scientific and Social Excellence (IJSSE) Portal | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

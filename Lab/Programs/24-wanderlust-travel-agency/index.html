@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderlust Travels - Unified Holiday Packages & Travel Booking Platform</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-icon">✈️</span>
+      <div class="brand-text">
+        <span class="brand-title">Wanderlust Travels</span>
+        <span class="brand-sub">Curated Tour Packages, Heritage Dining & Resort Bookings</span>
+      </div>
+    </div>
+    
+    <div class="role-selector">
+      <span class="role-label">System Role:</span>
+      <button class="role-pill active" data-role="traveler" onclick="switchRole('traveler')">🧳 Traveler / Customer</button>
+      <button class="role-pill" data-role="admin" onclick="switchRole('admin')">🏢 Travel Agency Admin</button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div id="alertBanner" class="alert-banner hidden"></div>
+
+    <!-- TRAVELER VIEW -->
+    <section id="travelerSection" class="role-view">
+      <div class="dashboard-header-card traveler-theme">
+        <div class="user-profile-badge">
+          <div class="avatar">🌴</div>
+          <div>
+            <h3>Welcome, Ananya & Travel Group</h3>
+            <p class="muted">Traveler ID: WNDR-9201 | Club Miles: 2,400 Pts | Preferred: Hill Stations & Eco-Tours</p>
+          </div>
+        </div>
+        <div class="header-action-group">
+          <span class="badge badge-success">Seasonal Monsoon Discount Active</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTravelerTab('packages')">🗺️ Tour Packages</button>
+        <button class="tab-btn" onclick="switchTravelerTab('itinerary')">📍 Daily Route & Itinerary</button>
+        <button class="tab-btn" onclick="switchTravelerTab('hotels')">🏨 Resorts & Hostels</button>
+        <button class="tab-btn" onclick="switchTravelerTab('dining')">🍽️ Dining & Meal Plans</button>
+        <button class="tab-btn" onclick="switchTravelerTab('bookings')">📑 My Booked Trips (<span id="myTripsCount">0</span>)</button>
+      </div>
+
+      <!-- Tab: Tour Packages -->
+      <div id="travTabPackages" class="tab-pane active">
+        <!-- Filter Bar -->
+        <div class="filter-bar-card mb-4">
+          <div class="form-row">
+            <div class="form-group flex-2">
+              <label>Destination Search</label>
+              <input type="text" id="destSearchInput" class="input" placeholder="Search Ooty, Kodaikanal, Munnar, Goa, Manali..." oninput="filterPackages()">
+            </div>
+            <div class="form-group">
+              <label>Duration Filter</label>
+              <select id="durationFilter" class="input" onchange="filterPackages()">
+                <option value="All">All Durations</option>
+                <option value="3D/2N">Weekend Getaway (3D / 2N)</option>
+                <option value="4D/3N">Extended Tour (4D / 3N)</option>
+                <option value="5D/4N">Comprehensive Explorer (5D / 4N)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="packagesGrid" class="packages-grid">
+          <!-- Dynamically populated tour packages -->
+        </div>
+      </div>
+
+      <!-- Tab: Daily Itinerary & Route -->
+      <div id="travTabItinerary" class="tab-pane">
+        <div class="card">
+          <div class="card-header-flex">
+            <div>
+              <h3>Detailed Daily Sightseeing & Transit Routes</h3>
+              <p class="muted">Explore day-by-day travel schedules, mountain transfer legs, and included stops.</p>
+            </div>
+            <select id="itineraryPackageSelect" class="input input-sm" onchange="renderItineraryDetails()">
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div id="itineraryContentBox" class="itinerary-timeline mt-4">
+            <!-- Dynamically populated itinerary steps -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Resorts & Hostels -->
+      <div id="travTabHotels" class="tab-pane">
+        <div class="card">
+          <h3>Partner Heritage Resorts, Tea Estates & Hostels</h3>
+          <div id="hotelsGrid" class="hotels-grid mt-4">
+            <!-- Dynamically populated hotel cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Dining & Meal Plans -->
+      <div id="travTabDining" class="tab-pane">
+        <div class="card">
+          <h3>Catering Packages & Local Culinary Experiences</h3>
+          <div id="diningOptionsGrid" class="dining-grid mt-4">
+            <!-- Dynamically populated dining cards -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: My Bookings -->
+      <div id="travTabBookings" class="tab-pane">
+        <div class="card">
+          <h3>My Confirmed Travel Itineraries & Vouchers</h3>
+          <div id="travelerBookingsList" class="bookings-list-container mt-3">
+            <!-- Dynamically populated booking cards -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRAVEL AGENCY ADMIN VIEW -->
+    <section id="adminSection" class="role-view hidden">
+      <div class="grid-3 mb-4">
+        <div class="metric-card">
+          <span class="metric-icon">🗺️</span>
+          <div>
+            <div class="metric-value" id="adminTotalPackages">4</div>
+            <div class="metric-label">Active Holiday Packages</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">📑</span>
+          <div>
+            <div class="metric-value" id="adminTotalBookings">3</div>
+            <div class="metric-label">Confirmed Tourist Bookings</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-icon">💰</span>
+          <div>
+            <div class="metric-value" id="adminTotalRevenue">₹62,400</div>
+            <div class="metric-label">Total Booking Revenue</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchAdminTab('managePackages')">📋 Manage Tour Packages</button>
+        <button class="tab-btn" onclick="switchAdminTab('newPackage')">➕ Create New Package</button>
+        <button class="tab-btn" onclick="switchAdminTab('agencyBookings')">📑 Booking Ledger & Vouchers</button>
+      </div>
+
+      <!-- Admin Tab: Manage Packages -->
+      <div id="adminTabManagePackages" class="tab-pane active">
+        <div class="card">
+          <h3>Current Holiday Packages in Catalog</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Package Name</th>
+                  <th>Destination</th>
+                  <th>Duration</th>
+                  <th>Base Price / Person</th>
+                  <th>Hotel Tier</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminPackagesTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Create New Package -->
+      <div id="adminTabNewPackage" class="tab-pane">
+        <div class="card max-w-700 mx-auto">
+          <h3>Publish New Tourism Package</h3>
+          <form onsubmit="handleAdminCreatePackage(event)" class="mt-3">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Package Title</label>
+                <input type="text" id="newPkgTitle" class="input" placeholder="e.g. Wayanad Rainforest & Mist Escape" required>
+              </div>
+              <div class="form-group">
+                <label>Primary Destination</label>
+                <input type="text" id="newPkgDest" class="input" placeholder="e.g. Wayanad, Kerala" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>Duration</label>
+                <select id="newPkgDuration" class="input">
+                  <option value="3D/2N">3 Days / 2 Nights</option>
+                  <option value="4D/3N">4 Days / 3 Nights</option>
+                  <option value="5D/4N">5 Days / 4 Nights</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Price per Traveler (₹)</label>
+                <input type="number" id="newPkgPrice" class="input" min="2000" value="9500" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Hero Photo URL</label>
+              <input type="text" id="newPkgImage" class="input" value="https://images.unsplash.com/photo-1596401057633-54a8fe8ef647?w=500" required>
+            </div>
+
+            <div class="form-group">
+              <label>Overview & Sightseeing Highlights</label>
+              <textarea id="newPkgDesc" class="input" rows="3" placeholder="Includes bamboo rafting, spice plantation walks, and treehouse stay..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Publish Holiday Package</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Bookings Ledger -->
+      <div id="adminTabAgencyBookings" class="tab-pane">
+        <div class="card">
+          <h3>Customer Tour Booking Ledger</h3>
+          <div class="table-responsive mt-3">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Voucher ID</th>
+                  <th>Customer</th>
+                  <th>Package</th>
+                  <th>Departure Date</th>
+                  <th>Travelers</th>
+                  <th>Total Fare</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="adminBookingsTable">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Book Package Modal -->
+  <div id="bookPackageModal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Book Vacation Package</h3>
+        <button class="modal-close" onclick="closeBookPackageModal()">&times;</button>
+      </div>
+      <form onsubmit="handleConfirmBooking(event)">
+        <input type="hidden" id="bookPkgId">
+        <div class="form-group">
+          <label>Selected Holiday Package</label>
+          <input type="text" id="bookPkgTitleDisplay" class="input font-bold" readonly>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Departure Date</label>
+            <input type="date" id="bookDepartureDate" class="input" required>
+          </div>
+          <div class="form-group">
+            <label>Number of Travelers</label>
+            <input type="number" id="bookTravelersCount" class="input" value="2" min="1" max="10" onchange="calculateTourFare()" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Meal Plan</label>
+            <select id="bookMealPlan" class="input" onchange="calculateTourFare()">
+              <option value="CP">Continental Plan (CP - Bed & Breakfast)</option>
+              <option value="MAP">Modified American Plan (MAP - Breakfast + Dinner)</option>
+              <option value="AP">American Plan (AP - All Meals Included)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Accommodation Choice</label>
+            <select id="bookRoomTier" class="input" onchange="calculateTourFare()">
+              <option value="Standard">Standard Deluxe Cottage</option>
+              <option value="Luxury">Luxury Heritage Suite (+₹2,000/person)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="fare-preview-box my-3">
+          <div class="fare-row">
+            <span>Base Fare (<span id="bookFareCalcPax">2</span> Travelers):</span>
+            <span id="bookBaseFareText">₹17,000.00</span>
+          </div>
+          <div class="fare-row">
+            <span>Meal Plan Surcharge:</span>
+            <span id="bookMealSurchargeText">₹1,200.00</span>
+          </div>
+          <div class="fare-row total">
+            <span>Grand Total Payable:</span>
+            <span id="bookGrandTotalText">₹18,200.00</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeBookPackageModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Authorize & Issue Travel Voucher</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <p>Experiment 24: Wanderlust Travels Agency Platform | CSA4301 - Internet Programming Lab | SIMATS</p>
+  </footer>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+/* SmartBus Pass v2 Scoped Styles */
+
+.commuter-theme {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(15, 23, 42, 0.95));
+  border-color: rgba(14, 165, 233, 0.35);
+}
+
+.conductor-theme {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(15, 23, 42, 0.95));
+  border-color: rgba(234, 179, 8, 0.35);
+}
+
+.dashboard-header-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-profile-badge .avatar {
+  font-size: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md);
+  padding: 0.5rem;
+}
+
+.wallet-badge-card {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.wallet-balance {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #0ea5e9;
+  font-family: monospace;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.65rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.tab-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  color: #0ea5e9;
+  border-bottom: 2px solid #0ea5e9;
+  font-weight: 600;
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Passes Grid */
+.passes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 1.5rem;
+}
+
+.pass-card-v2 {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+  border-left: 6px solid #0ea5e9;
+}
+
+.pass-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.pass-body {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pass-qr-box {
+  width: 100px;
+  height: 100px;
+  background: white;
+  color: black;
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  flex-shrink: 0;
+}
+
+.qr-code-art {
+  font-family: monospace;
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  line-height: 1;
+  font-weight: 900;
+  text-align: center;
+}
+
+.pass-details-col {
+  flex: 1;
+  font-size: 0.85rem;
+}
+
+.fee-breakdown-card, .fare-preview-box {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.fee-row, .fare-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.35rem 0;
+  font-size: 0.9rem;
+}
+
+.fee-total {
+  border-top: 1px dashed rgba(255, 255, 255, 0.2);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+/* Conductor Scanner */
+.scanner-box {
+  height: 160px;
+  background: #090d16;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.scanner-laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #0ea5e9;
+  box-shadow: 0 0 10px #0ea5e9;
+  animation: scanLaser 2.5s infinite ease-in-out;
+}
+
+@keyframes scanLaser {
+  0% { top: 10%; }
+  50% { top: 90%; }
+  100% { top: 10%; }
+}
+
+.verification-card-result {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-top: 1rem;
+  border: 1px solid var(--border-color);
+}
+
+.verification-card-result.valid {
+  background: rgba(14, 165, 233, 0.1);
+  border-color: #0ea5e9;
+}
+
+.verification-card-result.invalid {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: #ef4444;
+}
+
+/* ETA result */
+.eta-result-card {
+  background: #0f172a;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.eta-box-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.eta-time-val {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #0ea5e9;
+  font-family: monospace;
+}
+
+.route-timeline-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.route-step-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: var(--radius-md);
+}
+
+.route-step-row.current-bus-spot {
+  border: 1px solid #0ea5e9;
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.max-w-700 { max-width: 700px; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.font-mono { font-family: monospace; }
+.font-bold { font-weight: 700; }
+.uppercase { text-transform: uppercase; }
+.my-3 { margin-top: 0.75rem; margin-bottom: 0.75rem; }
+.flex-2 { flex: 2; }

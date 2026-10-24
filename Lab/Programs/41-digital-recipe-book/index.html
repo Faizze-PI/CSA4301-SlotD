@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetPlate - Digital Recipe Book & Meal Planner</title>
+    <link rel="stylesheet" href="../shared/css/theme.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <a href="../index.html" class="back-link" title="Back to Lab Portal"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo-icon"><i class="fas fa-mortar-pestle"></i></div>
+                <div>
+                    <h1>GourmetPlate</h1>
+                    <p class="subtitle">Digital Recipe Book & Smart Culinary Assistant</p>
+                </div>
+            </div>
+
+            <div class="header-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="recipeSearch" placeholder="Search by dish name, ingredient, cuisine..." onkeyup="filterRecipes()">
+            </div>
+
+            <div class="header-actions">
+                <div class="role-selector">
+                    <label><i class="fas fa-user-circle"></i> Role:</label>
+                    <select id="userRoleSelect" onchange="switchRole(this.value)">
+                        <option value="user">Home Cook (Foodie)</option>
+                        <option value="creator">Executive Chef (Creator)</option>
+                    </select>
+                </div>
+                <button class="cart-btn" onclick="showTab('shopping')">
+                    <i class="fas fa-shopping-basket"></i> Grocery List
+                    <span class="cart-badge" id="groceryCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <div class="nav-container">
+            <button class="nav-tab active" data-tab="catalog" onclick="showTab('catalog')"><i class="fas fa-utensils"></i> Explore Recipes</button>
+            <button class="nav-tab" data-tab="planner" onclick="showTab('planner')"><i class="fas fa-calendar-week"></i> Weekly Meal Planner</button>
+            <button class="nav-tab" data-tab="shopping" onclick="showTab('shopping')"><i class="fas fa-clipboard-list"></i> Grocery Shopping List</button>
+            <button class="nav-tab" data-tab="create" onclick="showTab('create')"><i class="fas fa-plus-circle"></i> Create New Recipe</button>
+            <button class="nav-tab" data-tab="saved" onclick="showTab('saved')"><i class="fas fa-bookmark"></i> Saved Favorites (<span id="savedCount">0</span>)</button>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- TAB 1: RECIPE CATALOG -->
+        <section id="tab-catalog" class="content-tab active">
+            <div class="filter-controls-row">
+                <div class="filter-pills">
+                    <button class="chip active" onclick="filterByCuisine('All', this)">All Cuisines</button>
+                    <button class="chip" onclick="filterByCuisine('Italian', this)">Italian</button>
+                    <button class="chip" onclick="filterByCuisine('Indian', this)">Indian</button>
+                    <button class="chip" onclick="filterByCuisine('Mexican', this)">Mexican</button>
+                    <button class="chip" onclick="filterByCuisine('Asian', this)">Asian</button>
+                    <button class="chip" onclick="filterByCuisine('Mediterranean', this)">Mediterranean</button>
+                </div>
+
+                <div class="filter-dropdowns">
+                    <select id="dietFilter" onchange="filterRecipes()">
+                        <option value="All">All Dietary Lifestyles</option>
+                        <option value="Vegetarian">Vegetarian</option>
+                        <option value="Vegan">Vegan</option>
+                        <option value="Gluten-Free">Gluten-Free</option>
+                        <option value="High-Protein">High-Protein</option>
+                    </select>
+
+                    <select id="difficultyFilter" onchange="filterRecipes()">
+                        <option value="All">All Difficulties</option>
+                        <option value="Easy">Easy (Under 25 mins)</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Masterchef">Masterchef Level</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="recipes-grid" id="recipesGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 2: WEEKLY MEAL PLANNER -->
+        <section id="tab-planner" class="content-tab">
+            <div class="content-header-between">
+                <div>
+                    <h2>Weekly Nutritional & Meal Planner</h2>
+                    <p>Organize balanced menus across Monday through Sunday with quick grocery syncing.</p>
+                </div>
+                <button class="btn btn-secondary btn-sm" onclick="syncAllPlannerToGrocery()"><i class="fas fa-cart-plus"></i> Export All to Grocery List</button>
+            </div>
+
+            <div class="planner-days-grid" id="plannerGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- TAB 3: GROCERY SHOPPING LIST -->
+        <section id="tab-shopping" class="content-tab">
+            <div class="shopping-layout">
+                <div class="shopping-list-card">
+                    <div class="card-head-row">
+                        <h2><i class="fas fa-clipboard-check"></i> Consolidated Grocery List</h2>
+                        <div class="head-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="clearGroceryList()"><i class="fas fa-trash-alt"></i> Clear All</button>
+                            <button class="btn btn-primary btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print List</button>
+                        </div>
+                    </div>
+                    <p class="subtitle-text">Aggregated items calculated directly from your planned recipe servings.</p>
+
+                    <div class="add-custom-item-box">
+                        <input type="text" id="customItemInput" placeholder="Add extra ingredient (e.g. 500ml Olive Oil)..." onkeydown="if(event.key==='Enter') addCustomGroceryItem()">
+                        <button class="btn btn-secondary btn-sm" onclick="addCustomGroceryItem()">Add Item</button>
+                    </div>
+
+                    <div class="grocery-items-list" id="groceryItemsList">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <div class="pantry-tips-card">
+                    <h3>Culinary Prep Tips</h3>
+                    <div class="tip-box">
+                        <i class="fas fa-leaf"></i>
+                        <div>
+                            <h4>Herbal Freshness</h4>
+                            <p>Wrap fresh coriander, parsley, and basil in damp paper towels and refrigerate to maintain crispness for up to 10 days.</p>
+                        </div>
+                    </div>
+                    <div class="tip-box">
+                        <i class="fas fa-balance-scale"></i>
+                        <div>
+                            <h4>Mise en Place</h4>
+                            <p>Pre-measure all spices, aromatics, and chopped vegetables before lighting the stove to ensure consistent cooking temperatures.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: CREATE RECIPE -->
+        <section id="tab-create" class="content-tab">
+            <div class="content-header">
+                <h2>Share Your Culinary Masterpiece</h2>
+                <p>Upload a new recipe with scalable ingredients and step-by-step guidance.</p>
+            </div>
+
+            <div class="form-card" style="max-width:850px; margin:0 auto;">
+                <form onsubmit="handleCreateRecipe(event)">
+                    <div class="form-group">
+                        <label>Recipe Title:</label>
+                        <input type="text" id="newRecTitle" required placeholder="e.g. Creamy Tuscan Garlic Butter Salmon">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cuisine:</label>
+                            <select id="newRecCuisine">
+                                <option value="Italian">Italian</option>
+                                <option value="Indian">Indian</option>
+                                <option value="Mexican">Mexican</option>
+                                <option value="Asian">Asian</option>
+                                <option value="Mediterranean">Mediterranean</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Dietary Tag:</label>
+                            <select id="newRecDiet">
+                                <option value="Vegetarian">Vegetarian</option>
+                                <option value="Vegan">Vegan</option>
+                                <option value="Gluten-Free">Gluten-Free</option>
+                                <option value="High-Protein">High-Protein</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Difficulty:</label>
+                            <select id="newRecDiff">
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Masterchef">Masterchef</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Prep & Cook Time:</label>
+                            <input type="text" id="newRecTime" value="30 mins" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Base Servings:</label>
+                        <input type="number" id="newRecServings" value="4" min="1" max="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ingredients (Format: Amount Unit Ingredient, one per line):</label>
+                        <textarea id="newRecIngredients" rows="4" required placeholder="200 g Paneer / Salmon&#10;2 tbsp Olive Oil&#10;4 cloves Garlic minced&#10;1 cup Heavy Cream&#10;1 tsp Sea Salt"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Step-by-Step Cooking Instructions (One step per line):</label>
+                        <textarea id="newRecInstructions" rows="4" required placeholder="1. Heat olive oil in a wide skillet over medium heat.&#10;2. Sear paneer cubes until golden on each side.&#10;3. Sauté minced garlic until fragrant.&#10;4. Pour cream and simmer for 5 minutes."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Publish Recipe</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 5: SAVED FAVORITES -->
+        <section id="tab-saved" class="content-tab">
+            <div class="content-header">
+                <h2>Your Curated Favorite Recipes</h2>
+                <p>Quick access to all recipes bookmarked for your personal cookbook.</p>
+            </div>
+            <div class="recipes-grid" id="savedGrid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Scalable Recipe Detail Modal -->
+    <div class="modal" id="recipeModal">
+        <div class="modal-dialog">
+            <button class="modal-close" onclick="closeRecipeModal()">&times;</button>
+            <div class="modal-content" id="recipeModalContent"></div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        <p>&copy; 2026 GourmetPlate Digital Recipe Book | SIMATS Internet Programming Lab Series</p>
+    </footer>
+
+    <script src="../shared/js/db.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

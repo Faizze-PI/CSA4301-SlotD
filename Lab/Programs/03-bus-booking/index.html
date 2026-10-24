@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 03 - Online Bus Ticket Booking System</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>🚌 CityExpress Bus Booking</span>
+      <span class="brand-badge">Exp 03</span>
+    </div>
+    <div class="role-switcher">
+      <label for="busRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Active View:</label>
+      <select id="busRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="user">Passenger / User View</option>
+        <option value="admin">Administrator View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- PASSENGER / USER VIEW -->
+    <div id="busUserSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="searchBusesTab">Find Buses & Book</button>
+        <button class="tab-btn" data-tab="myTicketsTab">My Booked Tickets & History</button>
+        <button class="tab-btn" data-tab="busCommentsTab">Bus Reviews & Comments</button>
+      </div>
+
+      <!-- Tab: Search & Seat Selection -->
+      <div id="searchBusesTab" class="tab-pane active">
+        <div class="card">
+          <h2 class="card-title">Search Available Buses</h2>
+          <form id="busSearchForm" class="grid grid-cols-4" style="gap: 1rem; align-items: flex-end;">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label">From (Origin)</label>
+              <select id="originCity" class="form-select">
+                <option value="Chennai">Chennai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Madurai">Madurai</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label">To (Destination)</label>
+              <select id="destCity" class="form-select">
+                <option value="Bangalore">Bangalore</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Coimbatore">Coimbatore</option>
+                <option value="Kodaikanal">Kodaikanal</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label">Date of Journey</label>
+              <input type="date" id="journeyDate" class="form-control" required>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary" style="width: 100%;">Search Buses</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Bus List -->
+        <div id="busResultsList" style="margin-top: 1.5rem;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab: My Booked Tickets -->
+      <div id="myTicketsTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">My Booked Tickets</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Ticket / PNR</th>
+                  <th>Route</th>
+                  <th>Bus Category</th>
+                  <th>Seat No(s)</th>
+                  <th>Date & Time</th>
+                  <th>Fare</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="userTicketsTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Bus Comments & Feedback -->
+      <div id="busCommentsTab" class="tab-pane">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title">Post Comment on Bus Service</h3>
+            <form id="postCommentForm">
+              <div class="form-group">
+                <label class="form-label">Select Bus</label>
+                <select id="commentBusSelect" class="form-select"></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Your Name</label>
+                <input type="text" id="commenterName" class="form-control" value="Faizze A." required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Rating (1 to 5 Stars)</label>
+                <select id="commentRating" class="form-select">
+                  <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+                  <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+                  <option value="3">⭐⭐⭐ 3 Stars</option>
+                  <option value="2">⭐⭐ 2 Stars</option>
+                  <option value="1">⭐ 1 Star</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Feedback / Comment</label>
+                <textarea id="commentText" class="form-control" rows="3" required placeholder="Describe cleanliness, punctuality, and staff behavior..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Public Traveler Reviews</h3>
+            <div id="busCommentsList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMINISTRATOR VIEW -->
+    <div id="busAdminSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="adminFleetTab">Manage Bus Fleet & Schedules</button>
+        <button class="tab-btn" data-tab="adminCategoriesTab">Bus Categories</button>
+        <button class="tab-btn" data-tab="adminReportsTab">Report Generation</button>
+      </div>
+
+      <!-- Admin Tab: Fleet & Schedules -->
+      <div id="adminFleetTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title">Add / Update Bus Route</h3>
+            <form id="adminBusForm">
+              <div class="form-group">
+                <label class="form-label">Bus Name / Service No</label>
+                <input type="text" id="busServiceName" class="form-control" required placeholder="e.g. CityExpress Volvo Multi-Axle">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select id="busCategorySelect" class="form-select"></select>
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">From</label>
+                  <input type="text" id="busFrom" class="form-control" required value="Chennai">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">To</label>
+                  <input type="text" id="busTo" class="form-control" required value="Bangalore">
+                </div>
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Departure Time</label>
+                  <input type="time" id="busTime" class="form-control" required value="21:30">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Fare (₹)</label>
+                  <input type="number" id="busFare" class="form-control" required value="850">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Total Seats Capacity</label>
+                <input type="number" id="busCapacity" class="form-control" required value="32">
+              </div>
+              <button type="submit" class="btn btn-primary">Add Bus to Fleet</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Active Fleet Schedule</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Bus Service</th>
+                    <th>Category</th>
+                    <th>Route</th>
+                    <th>Fare</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="adminFleetTableBody">
+                  <!-- Dynamically loaded -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Categories -->
+      <div id="adminCategoriesTab" class="tab-pane">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title">Add New Bus Category</h3>
+            <form id="adminCategoryForm">
+              <div class="form-group">
+                <label class="form-label">Category Name</label>
+                <input type="text" id="newCategoryName" class="form-control" required placeholder="e.g. Scania AC Sleeper">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Description & Perks</label>
+                <textarea id="newCategoryDesc" class="form-control" rows="3" placeholder="Charging points, blanket, water bottle..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Current Bus Categories</h3>
+            <div id="adminCategoriesList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+              <!-- Dynamically loaded -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab: Report Generation -->
+      <div id="adminReportsTab" class="tab-pane">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 class="card-title" style="margin: 0;">Operational & Revenue Report</h2>
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print / Export PDF</button>
+          </div>
+          <div class="grid grid-cols-3" style="margin-bottom: 1.5rem;">
+            <div class="card" style="background: #f8fafc; margin: 0;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Total Bookings</span>
+              <h3 id="statTotalBookings" style="font-size: 1.8rem; margin-top: 0.25rem;">0</h3>
+            </div>
+            <div class="card" style="background: #f8fafc; margin: 0;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Gross Revenue</span>
+              <h3 id="statGrossRevenue" style="font-size: 1.8rem; margin-top: 0.25rem; color: var(--success);">₹0</h3>
+            </div>
+            <div class="card" style="background: #f8fafc; margin: 0;">
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Active Fleet Size</span>
+              <h3 id="statFleetSize" style="font-size: 1.8rem; margin-top: 0.25rem; color: var(--primary);">0</h3>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>PNR</th>
+                  <th>Passenger</th>
+                  <th>Route</th>
+                  <th>Bus</th>
+                  <th>Seat(s)</th>
+                  <th>Fare Collected</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="reportTableBody">
+                <!-- Dynamically loaded -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seat Selection & Booking Modal -->
+  <div id="seatModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 550px;">
+      <h3 id="seatModalTitle">Select Seats</h3>
+      <p id="seatModalSubtitle" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;"></p>
+      
+      <div style="text-align: center; margin-bottom: 0.75rem; font-size: 0.8rem; font-weight: 600;">🚌 DRIVER SIDE (FRONT)</div>
+      <div class="seat-grid" id="seatMatrix">
+        <!-- 24 or 32 Interactive Seat Buttons -->
+      </div>
+      <div style="display: flex; justify-content: center; gap: 1.5rem; margin: 1rem 0; font-size: 0.8rem;">
+        <span><span class="seat-legend available"></span> Available</span>
+        <span><span class="seat-legend selected"></span> Selected</span>
+        <span><span class="seat-legend booked"></span> Booked</span>
+      </div>
+
+      <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+          <span>Selected Seats: <strong id="selectedSeatsLabel">None</strong></span>
+          <span>Total Fare: <strong id="selectedFareLabel" style="color: var(--primary);">₹0</strong></span>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Passenger Name</label>
+          <input type="text" id="passengerNameInput" class="form-control" value="Faizze A." required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contact Mobile</label>
+          <input type="tel" id="passengerPhoneInput" class="form-control" value="9876543210" required>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeSeatModal()">Cancel</button>
+          <button type="button" class="btn btn-success" id="confirmSeatBookingBtn">Pay & Confirm Ticket</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Experiment 13 - BlossomGifts Online Platform</title>
+  <link rel="stylesheet" href="../shared/css/theme.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <a href="../index.html" class="back-link" style="margin: 0; color: inherit; text-decoration: none;">&larr; Portal</a>
+      <span style="border-left: 2px solid var(--border-color); height: 20px; margin: 0 0.5rem;"></span>
+      <span>🌸 BlossomGifts - Flowers & Curated Hampers</span>
+      <span class="brand-badge">Exp 13</span>
+    </div>
+    <div class="role-switcher">
+      <label for="giftRoleSelect" style="font-size: 0.85rem; font-weight: 600; margin-right: 0.5rem;">Role:</label>
+      <select id="giftRoleSelect" class="form-select" style="width: auto; padding: 0.35rem 0.75rem; font-size: 0.85rem;">
+        <option value="customer">Shopper View</option>
+        <option value="admin">Florist Admin View</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- SHOPPER VIEW -->
+    <div id="giftCustomerSection">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="giftCatalogTab">Floral & Gift Catalog</button>
+        <button class="tab-btn" data-tab="giftCartTab">Cart (<span id="giftCartBadge">0</span>)</button>
+        <button class="tab-btn" data-tab="giftOrdersTab">My Orders & Live Tracker</button>
+        <button class="tab-btn" data-tab="giftInquiryTab">Inquire via Email</button>
+      </div>
+
+      <!-- Tab 1: Catalog -->
+      <div id="giftCatalogTab" class="tab-pane active">
+        <div class="card">
+          <div class="search-row" style="flex-wrap: wrap; gap: 0.75rem;">
+            <select id="giftOccasionFilter" class="form-select" style="flex: 1; min-width: 150px;">
+              <option value="all">All Occasions</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Anniversary">Anniversary</option>
+              <option value="Congratulations">Congratulations</option>
+              <option value="Sympathy">Get Well Soon / Sympathy</option>
+            </select>
+            <select id="giftRecipientFilter" class="form-select" style="flex: 1; min-width: 150px;">
+              <option value="all">All Recipients</option>
+              <option value="For Her">For Her</option>
+              <option value="For Him">For Him</option>
+              <option value="For Family">For Family & Friends</option>
+            </select>
+            <input type="text" id="giftSearchInput" class="form-control" placeholder="Search roses, orchids, hampers..." style="flex: 2; min-width: 200px;">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3" id="giftCatalogGrid" style="margin-top: 1.5rem;">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Shopping Cart with Delivery Scheduler -->
+      <div id="giftCartTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">My Gift Basket</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Gift Item</th>
+                  <th>Occasion</th>
+                  <th>Delivery Date & Slot</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Subtotal</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="giftCartTableBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">Total Payable:</span>
+              <div id="giftCartTotalDisplay" style="font-size: 1.6rem; font-weight: 800; color: var(--primary);">₹0</div>
+            </div>
+            <button class="btn btn-primary" onclick="checkoutGiftCart()">Confirm Delivery Schedule & Order</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Orders Tracker -->
+      <div id="giftOrdersTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Order History & Floral Tracking</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Items</th>
+                  <th>Recipient & Schedule</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="giftOrdersTableBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Inquire via Email -->
+      <div id="giftInquiryTab" class="tab-pane">
+        <div class="card" style="max-width: 600px; margin: 0 auto;">
+          <h2 class="card-title">Inquire About Custom Floral Arrangements</h2>
+          <form id="emailInquiryForm">
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input type="text" id="inqName" class="form-control" value="Faizze A." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="inqEmail" class="form-control" value="faizze@simats.edu" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject / Event</label>
+              <input type="text" id="inqSubject" class="form-control" placeholder="Bulk corporate floral hampers for conference" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message & Requirements</label>
+              <textarea id="inqMessage" class="form-control" rows="4" required placeholder="Specify flowers, colors, personalized card text, date..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Email Inquiry</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLORIST ADMIN VIEW -->
+    <div id="giftAdminSection" style="display: none;">
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="adminGiftInventoryTab">Manage Floral Inventory</button>
+        <button class="tab-btn" data-tab="adminGiftOrdersTab">Manage Customer Orders</button>
+      </div>
+
+      <!-- Tab: Admin Inventory -->
+      <div id="adminGiftInventoryTab" class="tab-pane active">
+        <div class="grid grid-cols-2">
+          <div class="card">
+            <h3 class="card-title" id="giftFormTitle">Add Floral Arrangement / Gift</h3>
+            <form id="adminGiftForm">
+              <input type="hidden" id="editGiftId">
+              <div class="form-group">
+                <label class="form-label">Product Name</label>
+                <input type="text" id="gName" class="form-control" required placeholder="e.g. Royal Red Dutch Roses (Bouquet of 24)">
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Occasion</label>
+                  <select id="gOccasion" class="form-select">
+                    <option value="Anniversary">Anniversary</option>
+                    <option value="Birthday">Birthday</option>
+                    <option value="Congratulations">Congratulations</option>
+                    <option value="Sympathy">Sympathy</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Recipient</label>
+                  <select id="gRecipient" class="form-select">
+                    <option value="For Her">For Her</option>
+                    <option value="For Him">For Him</option>
+                    <option value="For Family">For Family</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-2" style="gap: 0.5rem;">
+                <div class="form-group">
+                  <label class="form-label">Price (₹)</label>
+                  <input type="number" id="gPrice" class="form-control" value="1499" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Stock Units</label>
+                  <input type="number" id="gStock" class="form-control" value="15" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea id="gDesc" class="form-control" rows="2" placeholder="Freshly cut stem roses in premium black matte wrapping..."></textarea>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="submit" class="btn btn-primary" id="saveGiftBtn">Save Product</button>
+                <button type="button" class="btn btn-secondary" id="cancelGiftEditBtn" style="display: none;">Cancel</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Inventory List</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="adminGiftInventoryBody">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Admin Orders -->
+      <div id="adminGiftOrdersTab" class="tab-pane">
+        <div class="card">
+          <h2 class="card-title">Customer Gift Orders & Logistics</h2>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Items & Schedule</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody id="adminGiftOrdersBody">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery Scheduler Modal -->
+  <div id="giftScheduleModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px;">
+      <h3 id="modalGiftTitle">Add to Basket</h3>
+      <p id="modalGiftPrice" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;"></p>
+      
+      <form id="giftScheduleForm">
+        <div class="form-group">
+          <label class="form-label">Select Delivery Date</label>
+          <input type="date" id="delivDateInput" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Time Slot</label>
+          <select id="delivSlotInput" class="form-select">
+            <option value="Morning (09:00 AM - 12:00 PM)">Morning (09:00 AM - 12:00 PM)</option>
+            <option value="Afternoon (01:00 PM - 04:00 PM)">Afternoon (01:00 PM - 04:00 PM)</option>
+            <option value="Evening (05:00 PM - 08:00 PM)">Evening (05:00 PM - 08:00 PM)</option>
+            <option value="Midnight Surprise (11:30 PM - 12:00 AM)">Midnight Surprise (11:30 PM - 12:00 AM)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Quantity</label>
+          <input type="number" id="delivQtyInput" class="form-control" value="1" min="1" max="10">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeGiftScheduleModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add with Delivery Slot</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../shared/js/db.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
